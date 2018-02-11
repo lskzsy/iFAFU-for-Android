@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Ifafu</string>
+    <string name="app_signature">Copyright © 2018年 iFAFU. All rights reserved.</string>
+
+    <string name="interface_login_title">福建农林大学教务管理系统</string>
+    <string name="interface_login_button">登录</string>
+
+    <string name="display_input_login_account">请输入学号</string>
+    <string name="display_input_login_password">请输入密码</string>
+
+    <string name="error_view_params_not_found">页面错误</string>
+    <string name="error_system">系统错误</string>
+
+    <string name="success_login">登录成功</string>
+
+    <string name="default_student_name">无名氏</string>
+    <string name="default_student_number">3146016000</string>
+    <string name="default_student_head">归墟</string>
+</resources>
