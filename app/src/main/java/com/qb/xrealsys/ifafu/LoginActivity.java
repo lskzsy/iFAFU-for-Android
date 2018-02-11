@@ -14,14 +14,13 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.qb.xrealsys.ifafu.model.Response;
-import com.qb.xrealsys.ifafu.model.User;
 import com.qb.xrealsys.ifafu.tool.GlobalLib;
 
 import java.io.IOException;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private User currentUser;
+    private UserController currentUserController;
 
     private Button   loginBtn;
 
@@ -43,7 +42,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         loginBtn.setOnClickListener(this);
         initProgress();
         try {
-            currentUser = new User(this.getBaseContext());
+            currentUserController = new UserController(this.getBaseContext());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -53,7 +52,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onDestroy() {
         super.onDestroy();
 
-        if (!currentUser.isLogin()) {
+        if (!currentUserController.isLogin()) {
             System.exit(0);
         }
     }
@@ -82,14 +81,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void run() {
                 Looper.prepare();
                 try {
-                    Response response = currentUser.Login(account, password, true);
+                    Response response = currentUserController.Login(account, password, true);
                     progressToast.cancel();
                     Toast.makeText(LoginActivity.this, response.getMessage(LoginActivity.this), Toast.LENGTH_SHORT).show();
                     if (response.isSuccess()) {
                         //  Login success
                         Intent intent = new Intent();
                         Bundle bundle = new Bundle();
-                        bundle.putSerializable("userObject", currentUser.getData());
+                        bundle.putSerializable("userObject", currentUserController.getData());
                         intent.putExtras(bundle);
                         setResult(RESULT_OK, intent);
                         finish();

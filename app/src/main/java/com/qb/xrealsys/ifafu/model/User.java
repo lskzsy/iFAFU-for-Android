@@ -1,80 +1,60 @@
 package com.qb.xrealsys.ifafu.model;
 
-import android.content.Context;
-
-import com.qb.xrealsys.ifafu.R;
-import com.qb.xrealsys.ifafu.tool.ConfigHelper;
-import com.qb.xrealsys.ifafu.web.UserInterface;
-
-import java.io.IOException;
-
-import java.util.Random;
+import java.io.Serializable;
 
 /**
- * Created by sky on 10/02/2018.
+ * Created by sky on 11/02/2018.
  */
 
-public class User {
+public class User implements Serializable {
 
-    private UserData      data;
+    private String        name;
 
-    private UserInterface userInterface;
+    private String        account;
 
-    private Context       context;
+    private String        password;
 
-    private ConfigHelper  configHelper;
+    private String        token;
 
-    public User(Context inContext) throws IOException {
-        context         = inContext;
+    private boolean       isLogin;
 
-        data = new UserData();
-
-        data.setLogin(false);
-        data.setToken(makeToken());
-
-        configHelper    = new ConfigHelper(context);
-        userInterface   = new UserInterface(configHelper.GetValue("host"), data.getToken());
+    public String getName() {
+        return name;
     }
 
-    public Response Login(String inAcc, String inPwd, boolean isSave) throws IOException {
-        data.setAccount(inAcc);
-        data.setPassword(inPwd);
-
-        Response response = userInterface.Login(data.getAccount(), data.getPassword());
-        if (response.isSuccess()) {
-            data.setLogin(true);
-            data.setName(response.getMessage());
-            if (isSave) {
-                configHelper.SetValue("account", data.getAccount());
-                configHelper.SetValue("password", data.getPassword());
-            }
-
-            return new Response(true, 0, R.string.success_login);
-        }
-
-        return new Response(false, 0, response.getMessage());
-    }
-
-    private String makeToken() {
-        String randomString = "abcdefghijklmnopqrstuvwxyz12345";
-        String token = "ifafu";
-        Random random = new Random(System.currentTimeMillis());
-        for (int i = 0; i < 19; i++) {
-            token += randomString.charAt(random.nextInt(randomString.length()));
-        }
-        return token;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public boolean isLogin() {
-        return data.isLogin();
+        return isLogin;
     }
 
-    public void updateData(UserData userData) throws IOException {
-        data          = userData;
-        userInterface = new UserInterface(configHelper.GetValue("host"), data.getToken());
+    public String getAccount() {
+        return account;
     }
 
-    public UserData getData() {
-        return data;
+    public String getPassword() {
+        return password;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    public void setLogin(boolean login) {
+        isLogin = login;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

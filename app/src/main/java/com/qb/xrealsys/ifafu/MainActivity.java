@@ -13,11 +13,10 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.qb.xrealsys.ifafu.delegate.LeftMenuClickedDelegate;
 import com.qb.xrealsys.ifafu.model.User;
-import com.qb.xrealsys.ifafu.model.UserData;
-
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements View.OnTouchListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnTouchListener, View.OnClickListener, LeftMenuClickedDelegate {
     /* if speed enough, slide complete */
     public static final int SNAP_VELOCITY = 100;
 
@@ -75,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     private TextView isOnline;
 
-    private User   currentUser;
+    private UserController currentUserController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,9 +86,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         InitClickListen();
         InitLeftController();
 
-        if (currentUser == null) {
+        if (currentUserController == null) {
             try {
-                currentUser = new User(this.getBaseContext());
+                currentUserController = new UserController(this.getBaseContext());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -100,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     protected void onStart() {
         super.onStart();
 
-        if (!currentUser.isLogin()) {
+        if (!currentUserController.isLogin()) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivityForResult(intent, 1000);
         } else {
@@ -172,13 +171,23 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         leftMenuController = new LeftMenuController(this, R.id.menuContent);
         leftMenuController.Make(leftMenuUnits, leftMenuTabs, leftMenuTabIcons);
+        leftMenuController.setClickedDelegate(this);
+    }
+
+    @Override
+    public void onTabClick(int tabIndex) {
+        switch (tabIndex) {
+            default:
+                Toast.makeText(this, "正在开发中...", Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 
     /**
      * Page Solver
      */
     private void updateActivity() {
-        UserData data = currentUser.getData();
+        User data = currentUserController.getData();
         updateNameAndNumber(data.getName(), data.getAccount());
         updateOnlineStatus(data.isLogin());
     }
@@ -215,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             switch (requestCode) {
                 case 1000:
                     try {
-                        currentUser.updateData((UserData) bundle.getSerializable("userObject"));
+                        currentUserController.updateData((User) bundle.getSerializable("userObject"));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

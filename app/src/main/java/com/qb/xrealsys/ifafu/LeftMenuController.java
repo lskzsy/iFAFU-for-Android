@@ -11,6 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.qb.xrealsys.ifafu.delegate.LeftMenuClickedDelegate;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,6 +32,8 @@ public class LeftMenuController implements View.OnClickListener {
     private List<Unit>              unitObjects;
 
     private Map<Integer, Integer>   tabMap;
+
+    private LeftMenuClickedDelegate clickedDelegate;
 
     public LeftMenuController(Activity inActivity, int id) {
         activity    = inActivity;
@@ -73,10 +77,14 @@ public class LeftMenuController implements View.OnClickListener {
         return TypedValue.applyDimension(unit, value, res.getDisplayMetrics());
     }
 
+    public void setClickedDelegate(LeftMenuClickedDelegate clickedDelegate) {
+        this.clickedDelegate = clickedDelegate;
+    }
+
     @Override
     public void onClick(View v) {
         Integer tabIndex = tabMap.get(v.getId());
-        Toast.makeText(activity, String.format("No.%d tab clicked.", tabIndex), Toast.LENGTH_SHORT).show();
+        clickedDelegate.onTabClick(tabIndex);
     }
 
     public class Unit {
