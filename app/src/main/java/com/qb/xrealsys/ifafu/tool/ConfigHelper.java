@@ -2,8 +2,8 @@ package com.qb.xrealsys.ifafu.tool;
 
 import android.content.Context;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
 
@@ -13,26 +13,41 @@ import java.util.Properties;
 
 public class ConfigHelper {
 
-    private Properties properties;
+    private Properties systemProperties;
+
+    private Properties userProperties;
 
     private Context    context;
 
     public ConfigHelper(Context inContext) throws IOException {
         context    = inContext;
-        properties = new Properties();
-        properties.load(context.getAssets().open("config.propertise"));
+        systemProperties = new Properties();
+        userProperties   = new Properties();
+
+        systemProperties.load(context.getAssets().open("config.properties"));
+        try {
+            InputStream fis = context.openFileInput("user.properties");
+            userProperties.load(fis);
+        } catch (IOException e) {
+            userProperties.load(context.getAssets().open("user.properties"));
+        }
+    }
+
+    public String GetSystemValue(String key) {
+        return systemProperties.getProperty(key);
     }
 
     public String GetValue(String key) {
-        return properties.getProperty(key);
+        return userProperties.getProperty(key);
     }
 
     public void SetValue(String key, String value) {
-        properties.setProperty(key, value);
+        userProperties.setProperty(key, value);
         OutputStream fos;
         try {
-            fos = context.openFileOutput("property.properties", Context.MODE_PRIVATE);
-            properties.store(fos, null);
+            fos = context.openFileOutput("user.properties", Context.MODE_PRIVATE);
+            userProperties.store(fos, null);
+            fos.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }

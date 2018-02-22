@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#ffffff"
+    android:layout_width="match_parent"
+    android:layout_height="60dp">
+    
+    <TextView
+        android:id="@+id/scoreItemTitle"
+        android:layout_marginStart="20dp"
+        android:textSize="20sp"
+        android:textColor="@color/colorGobalBlue"
+        android:gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/scoreItemIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="-65dp"
+        android:layout_toEndOf="@+id/scoreItemTitle"
+        android:src="@drawable/icon_pass" />
+    
+    <TextView
+        android:id="@+id/scoreItemValue"
+        android:layout_marginEnd="30dp"
+        android:layout_alignEnd="@id/scoreItemGo"
+        android:textSize="20sp"
+        android:textColor="@color/colorGobalBlue"
+        android:gravity="center_vertical|end"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/scoreItemGo"
+        android:layout_marginEnd="10dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/icon_go_black"
+        android:layout_width="wrap_content"
+        android:layout_height="15dp" />
+
+</RelativeLayout>

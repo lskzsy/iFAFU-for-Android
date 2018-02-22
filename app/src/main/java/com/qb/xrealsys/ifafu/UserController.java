@@ -34,7 +34,11 @@ public class UserController {
         data.setToken(makeToken());
 
         configHelper    = new ConfigHelper(context);
-        userInterface   = new UserInterface(configHelper.GetValue("host"), data.getToken());
+        userInterface   = new UserInterface(configHelper.GetSystemValue("host"), data.getToken());
+    }
+
+    public String getIndexUrl() {
+        return userInterface.getIndexUrl(data.getAccount());
     }
 
     public Response Login(String inAcc, String inPwd, boolean isSave) throws IOException {
@@ -72,10 +76,11 @@ public class UserController {
 
     public void updateData(User user) throws IOException {
         data          = user;
-        userInterface = new UserInterface(configHelper.GetValue("host"), data.getToken());
+        userInterface = new UserInterface(configHelper.GetSystemValue("host"), data.getToken());
     }
 
     public User getData() {
         return data;
     }
+
 }

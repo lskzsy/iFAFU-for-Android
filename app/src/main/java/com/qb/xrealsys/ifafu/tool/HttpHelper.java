@@ -1,5 +1,8 @@
 package com.qb.xrealsys.ifafu.tool;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,6 +53,25 @@ public class HttpHelper {
             mTimeout = timeout;
             mEncode  = encode;
         } catch (IOException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public Bitmap GetHttpGragh() throws IOException {
+        try {
+            Map<String, String> empty = new HashMap<>();
+            HttpURLConnection connection = (HttpURLConnection) mUrl.openConnection();
+            connection.setConnectTimeout(gDefaultConnectTimeout);
+            connection.setRequestMethod("GET");
+            connection.setDoInput(true);
+
+            //  Init connection
+            InitConnectionInf(connection, empty, mTimeout);
+
+            //  Get Response
+            return GetGraghResponse(connection);
+        } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
@@ -125,6 +147,35 @@ public class HttpHelper {
             e.printStackTrace();
             throw e;
         }
+    }
+
+    protected Bitmap GetGraghResponse(HttpURLConnection connection) throws IOException {
+        try {
+            int      code = connection.getResponseCode();
+            Bitmap bitmap = null;
+            if (code == 200) {
+                InputStream is = connection.getInputStream();
+
+                byte[] bytes = getBytes(is);
+                bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            }
+
+            return bitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    protected byte[] getBytes(InputStream is) throws IOException {
+        ByteArrayOutputStream outstream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int len = -1;
+        while ((len = is.read(buffer)) != -1) {
+            outstream.write(buffer, 0, len);
+        }
+        outstream.close();
+        return outstream.toByteArray();
     }
 
     protected HttpResponse GetResponse(HttpURLConnection connection,

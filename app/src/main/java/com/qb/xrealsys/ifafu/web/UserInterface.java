@@ -28,6 +28,10 @@ public class UserInterface extends WebInterface {
         super(inHost, inToken);
     }
 
+    public String getIndexUrl(String number) {
+        return accessUrlHead + "xs_main.aspx?xh=" + number;
+    }
+
     public Response Login(String account, String password) throws IOException {
         String accessUrl = accessUrlHead + LoginPage;
         if (!syncViewParams(accessUrl)) {

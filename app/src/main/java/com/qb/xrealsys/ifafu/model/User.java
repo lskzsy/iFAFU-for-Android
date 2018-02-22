@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by sky on 11/02/2018.
  */
 
-public class User implements Serializable {
+public class User extends Model implements Serializable {
 
     private String        name;
 
@@ -14,9 +14,39 @@ public class User implements Serializable {
 
     private String        password;
 
+    private String        institute;
+
+    private int           enrollment;
+
+    private String        clas;
+
     private String        token;
 
     private boolean       isLogin;
+
+    public int getEnrollment() {
+        return enrollment;
+    }
+
+    public String getClas() {
+        return clas;
+    }
+
+    public String getInstitute() {
+        return institute;
+    }
+
+    public void setInstitute(String institute) {
+        this.institute = institute;
+    }
+
+    public void setClas(String clas) {
+        this.clas = clas;
+    }
+
+    public void setEnrollment(int enrollment) {
+        this.enrollment = enrollment;
+    }
 
     public String getName() {
         return name;

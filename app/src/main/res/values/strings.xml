@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Ifafu</string>
+    <string name="app_name">iFAFU</string>
     <string name="app_signature">Copyright © 2018年 iFAFU. All rights reserved.</string>
 
     <string name="interface_login_title">福建农林大学教务管理系统</string>
@@ -7,13 +7,27 @@
 
     <string name="display_input_login_account">请输入学号</string>
     <string name="display_input_login_password">请输入密码</string>
+    <string name="display_score_view_bottom">-- 到底啦 --</string>
+    <string name="display_score_info_title1">课程性质</string>
+    <string name="display_score_info_title2">成绩详情</string>
 
     <string name="error_view_params_not_found">页面错误</string>
     <string name="error_system">系统错误</string>
 
     <string name="success_login">登录成功</string>
 
+    <string name="default_main_s_number">学号：</string>
+    <string name="default_main_s_institute">学院：</string>
+    <string name="default_main_s_enrollment">入学年份：</string>
+    <string name="default_main_s_clas">行政班：</string>
+    <string name="default_main_idcard">身份证号码：无信息</string>
     <string name="default_student_name">无名氏</string>
     <string name="default_student_number">3146016000</string>
     <string name="default_student_head">归墟</string>
+
+    <string name="format_study_time">%s学年第%s学期</string>
+    <string name="format_main_score_title">%s学年第%s学期学习成绩</string>
+    <string name="format_main_score_content">已出%d门，暂无新成绩</string>
+    <string name="format_main_score_content_new">已出%d门，有%d门成绩待查看，快去看看吧</string>
+    <string name="format_main_syllabus_title">%s学年第%s学期课表</string>
 </resources>

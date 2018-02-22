@@ -2,30 +2,56 @@ package com.qb.xrealsys.ifafu;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.qb.xrealsys.ifafu.delegate.LeftMenuClickedDelegate;
+import com.qb.xrealsys.ifafu.delegate.TitleBarButtonOnClickedDelegate;
+import com.qb.xrealsys.ifafu.delegate.UpdateMainScoreViewDelegate;
+import com.qb.xrealsys.ifafu.delegate.UpdateMainSyllabusViewDelegate;
+import com.qb.xrealsys.ifafu.delegate.UpdateMainUserViewDelegate;
+import com.qb.xrealsys.ifafu.model.Score;
+import com.qb.xrealsys.ifafu.model.ScoreTable;
+import com.qb.xrealsys.ifafu.model.Syllabus;
 import com.qb.xrealsys.ifafu.model.User;
+import com.qb.xrealsys.ifafu.tool.ConfigHelper;
+import com.qb.xrealsys.ifafu.tool.GlobalLib;
+import com.qb.xrealsys.ifafu.tool.OSSHelper;
+import com.qb.xrealsys.ifafu.web.ScoreInterface;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements View.OnTouchListener, View.OnClickListener, LeftMenuClickedDelegate {
+public class MainActivity extends AppCompatActivity
+        implements
+        View.OnTouchListener,
+        View.OnClickListener,
+        LeftMenuClickedDelegate,
+        UpdateMainUserViewDelegate,
+        UpdateMainScoreViewDelegate,
+        UpdateMainSyllabusViewDelegate,
+        TitleBarButtonOnClickedDelegate {
     /* if speed enough, slide complete */
     public static final int SNAP_VELOCITY = 100;
 
@@ -50,6 +76,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     /* calculating slide speed */
     private VelocityTracker mVelocityTracker;
 
+    private long firstClickBack;
+
     private int screenWidth;
 
     private boolean isMenuVisible;
@@ -62,19 +90,45 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     private LinearLayout.LayoutParams menuParams;
 
-    private Button headImg;
-
-    private TextView pageTitle;
-
-    private TextView pageSubTitle;
-
     private TextView bigHeadImg;
 
     private TextView studentNumber;
 
     private TextView isOnline;
 
+    private TextView mainUserNumber;
+
+    private TextView mainUserInstitute;
+
+    private TextView mainUserEnrollment;
+
+    private TextView mainUserClas;
+
+    private TextView mainScoreTitle;
+
+    private TextView mainScoreContent;
+
+    private TextView mainSyllabusTitle;
+
+    private LinearLayout mainScore;
+
     private UserController currentUserController;
+
+    private SyllabusController syllabusController;
+
+    private ScoreController scoreController;
+
+    private ConfigHelper configHelper;
+
+    private TitleBarController titleBarController;
+
+    private AdController adController;
+
+    private MainApplication mainApplication;
+
+    private boolean isWelcome;
+
+    private boolean isAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,15 +137,22 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         InitElements();
         InitLeftMenu();
-        InitClickListen();
         InitLeftController();
 
-        if (currentUserController == null) {
-            try {
+        mainApplication = (MainApplication) getApplicationContext();
+        isWelcome = true;
+        isAd      = false;
+
+        try {
+            if (currentUserController == null) {
                 currentUserController = new UserController(this.getBaseContext());
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+
+            if (configHelper == null) {
+                configHelper = new ConfigHelper(getBaseContext());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -99,29 +160,104 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     protected void onStart() {
         super.onStart();
 
+        if (isAd) {
+            isAd = false;
+            adController = new AdController(this, mainApplication.getOssHelper().getAd());
+        }
+
+        if (isWelcome) {
+            isWelcome = false;
+            isAd      = true;
+            Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
+            startActivity(intent);
+        }
+
+        InitClickListen();
+        firstClickBack = 0;
+
+        Bitmap background = mainApplication.getOssHelper().getBackground();
+        if (background != null) {
+            mainContent.setBackground(GlobalLib.BitmapToDrawable(this, background));
+        }
+
         if (!currentUserController.isLogin()) {
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivityForResult(intent, 1000);
+            final String defaultAccount  = configHelper.GetValue("account");
+            final String defaultPassword = configHelper.GetValue("password");
+
+            if (defaultAccount.equals("") && defaultPassword.equals("")) {
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivityForResult(intent, 1000);
+            } else {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                           currentUserController.Login(defaultAccount, defaultPassword, true);
+                           runOnUiThread(new Runnable() {
+                               @Override
+                               public void run() {
+                                   updateActivity();
+                               }
+                           });
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+            }
         } else {
             updateActivity();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
+            if (System.currentTimeMillis() - firstClickBack > 2000) {
+                Toast.makeText(this, "再次按下返回键退出程序", Toast.LENGTH_SHORT).show();
+                firstClickBack = System.currentTimeMillis();
+            }else{
+                finish();
+                System.exit(0);
+            }
+
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
 
     private void InitElements() {
         mainContent   = (LinearLayout) findViewById(R.id.mainContent);
         menu          = (LinearLayout) findViewById(R.id.leftMenu);
         menuParams    = (LinearLayout.LayoutParams) menu.getLayoutParams();
+        mainScore     = (LinearLayout) findViewById(R.id.mainScore);
 
-        headImg       = (Button) findViewById(R.id.headimg);
-        pageTitle     = (TextView) findViewById(R.id.pagetitle);
-        pageSubTitle  = (TextView) findViewById(R.id.subtitle);
-        bigHeadImg    = (TextView) findViewById(R.id.bigHeadImg);
-        studentNumber = (TextView) findViewById(R.id.studentNumber);
-        isOnline      = (TextView) findViewById(R.id.isOnline);
+        bigHeadImg       = (TextView) findViewById(R.id.bigHeadImg);
+        studentNumber    = (TextView) findViewById(R.id.studentNumber);
+        isOnline         = (TextView) findViewById(R.id.isOnline);
+
+        mainUserNumber     = (TextView) findViewById(R.id.main_user_number);
+        mainUserEnrollment = (TextView) findViewById(R.id.main_user_enrollment);
+        mainUserInstitute  = (TextView) findViewById(R.id.main_user_institute);
+        mainUserClas       = (TextView) findViewById(R.id.main_user_clas);
+        mainScoreTitle     = (TextView) findViewById(R.id.main_score_title);
+        mainScoreContent   = (TextView) findViewById(R.id.main_score_content);
+        mainSyllabusTitle  = (TextView) findViewById(R.id.main_syllabus_title);
     }
 
     private void InitClickListen() {
-        headImg.setOnClickListener(this);
+        mainScore.setOnClickListener(this);
     }
 
     private void InitLeftMenu() {
@@ -177,10 +313,48 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     @Override
     public void onTabClick(int tabIndex) {
         switch (tabIndex) {
+            case 0:
+                gotoScoreActivity();
+                break;
+            case 7:
+                gotoBrower("网页模式", currentUserController.getIndexUrl());
+                break;
+            case 8:
+                gotoBrower("iFAFU文件库", configHelper.GetSystemValue("iFAFUFileUrl"));
+                break;
             default:
                 Toast.makeText(this, "正在开发中...", Toast.LENGTH_SHORT).show();
                 break;
         }
+    }
+
+    private void updateData() {
+        try {
+            syllabusController.SyncData();
+            scoreController.SyncData();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Go to other activity
+     */
+    private void gotoScoreActivity() {
+        Intent intent = new Intent(MainActivity.this, ScoreActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("user", currentUserController.getData());
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    private void gotoBrower(String title, String url) {
+        Intent intent = new Intent(MainActivity.this, WebActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("pageTitle", title);
+        bundle.putString("loadUrl", url);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     /**
@@ -188,27 +362,136 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
      */
     private void updateActivity() {
         User data = currentUserController.getData();
+
+        syllabusController = new SyllabusController(data, configHelper);
+        syllabusController.setUpdateMainUserViewDelegate(this);
+        syllabusController.setUpdateMainSyllabusViewDelegate(this);
+        scoreController = new ScoreController(data, configHelper);
+        scoreController.setUpdateMainScoreViewDelegate(this);
+
+        titleBarController = new TitleBarController(MainActivity.this);
+        titleBarController
+                .setTwoLineTitle(
+                        data.getName(),
+                        data.isLogin() ? "在线" : "离线")
+                .setHeadImg(data.getName().substring(data.getName().length() - 2))
+                .setOnClickedListener(this);
+
         updateNameAndNumber(data.getName(), data.getAccount());
         updateOnlineStatus(data.isLogin());
+
+        updateData();
     }
 
     private void updateNameAndNumber(String name, String number) {
-        headImg.setText(name.substring(name.length() - 2));
-        pageTitle.setText(name);
         bigHeadImg.setText(name.substring(name.length() - 2));
         studentNumber.setText(number);
     }
 
     private void updateOnlineStatus(boolean online) {
         if (online) {
-            pageSubTitle.setText("在线");
             isOnline.setText("● 在线");
             isOnline.setTextColor(Color.parseColor("#52fb49"));
         } else {
-            pageSubTitle.setText("离线");
             isOnline.setText("● 离线");
             isOnline.setTextColor(Color.parseColor("#ff0000"));
         }
+    }
+
+    @Override
+    public void updateMainSyllabus(Syllabus syllabus) {
+        final Syllabus inSyllabus = syllabus;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mainSyllabusTitle.setText(
+                        String.format(Locale.getDefault(),
+                                getString(R.string.format_main_syllabus_title),
+                                inSyllabus.getSearchYearOptions().get(
+                                        inSyllabus.getSelectedYearOption()),
+                                inSyllabus.getSearchTermOptions().get(
+                                        inSyllabus.getSelectedTermOption())));
+            }
+        });
+    }
+
+    @Override
+    public void updateMainUser(User user) {
+        final User contentUser = user;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mainUserNumber.setText(
+                        String.format(Locale.getDefault(),"%s%s",
+                                getString(R.string.default_main_s_number),
+                                contentUser.getAccount()));
+                mainUserEnrollment.setText(
+                        String.format(Locale.getDefault(), "%s%d",
+                                getString(R.string.default_main_s_enrollment),
+                                contentUser.getEnrollment()));
+                mainUserInstitute.setText(
+                        String.format(Locale.getDefault(), "%s%s",
+                                getString(R.string.default_main_s_institute),
+                                contentUser.getInstitute()));
+                mainUserClas.setText(
+                        String.format(Locale.getDefault(), "%s%s",
+                                getString(R.string.default_main_s_clas),
+                                contentUser.getClas()));
+            }
+        });
+    }
+
+    @Override
+    public void updateMainScore(ScoreTable scoreTable) {
+        final ScoreTable inScoreTable = scoreTable;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                List<String> yearOptions = inScoreTable.getSearchYearOptions();
+                List<String> termOptions = inScoreTable.getSearchTermOptions();
+                mainScoreTitle.setText(
+                        String.format(Locale.getDefault(), getString(R.string.format_main_score_title),
+                                yearOptions.get(inScoreTable.getSelectedYearOption()),
+                                termOptions.get(inScoreTable.getSelectedTermOption())
+                        ));
+
+                List<Score> scoreList   = inScoreTable.getData();
+                int         scoreCount  = scoreList.size();
+                int         lastRead    = 0;
+
+                String lastReadScoreCount  = configHelper.GetValue("lastReadScoreCount");
+                if (lastReadScoreCount == null) {
+                    lastRead = 0;
+                } else {
+                    lastRead = Integer.parseInt(lastReadScoreCount);
+                }
+
+                if (scoreCount > lastRead) {
+                    mainScoreContent.setText(
+                            String.format(Locale.getDefault(),
+                                    getString(R.string.format_main_score_content_new),
+                                    scoreCount,
+                                    scoreCount - lastRead));
+                } else {
+                    mainScoreContent.setText(
+                            String.format(Locale.getDefault(),
+                                    getString(R.string.format_main_score_content),
+                                    scoreCount));
+                }
+//                configHelper.SetValue("lastReadScoreCount", String.valueOf(scoreCount));
+            }
+        });
+    }
+
+    @Override
+    public void updateError(String error) {
+        final String  errorMsg = error;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**
@@ -239,6 +522,15 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.mainScore:
+                gotoScoreActivity();
+                break;
+        }
+    }
+
+    @Override
+    public void titleBarOnClicked(int id) {
+        switch (id) {
             case R.id.headimg:
                 headImgClicked();
                 break;

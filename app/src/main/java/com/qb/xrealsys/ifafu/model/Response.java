@@ -6,7 +6,7 @@ import android.content.Context;
  * Created by sky on 10/02/2018.
  */
 
-public class Response {
+public class Response extends Model {
 
     private boolean success;
 

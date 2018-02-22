@@ -6,4 +6,7 @@
     <color name="colorLoginBlue">#5697E5</color>
     <color name="colorOnline">#52fb49</color>
     <color name="colorOffline">#ff0000</color>
+    <color name="colorGobalBlue">#157efb</color>
+    <color name="colorBackGray">#efeff4</color>
+    <color name="colorBackTitle">#777777</color>
 </resources>

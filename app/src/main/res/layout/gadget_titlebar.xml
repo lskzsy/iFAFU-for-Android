@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="50.0dip"
-    android:background="#157efb">
+    android:background="@color/colorGobalBlue">
 
     <Button
         android:id="@+id/headimg"
@@ -16,20 +16,43 @@
         android:textColor="#FFFFFF"
         android:text="@string/default_student_head" />
 
+    <Button
+        android:visibility="invisible"
+        android:id="@+id/headback"
+        android:layout_width="20.0dip"
+        android:layout_height="20.0dip"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="15dip"
+        android:background="@drawable/icon_back"
+        android:gravity="center_vertical|center_horizontal"
+        android:textColor="#FFFFFF" />
+
+
+    <TextView
+        android:visibility="invisible"
+        android:layout_centerInParent="true"
+        android:id="@+id/bigPageTitle"
+        android:textSize="20sp"
+        android:textColor="#ffffff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <LinearLayout
-        android:layout_width="100dp"
+        android:id="@+id/twoLinePageTitle"
+        android:layout_width="200dp"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:gravity="center"
         android:orientation="vertical"
+        android:layout_alignBottom="@+id/headimg"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_alignBottom="@+id/headimg">
+        android:layout_centerHorizontal="true">
 
         <TextView
             android:id="@+id/pagetitle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textSize="20dip"
+            android:textSize="20sp"
             android:textColor="#ffffff"
             android:gravity="center_vertical|center_horizontal"
             android:layout_weight="1"
@@ -45,7 +68,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#ffffff"
-                android:textSize="10dip"
+                android:textSize="12sp"
                 android:gravity="center_vertical|center_horizontal"
                 android:text="离线" />
         </LinearLayout>
