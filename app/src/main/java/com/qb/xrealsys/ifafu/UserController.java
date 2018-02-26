@@ -7,8 +7,14 @@ import com.qb.xrealsys.ifafu.model.User;
 import com.qb.xrealsys.ifafu.tool.ConfigHelper;
 import com.qb.xrealsys.ifafu.web.UserInterface;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
+import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 /**
@@ -17,7 +23,7 @@ import java.util.Random;
 
 public class UserController {
 
-    private User data;
+    private User          data;
 
     private UserInterface userInterface;
 
@@ -25,33 +31,66 @@ public class UserController {
 
     private ConfigHelper  configHelper;
 
+    private JSONObject    userList;
+
     public UserController(Context inContext) throws IOException {
         context         = inContext;
 
         data = new User();
 
         data.setLogin(false);
-        data.setToken(makeToken());
 
         configHelper    = new ConfigHelper(context);
-        userInterface   = new UserInterface(configHelper.GetSystemValue("host"), data.getToken());
+        userInterface   = new UserInterface(configHelper.GetSystemValue("host"), this);
+        try {
+            String userListStr = configHelper.GetValue("userList");
+            if (userListStr == null) {
+                userList = new JSONObject("{}");
+            } else {
+                userList = new JSONObject(userListStr);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getIndexUrl() {
         return userInterface.getIndexUrl(data.getAccount());
     }
 
+    public void ReLogin() {
+        try {
+            Login(data.getAccount(), data.getPassword(), true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public Response Login(String inAcc, String inPwd, boolean isSave) throws IOException {
         data.setAccount(inAcc);
         data.setPassword(inPwd);
+        data.setToken(makeToken());
 
         Response response = userInterface.Login(data.getAccount(), data.getPassword());
         if (response.isSuccess()) {
             data.setLogin(true);
             data.setName(response.getMessage());
             if (isSave) {
-                configHelper.SetValue("account", data.getAccount());
-                configHelper.SetValue("password", data.getPassword());
+                saveUserInfo(data.getAccount(), data.getPassword());
+
+                try {
+                    userList.getJSONObject(data.getAccount());
+                } catch (JSONException e) {
+                    try {
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("name", data.getName());
+                        jsonObject.put("password", data.getPassword());
+                        userList.put(data.getAccount(), jsonObject);
+                        configHelper.SetValue("userList", userList.toString());
+                    } catch (JSONException ee) {
+                        ee.printStackTrace();
+                    }
+                }
             }
 
             return new Response(true, 0, R.string.success_login);
@@ -76,11 +115,29 @@ public class UserController {
 
     public void updateData(User user) throws IOException {
         data          = user;
-        userInterface = new UserInterface(configHelper.GetSystemValue("host"), data.getToken());
+        userInterface = new UserInterface(configHelper.GetSystemValue("host"), this);
+    }
+
+    public JSONObject getUserList() {
+        return userList;
     }
 
     public User getData() {
         return data;
     }
 
+    public boolean clearUserInfo(String number) {
+        if (configHelper.GetValue("account").equals(number)) {
+            return false;
+        }
+
+        userList.remove(number);
+        configHelper.SetValue("userList", userList.toString());
+        return true;
+    }
+
+    public void saveUserInfo(String account, String password) {
+        configHelper.SetValue("account", account);
+        configHelper.SetValue("password", password);
+    }
 }

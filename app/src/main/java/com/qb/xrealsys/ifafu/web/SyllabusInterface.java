@@ -1,5 +1,6 @@
 package com.qb.xrealsys.ifafu.web;
 
+import com.qb.xrealsys.ifafu.UserController;
 import com.qb.xrealsys.ifafu.model.Course;
 import com.qb.xrealsys.ifafu.model.Model;
 import com.qb.xrealsys.ifafu.model.Syllabus;
@@ -22,15 +23,15 @@ public class SyllabusInterface extends WebInterface {
 
     private static final String SyllabusPage = "xskbcx.aspx";
 
-    public SyllabusInterface(String inHost, String inToken) throws IOException {
-        super(inHost, inToken);
+    public SyllabusInterface(String inHost, UserController userController) throws IOException {
+        super(inHost, userController);
     }
 
     public Map<String, Model> GetSyllabus(String number, String name) throws IOException {
         User        user            = new User();
         Syllabus    syllabus        = new Syllabus();
         Map<String, Model> answer   = new HashMap<>();
-        String      accessUrl = accessUrlHead + SyllabusPage;
+        String      accessUrl = makeAccessUrlHead() + SyllabusPage;
         accessUrl += "?xh=" + number;
         accessUrl += "&xm=" + URLEncoder.encode(name, "gbk");
         accessUrl += "&gnmkdm=" + "N121603";
@@ -44,6 +45,9 @@ public class SyllabusInterface extends WebInterface {
         }
 
         String  html     = response.getResponse();
+        if (!LoginedCheck(html)) {
+            return GetSyllabus(number, name);
+        }
         /* Get search option */
         getSearchOptions(html, syllabus, "id=\"xnd\"", "学年第");
 

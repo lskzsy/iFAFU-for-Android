@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#ffffff"
+    android:layout_width="match_parent"
+    android:layout_height="90dp">
+
+    <ImageView
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/examViewImageOne"
+        android:src="@drawable/icon_book"
+        android:layout_width="25dp"
+        android:layout_height="25dp" />
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:id="@+id/examViewItemTitle"
+        android:textSize="18sp"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:singleLine="true"
+        android:maxEms="12"
+        android:ellipsize="end"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@id/examViewImageOne"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp" />
+
+    <ImageView
+        android:id="@+id/examViewImageTwo"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="10dp"
+        android:src="@drawable/icon_time"
+        android:layout_width="20dp"
+        android:layout_height="20dp" />
+
+    <TextView
+        android:id="@+id/examViewItemTime"
+        android:textSize="13sp"
+        android:textColor="@color/colorGobalBlue"
+        android:gravity="center"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="5dp"
+        android:layout_width="wrap_content"
+        android:layout_toEndOf="@id/examViewImageTwo"
+        android:layout_height="20dp" />
+
+    <ImageView
+        android:id="@+id/examViewImageThree"
+        android:layout_toEndOf="@id/examViewItemTime"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="10dp"
+        android:src="@drawable/icon_location"
+        android:layout_width="20dp"
+        android:layout_height="20dp" />
+
+    <TextView
+        android:id="@+id/examViewItemLocation"
+        android:textSize="13sp"
+        android:textColor="@color/colorGobalBlue"
+        android:gravity="center"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="5dp"
+        android:layout_width="wrap_content"
+        android:layout_toEndOf="@id/examViewImageThree"
+        android:layout_height="20dp" />
+
+    <ImageView
+        android:id="@+id/examViewImageFour"
+        android:layout_toEndOf="@id/examViewItemLocation"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="10dp"
+        android:src="@drawable/icon_seat"
+        android:layout_width="20dp"
+        android:layout_height="20dp" />
+
+    <TextView
+        android:id="@+id/examViewItemSeat"
+        android:textSize="13sp"
+        android:textColor="@color/colorGobalBlue"
+        android:gravity="center"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="5dp"
+        android:layout_width="wrap_content"
+        android:layout_toEndOf="@id/examViewImageFour"
+        android:layout_height="20dp" />
+
+    <ImageView
+        android:id="@+id/examViewImageFive"
+        android:layout_marginTop="65dp"
+        android:layout_marginStart="10dp"
+        android:src="@drawable/icon_campus"
+        android:layout_width="20dp"
+        android:layout_height="20dp" />
+
+    <TextView
+        android:id="@+id/examViewItemCampus"
+        android:textSize="13sp"
+        android:textColor="@color/colorGobalBlue"
+        android:gravity="center"
+        android:layout_marginTop="65dp"
+        android:layout_marginStart="5dp"
+        android:layout_width="wrap_content"
+        android:layout_toEndOf="@id/examViewImageTwo"
+        android:layout_height="20dp" />
+
+    <ImageView
+        android:id="@+id/examViewImageSix"
+        android:layout_marginTop="65dp"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@id/examViewItemCampus"
+        android:src="@drawable/icon_exam_id"
+        android:layout_width="20dp"
+        android:layout_height="20dp" />
+
+    <TextView
+        android:id="@+id/examViewItemId"
+        android:textSize="12sp"
+        android:textColor="@color/colorGobalBlue"
+        android:gravity="center"
+        android:layout_marginTop="65dp"
+        android:layout_marginStart="5dp"
+        android:layout_width="wrap_content"
+        android:layout_toEndOf="@id/examViewImageSix"
+        android:layout_height="20dp" />
+
+    <LinearLayout
+        android:id="@+id/examViewItemProgressStroke"
+        android:background="@drawable/shape_red_stroke"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_alignParentEnd="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:id="@+id/examViewItemProgress"
+            android:textColor="#ff0000"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -12,17 +12,23 @@ public class OSSHelper {
 
     private String host;
 
+    private String key;
+
     private Bitmap background;
 
     private Bitmap ad;
 
-    public OSSHelper(String host) {
+    private String responsibility;
+
+    public OSSHelper(String host, String key) {
         this.host = host;
+        this.key  = key;
     }
 
     public void syncData() throws IOException {
         setBackground();
         setAd();
+        setResponsibility();
     }
 
     public void setBackground() throws IOException {
@@ -30,6 +36,13 @@ public class OSSHelper {
 
         HttpHelper request = new HttpHelper(accessUrl);
         background = request.GetHttpGragh();
+    }
+
+    public void setResponsibility() throws IOException {
+//        String accessUrl = host + "ifafuPrivacy.txt";
+
+//        HttpHelper request  = new HttpHelper(accessUrl);
+//        responsibility      = request.GetAES(this.key);
     }
 
     public void setAd() throws IOException {

@@ -12,18 +12,23 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.qb.xrealsys.ifafu.delegate.LeftMenuClickedDelegate;
+import com.qb.xrealsys.ifafu.delegate.ReplaceUserDelegate;
 import com.qb.xrealsys.ifafu.delegate.TitleBarButtonOnClickedDelegate;
 import com.qb.xrealsys.ifafu.delegate.UpdateMainScoreViewDelegate;
 import com.qb.xrealsys.ifafu.delegate.UpdateMainSyllabusViewDelegate;
 import com.qb.xrealsys.ifafu.delegate.UpdateMainUserViewDelegate;
+import com.qb.xrealsys.ifafu.dialog.AccountSettingDialog;
+import com.qb.xrealsys.ifafu.dialog.ProgressDialog;
 import com.qb.xrealsys.ifafu.model.Score;
 import com.qb.xrealsys.ifafu.model.ScoreTable;
 import com.qb.xrealsys.ifafu.model.Syllabus;
@@ -43,7 +48,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseActivity
         implements
         View.OnTouchListener,
         View.OnClickListener,
@@ -51,7 +56,8 @@ public class MainActivity extends AppCompatActivity
         UpdateMainUserViewDelegate,
         UpdateMainScoreViewDelegate,
         UpdateMainSyllabusViewDelegate,
-        TitleBarButtonOnClickedDelegate {
+        TitleBarButtonOnClickedDelegate,
+        ReplaceUserDelegate {
     /* if speed enough, slide complete */
     public static final int SNAP_VELOCITY = 100;
 
@@ -126,6 +132,10 @@ public class MainActivity extends AppCompatActivity
 
     private MainApplication mainApplication;
 
+    private AccountSettingDialog accountSettingDialog;
+
+    private ProgressDialog progressDialog;
+
     private boolean isWelcome;
 
     private boolean isAd;
@@ -143,17 +153,12 @@ public class MainActivity extends AppCompatActivity
         isWelcome = true;
         isAd      = false;
 
-        try {
-            if (currentUserController == null) {
-                currentUserController = new UserController(this.getBaseContext());
-            }
+        currentUserController = mainApplication.getUserController();
+        configHelper          = mainApplication.getConfigHelper();
+        scoreController       = mainApplication.getScoreController();
+        syllabusController    = new SyllabusController(currentUserController, configHelper);
 
-            if (configHelper == null) {
-                configHelper = new ConfigHelper(getBaseContext());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        progressDialog = new ProgressDialog(this);
     }
 
     @Override
@@ -170,6 +175,7 @@ public class MainActivity extends AppCompatActivity
             isAd      = true;
             Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
             startActivity(intent);
+            return;
         }
 
         InitClickListen();
@@ -186,7 +192,7 @@ public class MainActivity extends AppCompatActivity
 
             if (defaultAccount.equals("") && defaultPassword.equals("")) {
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivityForResult(intent, 1000);
+                startActivity(intent);
             } else {
                 new Thread(new Runnable() {
                     @Override
@@ -238,26 +244,26 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void InitElements() {
-        mainContent   = (LinearLayout) findViewById(R.id.mainContent);
-        menu          = (LinearLayout) findViewById(R.id.leftMenu);
+        mainContent   = findViewById(R.id.mainContent);
+        menu          = findViewById(R.id.leftMenu);
         menuParams    = (LinearLayout.LayoutParams) menu.getLayoutParams();
-        mainScore     = (LinearLayout) findViewById(R.id.mainScore);
+        mainScore     = findViewById(R.id.mainScore);
 
-        bigHeadImg       = (TextView) findViewById(R.id.bigHeadImg);
-        studentNumber    = (TextView) findViewById(R.id.studentNumber);
-        isOnline         = (TextView) findViewById(R.id.isOnline);
+        bigHeadImg       = findViewById(R.id.bigHeadImg);
+        studentNumber    = findViewById(R.id.studentNumber);
+        isOnline         = findViewById(R.id.isOnline);
 
-        mainUserNumber     = (TextView) findViewById(R.id.main_user_number);
-        mainUserEnrollment = (TextView) findViewById(R.id.main_user_enrollment);
-        mainUserInstitute  = (TextView) findViewById(R.id.main_user_institute);
-        mainUserClas       = (TextView) findViewById(R.id.main_user_clas);
-        mainScoreTitle     = (TextView) findViewById(R.id.main_score_title);
-        mainScoreContent   = (TextView) findViewById(R.id.main_score_content);
-        mainSyllabusTitle  = (TextView) findViewById(R.id.main_syllabus_title);
+        mainUserNumber     = findViewById(R.id.main_user_number);
+        mainUserEnrollment = findViewById(R.id.main_user_enrollment);
+        mainUserInstitute  = findViewById(R.id.main_user_institute);
+        mainUserClas       = findViewById(R.id.main_user_clas);
+        mainScoreTitle     = findViewById(R.id.main_score_title);
+        mainScoreContent   = findViewById(R.id.main_score_content);
+        mainSyllabusTitle  = findViewById(R.id.main_syllabus_title);
     }
 
     private void InitClickListen() {
-        mainScore.setOnClickListener(this);
+//        mainScore.setOnClickListener(this);
     }
 
     private void InitLeftMenu() {
@@ -278,7 +284,7 @@ public class MainActivity extends AppCompatActivity
             put("信息查询", Arrays.asList("成绩查询", "选修学分查询", "等级考试查询", "学生考试查询"));
             put("实用工具", Arrays.asList("我的课表", "一键评教", "选修课抢课", "网页模式", "文件库"));
             put("软件设置", Arrays.asList("账号管理", "免验证码", "启动密码"));
-            put("关于软件", Arrays.asList("关于iFAFU", "贡献名单", "使用帮助", "隐私条框与免责声明"));
+            put("关于软件", Arrays.asList("关于iFAFU", "贡献名单", "使用帮助", "隐私条款与免责声明"));
         }};
 
         Map<String, List<Integer>>  leftMenuTabIcons    = new HashMap<String, List<Integer>>() {{
@@ -316,11 +322,40 @@ public class MainActivity extends AppCompatActivity
             case 0:
                 gotoScoreActivity();
                 break;
+            case 1:
+                gotoElectiveScoreActivity();
+                break;
+            case 2:
+                Toast.makeText(
+                        this,
+                        getString(R.string.error_grade_exam_query),
+                        Toast.LENGTH_SHORT).show();
+                break;
+            case 3:
+                gotoExamActivity();
+                break;
+            case 4:
+                break;
             case 7:
                 gotoBrower("网页模式", currentUserController.getIndexUrl());
                 break;
             case 8:
                 gotoBrower("iFAFU文件库", configHelper.GetSystemValue("iFAFUFileUrl"));
+                break;
+            case 9:
+                AccountSetting();
+                break;
+            case 12:
+                gotoAboutActivity();
+                break;
+            case 14:
+                Toast.makeText(
+                        this,
+                        "暂无帮助信息！",
+                        Toast.LENGTH_SHORT).show();
+                break;
+            case 15:
+                gotoResponsibilityActivity();
                 break;
             default:
                 Toast.makeText(this, "正在开发中...", Toast.LENGTH_SHORT).show();
@@ -340,11 +375,55 @@ public class MainActivity extends AppCompatActivity
     /**
      * Go to other activity
      */
+    @Override
+    public void ReplaceUser() {
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        intent.putExtra("isKill", false);
+        startActivity(intent);
+    }
+
+    @Override
+    public void ReplaceUser(String account, String password) {
+        final String defaultAccount     = account;
+        final String defaultPassword    = password;
+
+        progressDialog.show("正在切换账号...");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    currentUserController.Login(defaultAccount, defaultPassword, true);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateActivity();
+                            progressDialog.cancel();
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void AccountSetting() {
+        accountSettingDialog = new AccountSettingDialog(this, this);
+        accountSettingDialog.show();
+    }
+
+    private void gotoResponsibilityActivity() {
+        Intent intent = new Intent(MainActivity.this, ResponsibilityActivity.class);
+        startActivity(intent);
+    }
+
+    private void gotoAboutActivity() {
+        Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+        startActivity(intent);
+    }
+
     private void gotoScoreActivity() {
         Intent intent = new Intent(MainActivity.this, ScoreActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("user", currentUserController.getData());
-        intent.putExtras(bundle);
         startActivity(intent);
     }
 
@@ -357,16 +436,24 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
+    private void gotoElectiveScoreActivity() {
+        Intent intent = new Intent(MainActivity.this, ElectiveScoreActivity.class);
+        startActivity(intent);
+    }
+
+    private void gotoExamActivity() {
+        Intent intent = new Intent(MainActivity.this, ExamActivity.class);
+        startActivity(intent);
+    }
+
     /**
      * Page Solver
      */
     private void updateActivity() {
         User data = currentUserController.getData();
 
-        syllabusController = new SyllabusController(data, configHelper);
         syllabusController.setUpdateMainUserViewDelegate(this);
         syllabusController.setUpdateMainSyllabusViewDelegate(this);
-        scoreController = new ScoreController(data, configHelper);
         scoreController.setUpdateMainScoreViewDelegate(this);
 
         titleBarController = new TitleBarController(MainActivity.this);
@@ -492,28 +579,6 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(MainActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    /**
-     * Callback Handler
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            Bundle bundle = data.getExtras();
-
-            switch (requestCode) {
-                case 1000:
-                    try {
-                        currentUserController.updateData((User) bundle.getSerializable("userObject"));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-            }
-        }
     }
 
     /**

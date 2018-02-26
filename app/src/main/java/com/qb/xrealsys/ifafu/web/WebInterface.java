@@ -3,7 +3,9 @@ package com.qb.xrealsys.ifafu.web;
 import android.app.Application;
 import android.util.Log;
 
+import com.qb.xrealsys.ifafu.LoginErrorException;
 import com.qb.xrealsys.ifafu.MainApplication;
+import com.qb.xrealsys.ifafu.UserController;
 import com.qb.xrealsys.ifafu.model.Search;
 import com.qb.xrealsys.ifafu.tool.HttpHelper;
 import com.qb.xrealsys.ifafu.tool.HttpResponse;
@@ -24,28 +26,26 @@ public class WebInterface {
 
     protected String host;
 
-    protected String token;
-
-    protected String accessUrlHead;
-
     protected String viewState;
 
     protected String viewStateGenerator;
 
-    public WebInterface(String inHost, String inToken) {
-        host          = inHost;
-        token         = inToken;
-        accessUrlHead = makeAccessUrlHead(host, token);
+    protected UserController userController;
+
+    public WebInterface(String inHost, UserController userController) {
+        this.userController = userController;
+        this.host           = inHost;
     }
 
     public Map<String, String> GetRefererHeader(String number) {
         Map<String, String> header = new HashMap<>();
-        header.put("Referer", accessUrlHead + "xs_main.aspx?xh=" + number);
+        header.put("Referer", makeAccessUrlHead() + "xs_main.aspx?xh=" + number);
         return header;
     }
 
-    private String makeAccessUrlHead(String h, String t) {
-        return String.format(Locale.getDefault(), "%s/(%s)/", h, t);
+    protected String makeAccessUrlHead() {
+        String token = userController.getData().getToken();
+        return String.format(Locale.getDefault(), "%s/(%s)/", host, token);
     }
 
     protected void getSearchOptions(
@@ -79,6 +79,14 @@ public class WebInterface {
         }
     }
 
+    protected boolean LoginedCheck(String html) {
+        if (html.indexOf("请登录") > 0) {
+            userController.ReLogin();
+            return false;
+        }
+        return true;
+    }
+
     protected boolean syncViewParams(String url) throws IOException {
         HttpHelper   request  = new HttpHelper(url);
         HttpResponse response = request.Get();
@@ -106,6 +114,22 @@ public class WebInterface {
             return true;
         } else {
             return false;
+        }
+    }
+
+    protected float getRealFloatData(String srcData) {
+        if (srcData.equals("&nbsp;")) {
+            return (float) 0.0;
+        } else {
+            return Float.parseFloat(srcData);
+        }
+    }
+
+    protected String getRealStringData(String srcData) {
+        if (srcData.equals("&nbsp;")) {
+            return "";
+        } else {
+            return srcData;
         }
     }
 }

@@ -2,6 +2,7 @@ package com.qb.xrealsys.ifafu.tool;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class HttpHelper {
 
     protected static String gDefaultEncode         = "utf-8";
 
-    protected static int    gDefaultTimeout        = 10000;
+    protected static int    gDefaultTimeout        = 30000;
 
     protected static int    gDefaultConnectTimeout = 3000;
 
@@ -52,6 +53,25 @@ public class HttpHelper {
             mUrl     = new URL(urlString);
             mTimeout = timeout;
             mEncode  = encode;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public String GetAES(String key) throws IOException {
+        try {
+            Map<String, String> empty = new HashMap<>();
+            HttpURLConnection connection = (HttpURLConnection) mUrl.openConnection();
+            connection.setConnectTimeout(gDefaultConnectTimeout);
+            connection.setRequestMethod("GET");
+            connection.setDoInput(true);
+
+            //  Init connection
+            InitConnectionInf(connection, empty, mTimeout);
+
+            //  Get Response
+            return GetAESResponse(connection, key);
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
@@ -161,6 +181,25 @@ public class HttpHelper {
             }
 
             return bitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    protected String GetAESResponse(HttpURLConnection connection, String key) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            int      code = connection.getResponseCode();
+            String   answer = null;
+            if (code == 200) {
+                InputStream is = connection.getInputStream();
+
+                answer = AES.decrypt(Base64.decode(
+                        Base64.encode(getBytes(is), Base64.DEFAULT), Base64.DEFAULT), key);
+            }
+
+            return answer;
         } catch (IOException e) {
             e.printStackTrace();
             throw e;

@@ -7,19 +7,6 @@ import java.util.List;
  * Created by sky on 11/02/2018.
  */
 
-public class Syllabus extends Search {
+public class Syllabus extends Table<Course> {
 
-    private List<Course> data;
-
-    public Syllabus() {
-        data = new ArrayList<>();
-    }
-
-    public void append(Course course) {
-        data.add(course);
-    }
-
-    public List<Course> getData() {
-        return data;
-    }
 }

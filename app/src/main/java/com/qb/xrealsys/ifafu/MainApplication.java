@@ -13,9 +13,17 @@ import java.io.IOException;
 
 public class MainApplication extends Application {
 
-    private OSSHelper    ossHelper;
+    private OSSHelper       ossHelper;
 
-    private ConfigHelper configHelper;
+    private ConfigHelper    configHelper;
+
+    private UserController  userController;
+
+    private ScoreController scoreController;
+
+    private ExamController  examController;
+
+    private boolean         isActive;
 
     private static MainApplication instance = null;
 
@@ -28,17 +36,43 @@ public class MainApplication extends Application {
         super.onCreate();
 
         try {
-            if (configHelper == null) {
-                configHelper = new ConfigHelper(getBaseContext());
-            }
-
-            ossHelper = new OSSHelper(configHelper.GetSystemValue("ossHost"));
+            userController  = new UserController(getBaseContext());
+            configHelper    = new ConfigHelper(getBaseContext());
+            ossHelper       = new OSSHelper(
+                    configHelper.GetSystemValue("ossHost"),
+                    configHelper.GetSystemValue("ossKey"));
+            scoreController = new ScoreController(userController, configHelper);
+            examController  = new ExamController(userController, configHelper);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
     public OSSHelper getOssHelper() {
         return ossHelper;
+    }
+
+    public UserController getUserController() {
+        return userController;
+    }
+
+    public ConfigHelper getConfigHelper() {
+        return configHelper;
+    }
+
+    public ScoreController getScoreController() {
+        return scoreController;
+    }
+
+    public ExamController getExamController() {
+        return examController;
     }
 }

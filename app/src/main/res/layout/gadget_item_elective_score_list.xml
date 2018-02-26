@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#ffffff"
+    android:layout_width="match_parent"
+    android:layout_height="50dp">
+
+    <ImageView
+        android:id="@+id/electiveScoreListItemIcon"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_width="39dp"
+        android:layout_height="25dp" />
+
+    <TextView
+        android:id="@+id/electiveScoreListItemTitle"
+        android:textColor="@color/colorGobalBlue"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="18dp"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/electiveScoreListItemScore"
+        android:layout_marginEnd="15dp"
+        android:layout_toStartOf="@id/electiveScoreListItemStatus"
+        android:textColor="@color/colorGobalBlue"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/electiveScoreListItemStatus"
+        android:src="@drawable/icon_red"
+        android:layout_marginEnd="35dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_width="10dp"
+        android:layout_height="10dp" />
+    
+    <ImageView
+        android:layout_marginEnd="10dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/icon_go_black"
+        android:layout_width="15dp"
+        android:layout_height="15dp" />
+
+</RelativeLayout>

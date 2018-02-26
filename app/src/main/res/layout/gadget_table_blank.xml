@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/noDataView"
+    android:layout_centerInParent="true"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:src="@drawable/drawable_nodata"
+        android:layout_width="200dp"
+        android:layout_height="200dp" />
+    <TextView
+        android:textColor="@color/colorGobalBlue"
+        android:layout_marginTop="-20dp"
+        android:textSize="20sp"
+        android:text="空空如也~"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

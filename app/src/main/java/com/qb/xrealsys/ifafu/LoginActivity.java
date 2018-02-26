@@ -13,38 +13,50 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.qb.xrealsys.ifafu.dialog.ProgressDialog;
 import com.qb.xrealsys.ifafu.model.Response;
 import com.qb.xrealsys.ifafu.tool.GlobalLib;
 
 import java.io.IOException;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends BaseActivity implements View.OnClickListener {
+
+    private MainApplication mainApplication;
 
     private UserController currentUserController;
 
-    private Button   loginBtn;
+    private Button          loginBtn;
 
-    private EditText loginAccount;
+    private EditText        loginAccount;
 
-    private EditText loginPassword;
+    private EditText        loginPassword;
 
-    private Toast    progressToast;
+    private ImageView       loginFinishBtn;
+
+    private boolean         isKill;
+
+    private ProgressDialog  progressToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        loginBtn        = (Button) findViewById(R.id.loginBtn);
-        loginAccount    = (EditText) findViewById(R.id.loginAccount);
-        loginPassword   = (EditText) findViewById(R.id.loginPassword);
+        loginBtn        = findViewById(R.id.loginBtn);
+        loginAccount    = findViewById(R.id.loginAccount);
+        loginPassword   = findViewById(R.id.loginPassword);
+        loginFinishBtn  = findViewById(R.id.loginFinishBtn);
 
+        loginFinishBtn.setOnClickListener(this);
         loginBtn.setOnClickListener(this);
         initProgress();
-        try {
-            currentUserController = new UserController(this.getBaseContext());
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        mainApplication = (MainApplication) getApplication();
+        currentUserController = mainApplication.getUserController();
+
+        isKill = getIntent().getBooleanExtra("isKill", true);
+        if (!isKill) {
+            loginFinishBtn.setVisibility(View.VISIBLE);
         }
     }
 
@@ -52,7 +64,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onDestroy() {
         super.onDestroy();
 
-        if (!currentUserController.isLogin()) {
+        if (isKill && !currentUserController.isLogin()) {
             System.exit(0);
         }
     }
@@ -67,6 +79,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.loginBtn:
                 loginAction();
+                break;
+            case R.id.loginFinishBtn:
+                if (!isKill) {
+                    finish();
+                }
                 break;
         }
     }
@@ -102,19 +119,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initProgress() {
-        progressToast = Toast.makeText(getBaseContext(), "正在验证...", Toast.LENGTH_LONG);
-        progressToast.setGravity(Gravity.CENTER, 0, 0);
-        LinearLayout toastView = (LinearLayout) progressToast.getView();
-        ImageView imageCodeProject = new ImageView(getApplicationContext());
-        imageCodeProject.setLayoutParams(new LinearLayout.LayoutParams(
-                (int) GlobalLib.GetRawSize(this, TypedValue.COMPLEX_UNIT_DIP, 50),
-                (int) GlobalLib.GetRawSize(this, TypedValue.COMPLEX_UNIT_DIP, 50)
-        ));
-        imageCodeProject.setImageResource(R.drawable.icon_runelective);
-        toastView.addView(imageCodeProject, 0);
+        progressToast = new ProgressDialog(this);
     }
 
     private void displayProgress() {
-        progressToast.show();
+        progressToast.show("正在验证...");
     }
 }

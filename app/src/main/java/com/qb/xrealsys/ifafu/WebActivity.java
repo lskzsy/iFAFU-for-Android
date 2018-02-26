@@ -1,5 +1,6 @@
 package com.qb.xrealsys.ifafu;
 
+import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,18 +17,23 @@ import com.qb.xrealsys.ifafu.delegate.TitleBarButtonOnClickedDelegate;
 
 import java.io.IOException;
 
-public class WebActivity extends AppCompatActivity implements TitleBarButtonOnClickedDelegate {
+public class WebActivity extends BaseActivity implements TitleBarButtonOnClickedDelegate {
 
-    private WebView        webView;
+    private WebView                 webView;
 
-    private String         loadUrl;
+    private String                  loadUrl;
 
-    private TitleBarController titleBarController;
+    private TitleBarController      titleBarController;
+
+    private LodingViewController    lodingViewController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web);
+
+        lodingViewController = new LodingViewController(this);
+        lodingViewController.show();
 
         webView = (WebView) findViewById(R.id.webView);
         webView.setWebViewClient(new WebViewClient() {
@@ -37,11 +43,24 @@ public class WebActivity extends AppCompatActivity implements TitleBarButtonOnCl
                 view.loadUrl(request.getUrl().toString());
                 return true;
             }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+
+                lodingViewController.cancel();
+            }
         });
 
         setWebViewSetting();
         getStartUpParams();
     }
+
 
     @Override
     protected void onStart() {

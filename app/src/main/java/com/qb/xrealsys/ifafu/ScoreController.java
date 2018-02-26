@@ -1,15 +1,17 @@
 package com.qb.xrealsys.ifafu;
 
+import com.qb.xrealsys.ifafu.delegate.UpdateElectiveTargetScoreDelegate;
 import com.qb.xrealsys.ifafu.delegate.UpdateMainScoreViewDelegate;
 import com.qb.xrealsys.ifafu.model.Score;
 import com.qb.xrealsys.ifafu.model.ScoreTable;
-import com.qb.xrealsys.ifafu.model.User;
 import com.qb.xrealsys.ifafu.tool.ConfigHelper;
 import com.qb.xrealsys.ifafu.tool.GlobalLib;
 import com.qb.xrealsys.ifafu.web.ScoreInterface;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sky on 14/02/2018.
@@ -17,23 +19,53 @@ import java.util.List;
 
 public class ScoreController {
 
-    private ScoreTable scoreTable;
+    private ScoreTable                          scoreTable;
 
-    private User user;
+    private UserController                      userController;
 
-    private ConfigHelper configHelper;
+    private ConfigHelper                        configHelper;
 
-    private ScoreInterface scoreInterface;
+    private ScoreInterface                      scoreInterface;
 
-    private UpdateMainScoreViewDelegate updateMainScoreViewDelegate;
+    private Map<String, Float>                  electiveTargetScore;
 
-    public ScoreController(User user, ConfigHelper configHelper) {
-        this.user           = user;
+    private UpdateMainScoreViewDelegate         updateMainScoreViewDelegate;
+
+    private UpdateElectiveTargetScoreDelegate   updateElectiveTargetScoreDelegate;
+
+    public ScoreController(UserController userController, ConfigHelper configHelper) {
+        this.userController = userController;
         this.configHelper   = configHelper;
         this.scoreTable     = new ScoreTable();
         this.scoreInterface = new ScoreInterface(
-                configHelper.GetSystemValue("host"),
-                user.getToken());
+                this.configHelper.GetSystemValue("host"),
+                userController);
+        this.electiveTargetScore = null;
+    }
+
+    public void SyncElectiveScore() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (electiveTargetScore == null) {
+                        electiveTargetScore = scoreInterface.GetElectiveTargetScore(
+                                userController.getData().getAccount(),
+                                userController.getData().getName());
+                    }
+                    scoreTable.setData(scoreInterface.updateScoreTable(
+                            userController.getData().getAccount(),
+                            userController.getData().getName(),
+                            scoreTable.getSearchYearOptions().get(0),
+                            scoreTable.getSearchTermOptions().get(0)
+                    ));
+
+                    updateElectiveTargetScoreDelegate.UpdatedElectiveTargetScore();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     public void SyncData(int year, int term) throws IOException {
@@ -46,17 +78,16 @@ public class ScoreController {
             @Override
             public void run() {
                 try {
-                    scoreInterface.updateScoreTable(
-                            scoreTable,
-                            user.getAccount(),
-                            user.getName(),
-                            y, t);
+                    scoreTable.setData(scoreInterface.updateScoreTable(
+                            userController.getData().getAccount(),
+                            userController.getData().getName(),
+                            y, t));
                     updateMainScoreViewDelegate.updateMainScore(scoreTable);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-        }).start();;
+        }).start();
     }
 
     public void SyncData() throws IOException {
@@ -64,7 +95,9 @@ public class ScoreController {
             @Override
             public void run() {
                 try {
-                    scoreTable = scoreInterface.GetScoreTable(user.getAccount(), user.getName());
+                    scoreTable = scoreInterface.GetScoreTable(
+                            userController.getData().getAccount(),
+                            userController.getData().getName());
                     updateMainScoreViewDelegate.updateMainScore(scoreTable);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -77,6 +110,23 @@ public class ScoreController {
         return this.scoreTable;
     }
 
+    public List<Score> GetElectiveData() {
+        List<Score> scoreList       = scoreTable.getData();
+        List<Score> electiveData    = new ArrayList<>();
+
+        try {
+            for (Score score: scoreList) {
+                if (GlobalLib.CompareUtfWithGbk("任意选修课", score.getCourseType())) {
+                    electiveData.add(score);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return electiveData;
+    }
+
     public void SetScoreTableData(List<Score> scoreList) {
         scoreTable.setData(scoreList);
     }
@@ -84,6 +134,15 @@ public class ScoreController {
     public void setUpdateMainScoreViewDelegate(
             UpdateMainScoreViewDelegate updateMainScoreViewDelegate) {
         this.updateMainScoreViewDelegate = updateMainScoreViewDelegate;
+    }
+
+    public void setUpdateElectiveTargetScoreDelegate(
+            UpdateElectiveTargetScoreDelegate updateElectiveTargetScoreDelegate) {
+        this.updateElectiveTargetScoreDelegate = updateElectiveTargetScoreDelegate;
+    }
+
+    public Map<String, Float> getElectiveTargetScore() {
+        return electiveTargetScore;
     }
 
     public float calculateIntellectualEducationScore() throws IOException {

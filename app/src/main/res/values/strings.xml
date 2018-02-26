@@ -1,18 +1,38 @@
 <resources>
     <string name="app_name">iFAFU</string>
+    <string name="app_sub_name">For Android V%s</string>
     <string name="app_signature">Copyright © 2018年 iFAFU. All rights reserved.</string>
 
     <string name="interface_login_title">福建农林大学教务管理系统</string>
     <string name="interface_login_button">登录</string>
 
+    <string name="display_text">八嘎呀路\nbaka！！！</string>
+    <string name="display_about_1">基于福建农林大学教务管理系统</string>
+    <string name="display_about_2">①&#160;iFAFU是一款基于福建农林大学教务管理系统的，用于提供更加便捷的操作，拓展更多功能的应用程序。\n\n
+        ②&#160;iFAFU所有数据获取和操作都是正常的符合规范的行为，iFAFU于教务管理系统而言并非意图“入侵”或是“破解”的程序，而是渴望为使用教务管理系统的用户提供更加友好便捷的访问方式的应用程序。\n\n
+        ③&#160;安卓版iFAFU离不开一些开源项目，它们减少了不少的开发时间，包括okHttp，Android-pickerview；同样离不开www.iconfont.cn，iFAFU大多数原始或是处理前的图标资源来源于此，这对于一个只会使用PS但是对图标设计茫然的开发者来说是莫大的福音。在此深表崇敬和感激之情。\n\n
+        ④&#160;iFAFU的成长离不开iFAFU的使用者，您信任并且使用iFAFU，iFAFU同样会竭尽全力提供更加完善友好的使用体验，若您对于iFAFU有任何意见和建议，例如页面的调整，使用过程中的BUG，期待的新功能等，可以联系开发者：RealSys，您可以发送邮件至admin@skysy.cn，欢迎加入iFAFU意见反馈群：663114635。由衷感谢您的使用和支持！</string>
+    <string name="display_responsibility">1.您的账号和密码为本地存储，并且是加密的，iFAFU不会在任何情况下尝试将您的账号和密码提交到jwgl.fafu.edu以外的地方。\n2.iFAFU可能会将您的设备标识等上传至iFAFU服务器，您的设备标识是加密的，并且此加密过程不可逆，iFAFU不会将其用于统计已安装的用户的数量之外的其他用途。\n3.iFAFU的所有请求均提交到jwgl.fafu.edu，除了下列请求之外：a.请求验证软件更新；b.请求验证是否有新通知；c.请求用户权限判定（此请求不会提交您的任何用户信息，仅获取“有更高权限”的用户列表来判定）d.其他一些用于控制程序或是显示信息并且不涉及用户隐私的请求。\n4.iFAFU会尽最大可能保护您的隐私，iFAFU也会采取手段尝试阻止恶意的对iFAFU的反编译或逆向破解等行为，但不代表所以您下载的并且可以正常运行的iFAFU均未被恶意注入代码，因此请勿下载未知来源的iFAFU。\n5.iFAFU所查询的数据均来自jwgl.fafu.edu，iFAFU不对数据的准确性负责，此外由于jwgl.fafu.edu与iFAFU并非合作开发，iFAFU仅负责提交相应请求，处理对应数据，因此服务器代码更改对iFAFU的数据处理准确性等可能有重大影响，此外不同账号，不同时期返回的数据纷繁复杂，具有很大的不可预测性，还有开发者本身的失误等诸多因素影响，iFAFU无法保证数据处理的准确性，因此iFAFU的一切数据仅供参考，不具备任何效力！\n6.iFAFU是非营利性的，设计初衷也是为了帮助许多受教务系统网页端困恼，希望以更快更简便的方式获取更有用的数据，减少不必要的操作行为的用户。iFAFU承诺不会在程序中插入、推送任何商业性质的广告，不会向用户收取任何费用，不会泄露用户的任何隐私，区别普通用户和VIP用户仅用于控制iFAFU抢课功能的权限，此限制是为了避免大规模的使用iFAFU恶意囤课，卖课的行为，您可以向开发者申请授权，此授权也是免费的。iFAFU承诺不以任何方式盈利，也希望用户不能使用iFAFU中的任何功能向他人收取任何费用。\n7.iFAFU尚有很多不足之处，iFAFU的成长离不开很多充满善意的希望iFAFU越变越好的小伙伴们，若您在使用过程中发现任何BUG或是有任何意见和建议都可以联系我，若您的建议被采纳，将会显示在“鸣谢”列表之中，在此对您的使用和支持深表感激。\n8.以上内容对您的权益和iFAFU都极为重要，请仔细查看，若您开始使用本程序即代表您同意以上内容，若您对以上内容有异议，请停用本程序，若您愿意，欢迎随时联系我，告知我们不当之处，我会在核实后对以上内容作出对应调整，感谢您的理解和支持。\n-充满诚意的 RealSys&#38;照相\n2018.02.24</string>
     <string name="display_input_login_account">请输入学号</string>
     <string name="display_input_login_password">请输入密码</string>
     <string name="display_score_view_bottom">-- 到底啦 --</string>
     <string name="display_score_info_title1">课程性质</string>
     <string name="display_score_info_title2">成绩详情</string>
+    <string name="display_elective_score_all">总学分</string>
+    <string name="display_elective_score_nature">自然科学类</string>
+    <string name="display_elective_score_social">人文社科类</string>
+    <string name="display_elective_score_art">艺术、体育类</string>
+    <string name="display_elective_score_letter">文学素养类</string>
+    <string name="display_elective_score_innovate">创新创业教育类</string>
+    <string name="display_dialog_cancel">取消</string>
+    <string name="display_dialog_account_setting_title">选择需要操作的账号</string>
 
     <string name="error_view_params_not_found">页面错误</string>
     <string name="error_system">系统错误</string>
+    <string name="error_elective_score_list">该分类暂无课程！</string>
+    <string name="error_grade_exam_query">暂不支持查看，请至"网页模式-信息查询-等级考试查询"中查看</string>
+    <string name="error_reject_option">iFAFU拒绝了此操作，原因：%s</string>
+    <string name="error_clear_user">此账号为当前登录账号，不允许清除</string>
 
     <string name="success_login">登录成功</string>
 
@@ -24,10 +44,16 @@
     <string name="default_student_name">无名氏</string>
     <string name="default_student_number">3146016000</string>
     <string name="default_student_head">归墟</string>
+    <string name="default_running">加载中…</string>
 
     <string name="format_study_time">%s学年第%s学期</string>
     <string name="format_main_score_title">%s学年第%s学期学习成绩</string>
     <string name="format_main_score_content">已出%d门，暂无新成绩</string>
     <string name="format_main_score_content_new">已出%d门，有%d门成绩待查看，快去看看吧</string>
     <string name="format_main_syllabus_title">%s学年第%s学期课表</string>
+    <string name="format_subtitle_for_user">%s(%s)</string>
+    <string name="format_elective_score_item_title">%s(%s)-已修%d门</string>
+    <string name="format_elective_score_item_title_content">需满%s分</string>
+    <string name="format_clear_user">您确定要清除账号%s存在本机的账号的密码数据吗？此操作是不可逆的。</string>
+    <string name="format_user_manager_switch_user">你选择了账号:%s\n请选择需要进行的操作</string>
 </resources>

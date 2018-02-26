@@ -21,16 +21,19 @@ public class SyllabusController {
 
     private User            user;
 
+    private UserController  userController;
+
     private ConfigHelper    configHelper;
 
     private UpdateMainUserViewDelegate updateMainUserViewDelegate;
 
     private UpdateMainSyllabusViewDelegate updateMainSyllabusViewDelegate;
 
-    public SyllabusController(User user, ConfigHelper configHelper) {
-        this.user         = user;
-        this.syllabus     = new Syllabus();
-        this.configHelper = configHelper;
+    public SyllabusController(UserController userController, ConfigHelper configHelper) {
+        this.userController = userController;
+        this.user           = userController.getData();
+        this.syllabus       = new Syllabus();
+        this.configHelper   = configHelper;
     }
 
     public void SyncData() throws IOException {
@@ -40,8 +43,7 @@ public class SyllabusController {
                 try {
                     SyllabusInterface syllabusInterface = new SyllabusInterface(
                             configHelper.GetSystemValue("host"),
-                            user.getToken()
-                    );
+                            userController);
                     Map<String, Model> answer = syllabusInterface.GetSyllabus(user.getAccount(), user.getName());
                     if (answer == null) {
                         updateMainUserViewDelegate.updateError("获取失败");

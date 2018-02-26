@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_login"
     tools:context="com.qb.xrealsys.ifafu.LoginActivity">
+
+    <ImageView
+        android:visibility="invisible"
+        android:id="@+id/loginFinishBtn"
+        android:src="@drawable/icon_down"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:layout_alignParentEnd="true"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
 
     <LinearLayout
         android:layout_marginTop="60dp"

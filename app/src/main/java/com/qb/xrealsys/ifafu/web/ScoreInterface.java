@@ -1,5 +1,7 @@
 package com.qb.xrealsys.ifafu.web;
 
+import com.qb.xrealsys.ifafu.LoginErrorException;
+import com.qb.xrealsys.ifafu.UserController;
 import com.qb.xrealsys.ifafu.model.Score;
 import com.qb.xrealsys.ifafu.model.ScoreTable;
 import com.qb.xrealsys.ifafu.tool.GlobalLib;
@@ -8,6 +10,7 @@ import com.qb.xrealsys.ifafu.tool.HttpResponse;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,17 +25,18 @@ public class ScoreInterface extends WebInterface {
 
     private String ScorePage = "xscjcx_dq.aspx";
 
-    public ScoreInterface(String inHost, String inToken) {
-        super(inHost, inToken);
+    private String TrainningPlanPage = "pyjh.aspx";
+
+    public ScoreInterface(String inHost, UserController userController) {
+        super(inHost, userController);
     }
 
-    public void updateScoreTable(
-            ScoreTable scoreTable,
+    public List<Score> updateScoreTable(
             String number,
             String name,
             final String year,
             final String term) throws IOException {
-        String accessUrl = accessUrlHead + ScorePage;
+        String accessUrl = makeAccessUrlHead() + ScorePage;
         accessUrl += "?xh=" + number;
         accessUrl += "&xm=" + URLEncoder.encode(name, "gbk");
         accessUrl += "&gnmkdm=" + "N121605";
@@ -50,18 +54,65 @@ public class ScoreInterface extends WebInterface {
         }};
         HttpHelper request = new HttpHelper(accessUrl, "gbk");
         HttpResponse response = request.Post(header, postData, false);
+        List<Score> scoreList = new ArrayList<>();
         if (response.getStatus() == 200) {
             String html = response.getResponse();
-            List<Score> scoreList = scoreTable.getData();
-            scoreList.clear();
+            if (!LoginedCheck(html)) {
+                return updateScoreTable(number, name, year, term);
+            }
+
             analysisScore(html, scoreList);
         }
+        return scoreList;
+    }
+
+    public Map<String, Float> GetElectiveTargetScore(
+            String number, String name) throws IOException {
+        Map<String, Float> answer = new HashMap<>();
+
+        String accessUrl = makeAccessUrlHead() + TrainningPlanPage;
+        accessUrl += "?xh=" + number;
+        accessUrl += "&xm=" + URLEncoder.encode(name, "gbk");
+        accessUrl += "&gnmkdm=" + "N121607";
+
+        Map<String, String> header = GetRefererHeader(number);
+        HttpHelper request  = new HttpHelper(accessUrl, "gbk");
+        HttpResponse response = request.Get(header);
+
+        if (response.getStatus() != 200) {
+            return null;
+        }
+
+        String html = response.getResponse();
+        if (!LoginedCheck(html)) {
+            return GetElectiveTargetScore(number, name);
+        }
+
+        int oneStrBegin = html.indexOf("\"DataGrid4");
+        int oneStrEnd   = html.indexOf("<td>自然科学类</td>");
+        String oneStr   = html.substring(oneStrBegin, oneStrEnd);
+        String twoStr   = html.substring(oneStrEnd);
+        Pattern pattern = Pattern.compile("<td>(.*)</td><td>(.*)</td>");
+        Matcher matcher = pattern.matcher(oneStr);
+        while (matcher.find()) {
+            if (GlobalLib.CompareUtfWithGbk("任意选修课", matcher.group(1))) {
+                answer.put("总学分", getRealFloatData(matcher.group(2)));
+                break;
+            }
+        }
+
+        matcher = pattern.matcher(twoStr);
+        while (matcher.find()) {
+            answer.put(matcher.group(1), getRealFloatData(matcher.group(2)));
+        }
+
+        return answer;
     }
 
     public ScoreTable GetScoreTable(String number, String name) throws IOException {
         ScoreTable scoreTable = new ScoreTable();
 
-        String accessUrl = accessUrlHead + ScorePage;
+        String accessUrl = makeAccessUrlHead() + ScorePage;
         accessUrl += "?xh=" + number;
         accessUrl += "&xm=" + URLEncoder.encode(name, "gbk");
         accessUrl += "&gnmkdm=" + "N121605";
@@ -75,6 +126,9 @@ public class ScoreInterface extends WebInterface {
         }
 
         String html = response.getResponse();
+        if (!LoginedCheck(html)) {
+            return GetScoreTable(number, name);
+        }
 
         /* Get view params */
         setViewParams(html);
@@ -120,22 +174,6 @@ public class ScoreInterface extends WebInterface {
             score.setComment(getRealStringData(matcherScore.group(13)));
             score.setMakeupComment(getRealStringData(matcherScore.group(14)));
             scoreList.add(score);
-        }
-    }
-
-    private float getRealFloatData(String srcData) {
-        if (srcData.equals("&nbsp;")) {
-            return (float) 0.0;
-        } else {
-            return Float.parseFloat(srcData);
-        }
-    }
-
-    private String getRealStringData(String srcData) {
-        if (srcData.equals("&nbsp;")) {
-            return "";
-        } else {
-            return srcData;
         }
     }
 }

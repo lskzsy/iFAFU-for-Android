@@ -3,6 +3,7 @@ package com.qb.xrealsys.ifafu.web;
 import android.util.Log;
 
 import com.qb.xrealsys.ifafu.R;
+import com.qb.xrealsys.ifafu.UserController;
 import com.qb.xrealsys.ifafu.model.Response;
 import com.qb.xrealsys.ifafu.tool.HttpHelper;
 import com.qb.xrealsys.ifafu.tool.HttpResponse;
@@ -24,16 +25,16 @@ public class UserInterface extends WebInterface {
 
     private static final String LoginPage = "default6.aspx";
 
-    public UserInterface(String inHost, String inToken) throws IOException {
-        super(inHost, inToken);
+    public UserInterface(String inHost, UserController userController) throws IOException {
+        super(inHost, userController);
     }
 
     public String getIndexUrl(String number) {
-        return accessUrlHead + "xs_main.aspx?xh=" + number;
+        return makeAccessUrlHead() + "xs_main.aspx?xh=" + number;
     }
 
     public Response Login(String account, String password) throws IOException {
-        String accessUrl = accessUrlHead + LoginPage;
+        String accessUrl = makeAccessUrlHead() + LoginPage;
         if (!syncViewParams(accessUrl)) {
             return new Response(false, 0, R.string.error_view_params_not_found);
         }

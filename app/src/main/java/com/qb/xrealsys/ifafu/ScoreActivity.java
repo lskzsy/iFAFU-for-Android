@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.qb.xrealsys.ifafu.delegate.TitleBarButtonOnClickedDelegate;
 import com.qb.xrealsys.ifafu.delegate.UpdateMainScoreViewDelegate;
+import com.qb.xrealsys.ifafu.dialog.ProgressDialog;
 import com.qb.xrealsys.ifafu.model.Score;
 import com.qb.xrealsys.ifafu.model.ScoreTable;
 import com.qb.xrealsys.ifafu.model.User;
@@ -27,7 +28,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class ScoreActivity extends AppCompatActivity
+public class ScoreActivity extends BaseActivity
         implements
         TitleBarButtonOnClickedDelegate,
         AdapterView.OnItemClickListener,
@@ -35,40 +36,52 @@ public class ScoreActivity extends AppCompatActivity
         View.OnClickListener,
         OptionsPickerView.OnOptionsSelectListener {
 
-    private ScoreController     scoreController;
+    private ScoreController         scoreController;
 
-    private ConfigHelper        configHelper;
+    private ConfigHelper            configHelper;
 
-    private List<String>        yearOptions;
+    private List<String>            yearOptions;
 
-    private List<List<String>>  termOptions;
+    private List<List<String>>      termOptions;
 
-    private OptionsPickerView   optionsPickerView;
+    private OptionsPickerView       optionsPickerView;
 
-    private User                user;
+    private User                    user;
 
-    private TextView            scoreValueFront;
+    private TextView                scoreValueFront;
 
-    private TextView            scoreValueBack;
+    private TextView                scoreValueBack;
 
-    private TextView            scoreNumberView;
+    private TextView                scoreNumberView;
 
-    private TextView            scoreViewTitle;
+    private TextView                scoreViewTitle;
 
-    private LinearLayout        noDataView;
+    private LinearLayout            noDataView;
 
-    private ListView            scoreListView;
+    private ListView                scoreListView;
 
-    private TextView            scoreViewBottom;
+    private TextView                scoreViewBottom;
 
-    private boolean             isUpdate;
+    private boolean                 isUpdate;
 
-    private TitleBarController  titleBarController;
+    private TitleBarController      titleBarController;
+
+    private MainApplication         mainApplication;
+
+    private UserController          userController;
+
+    private LodingViewController    lodingViewController;
+
+    private ProgressDialog          progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score);
+
+        progressDialog       = new ProgressDialog(this);
+        lodingViewController = new LodingViewController(this);
+        lodingViewController.show();
 
         getStartUpParams();
         InitElements();
@@ -80,7 +93,7 @@ public class ScoreActivity extends AppCompatActivity
 
         try {
             configHelper    = new ConfigHelper(ScoreActivity.this);
-            scoreController = new ScoreController(user, configHelper);
+            scoreController = mainApplication.getScoreController();
             scoreController.setUpdateMainScoreViewDelegate(this);
         } catch (IOException e) {
             e.printStackTrace();
@@ -95,7 +108,7 @@ public class ScoreActivity extends AppCompatActivity
                 .setCancelText("取消")
                 .setSubmitText("确定")
                 .setTitleSize(13)
-                .setTitleText("选择学期/学年")
+                .setTitleText("选择学年/学期")
                 .setTitleColor(Color.parseColor("#157efb"))
                 .build();
     }
@@ -117,6 +130,7 @@ public class ScoreActivity extends AppCompatActivity
     @Override
     public void onOptionsSelect(int options1, int options2, int options3, View v) {
         try {
+            progressDialog.show("正在加载...");
             scoreController.SyncData(options1, options2);
         } catch (IOException e) {
             e.printStackTrace();
@@ -176,8 +190,9 @@ public class ScoreActivity extends AppCompatActivity
     }
 
     private void getStartUpParams() {
-        Bundle bundle = getIntent().getExtras();
-        user = (User) bundle.getSerializable("user");
+        mainApplication = (MainApplication) getApplication();
+        userController  = mainApplication.getUserController();
+        user            = userController.getData();
     }
 
     @Override
@@ -260,6 +275,8 @@ public class ScoreActivity extends AppCompatActivity
                 scoreListView.setOnItemClickListener(ScoreActivity.this);
 
                 UpdateOptionsPickerView();
+                lodingViewController.cancel();
+                progressDialog.cancel();
             }
         });
     }

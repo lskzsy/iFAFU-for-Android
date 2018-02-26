@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class ScoreInfoActivity extends AppCompatActivity implements
+public class ScoreInfoActivity extends BaseActivity implements
         TitleBarButtonOnClickedDelegate {
 
     private TitleBarController titleBarController;

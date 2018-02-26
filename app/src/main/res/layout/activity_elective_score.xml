@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#ffffff"
+    tools:context="com.qb.xrealsys.ifafu.ElectiveScoreActivity">
+
+    <include layout="@layout/gadget_titlebar" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/electiveScoreItemAll"
+                    layout="@layout/gadget_item_elective_score" />
+                <include
+                    android:id="@+id/electiveScoreItemNature"
+                    layout="@layout/gadget_item_elective_score" />
+                <include
+                    android:id="@+id/electiveScoreItemSocial"
+                    layout="@layout/gadget_item_elective_score" />
+                <include
+                    android:id="@+id/electiveScoreItemArt"
+                    layout="@layout/gadget_item_elective_score" />
+                <include
+                    android:id="@+id/electiveScoreItemLetter"
+                    layout="@layout/gadget_item_elective_score" />
+                <include
+                    android:id="@+id/electiveScoreItemInnovate"
+                    layout="@layout/gadget_item_elective_score" />
+
+            </LinearLayout>
+        </ScrollView>
+
+        <include layout="@layout/gadget_loading" />
+    </RelativeLayout>
+
+</LinearLayout>
