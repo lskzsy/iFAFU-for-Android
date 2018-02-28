@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/titleBarView"
     android:layout_width="match_parent"
     android:layout_height="50.0dip"
     android:background="@color/colorGobalBlue">
@@ -56,7 +57,7 @@
             android:textColor="#ffffff"
             android:gravity="center_vertical|center_horizontal"
             android:layout_weight="1"
-            android:text="@string/default_student_name" />
+            android:text="@string/display_loading" />
 
         <LinearLayout
             android:layout_width="fill_parent"

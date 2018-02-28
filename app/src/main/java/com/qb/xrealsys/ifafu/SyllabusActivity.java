@@ -3,9 +3,12 @@ package com.qb.xrealsys.ifafu;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -98,6 +101,10 @@ public class SyllabusActivity extends BaseActivity implements
 
     private int                     tabHeight;
 
+    private int                     backToNowWeekBtnId;
+
+    private int                     settingBtnId;
+
     private boolean                 isInit;
 
     @Override
@@ -136,22 +143,29 @@ public class SyllabusActivity extends BaseActivity implements
         selectedWeek    = GlobalLib.GetNowWeek(configHelper.GetValue("nowTermFirstWeek"));
         nowWeek         = selectedWeek;
 
-        String title;
-        if (nowWeek < 1 || nowWeek > 24) {
-            title = "放假中";
-        } else {
-            title = String.format(
-                    Locale.getDefault(), "第%d周", nowWeek);
-        }
         titleBarController
                 .setHeadBack()
                 .setTwoLineTitle(
-                        title,
+                        "课表",
                         syllabusController.GetNowStudyTime(getString(R.string.format_study_time)))
                 .setOnClickedListener(this);
 
         initOptionsPickerView();
+        drawBackNowWeekBtn();
         loadingViewController.show();
+
+        setPageTitle(nowWeek);
+    }
+
+    private void setPageTitle(int week) {
+        String title;
+        if (week < 1 || week > 24) {
+            title = "放假中";
+        } else {
+            title = options.get(week - 1);
+        }
+
+        pageTitle.setText(title);
     }
 
     private void initOptionsPickerView() {
@@ -196,6 +210,27 @@ public class SyllabusActivity extends BaseActivity implements
         return answer;
     }
 
+    private void drawBackNowWeekBtn() {
+        Button backNowWeekBtn = new Button(this);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                (int) GlobalLib.GetRawSize(this, TypedValue.COMPLEX_UNIT_DIP, 25));
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+        layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+        layoutParams.setMarginEnd(
+                (int) GlobalLib.GetRawSize(this, TypedValue.COMPLEX_UNIT_DIP, 10));
+        backNowWeekBtn.setLayoutParams(layoutParams);
+        backNowWeekBtn.setTextColor(Color.parseColor("#ffffff"));
+        backNowWeekBtn.setText("回到本周");
+        backNowWeekBtn.setBackgroundResource(R.drawable.shape_white_stroke);
+        backToNowWeekBtnId = View.generateViewId();
+        backNowWeekBtn.setId(backToNowWeekBtnId);
+        backNowWeekBtn.setOnClickListener(this);
+
+        RelativeLayout titleBarView = findViewById(R.id.titleBarView);
+        titleBarView.addView(backNowWeekBtn);
+    }
+
     private void drawSyllabus() {
         if (isInit) {
             contentWidth    = syllbusContent.getWidth();
@@ -232,9 +267,11 @@ public class SyllabusActivity extends BaseActivity implements
         }
         Random random = new Random(System.currentTimeMillis());
 
+        boolean isEmpty = true;
         for (int i = 0; i < 7; i++) {
             List<Course> courseList = data.get(i);
             for (Course course: courseList) {
+                isEmpty = false;
                 int courseBegin  = course.getBegin();
                 int courseLength = course.getEnd() - course.getBegin() + 1;
 
@@ -260,7 +297,7 @@ public class SyllabusActivity extends BaseActivity implements
             }
         }
 
-        if (coursesView.isEmpty()) {
+        if (isEmpty) {
             noDataView.setVisibility(View.VISIBLE);
         }
     }
@@ -385,8 +422,17 @@ public class SyllabusActivity extends BaseActivity implements
                 optionsPickerView.show();
                 break;
             default:
-                Course course = mapIdToCourse.get(id);
-                courseInfoDialog.show(course);
+                if (id == backToNowWeekBtnId) {
+                    if (selectedWeek != nowWeek) {
+                        selectedWeek = nowWeek;
+                        optionsPickerView.setSelectOptions(nowWeek - 1);
+                        setPageTitle(nowWeek);
+                        drawSyllabus();
+                    }
+                } else {
+                    Course course = mapIdToCourse.get(id);
+                    courseInfoDialog.show(course);
+                }
                 break;
         }
     }
