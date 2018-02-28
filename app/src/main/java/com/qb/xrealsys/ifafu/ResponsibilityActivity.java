@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.qb.xrealsys.ifafu.delegate.TitleBarButtonOnClickedDelegate;
 import com.qb.xrealsys.ifafu.tool.OSSHelper;
 
-public class ResponsibilityActivity extends AppCompatActivity implements
+public class ResponsibilityActivity extends BaseActivity implements
         TitleBarButtonOnClickedDelegate {
 
     @Override

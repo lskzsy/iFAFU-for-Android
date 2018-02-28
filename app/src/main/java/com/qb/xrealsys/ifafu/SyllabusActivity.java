@@ -30,7 +30,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
-public class SyllabusActivity extends AppCompatActivity implements
+public class SyllabusActivity extends BaseActivity implements
         View.OnClickListener,
         TitleBarButtonOnClickedDelegate,
         OptionsPickerView.OnOptionsSelectListener {
@@ -72,7 +72,7 @@ public class SyllabusActivity extends AppCompatActivity implements
 
     private int                     nowWeek;
 
-    private List<TextView>          coursesView;
+    private List<View>              coursesView;
 
     private Map<String, String>     mapNameToColor;
 
@@ -205,10 +205,15 @@ public class SyllabusActivity extends AppCompatActivity implements
             tabWidth        = titleWidth * 2;
             tabHeight       = (contentHeight - titleHeight) / verticalTabNum;
 
-            drawTitle(titleWidth, titleHeight, tabWidth, tabHeight);
             isInit = false;
         }
 
+        for (View view: coursesView) {
+            syllbusContent.removeView(view);
+        }
+        coursesView.clear();
+
+        drawTitle(titleWidth, titleHeight, tabWidth, tabHeight);
         drawContent(titleWidth, titleHeight, tabWidth, tabHeight);
     }
 
@@ -218,11 +223,6 @@ public class SyllabusActivity extends AppCompatActivity implements
             return;
         }
         noDataView.setVisibility(View.INVISIBLE);
-
-        for (TextView view: coursesView) {
-            syllbusContent.removeView(view);
-        }
-        coursesView.clear();
 
         List<List<Course>> data = syllabusController.GetCourseInfoByWeek(selectedWeek);
         int[] baseColorIndex       = new int[baseColors.length];
@@ -331,6 +331,7 @@ public class SyllabusActivity extends AppCompatActivity implements
         titleItem.addView(twoView);
 
         syllbusContent.addView(titleItem);
+        coursesView.add(titleItem);
     }
 
     private void drawSettingBtn(int width, int height) {

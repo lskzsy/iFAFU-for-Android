@@ -205,6 +205,7 @@ public class MainActivity extends BaseActivity
         if (isOnce) {
             isOnce = false;
             gotoProtectActivity(true);
+            return;
         }
 
         InitClickListen();

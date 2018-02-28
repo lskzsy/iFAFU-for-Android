@@ -93,6 +93,7 @@ public class ScoreActivity extends BaseActivity
             configHelper    = new ConfigHelper(ScoreActivity.this);
             scoreController = mainApplication.getScoreController();
             scoreController.setUpdateMainScoreViewDelegate(this);
+            scoreController.SyncData();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -150,12 +151,6 @@ public class ScoreActivity extends BaseActivity
     protected void onStart() {
         super.onStart();
         updateActivity();
-
-        try {
-            scoreController.SyncData();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
