@@ -1,21 +1,14 @@
 package com.qb.xrealsys.ifafu;
 
+import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.qb.xrealsys.ifafu.delegate.TitleBarButtonOnClickedDelegate;
-
-import java.io.IOException;
 
 public class WebActivity extends BaseActivity implements TitleBarButtonOnClickedDelegate {
 
@@ -25,17 +18,17 @@ public class WebActivity extends BaseActivity implements TitleBarButtonOnClicked
 
     private TitleBarController      titleBarController;
 
-    private LodingViewController    lodingViewController;
+    private LoadingViewController loadingViewController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web);
 
-        lodingViewController = new LodingViewController(this);
-        lodingViewController.show();
+        loadingViewController = new LoadingViewController(this);
+        loadingViewController.show();
 
-        webView = (WebView) findViewById(R.id.webView);
+        webView = findViewById(R.id.webView);
         webView.setWebViewClient(new WebViewClient() {
 
             @Override
@@ -53,7 +46,7 @@ public class WebActivity extends BaseActivity implements TitleBarButtonOnClicked
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
 
-                lodingViewController.cancel();
+                loadingViewController.cancel();
             }
         });
 
@@ -75,7 +68,13 @@ public class WebActivity extends BaseActivity implements TitleBarButtonOnClicked
         webSettings.setJavaScriptEnabled(true);
         webSettings.setUseWideViewPort(true);
         webSettings.setLoadWithOverviewMode(true);
+        webSettings.setSupportZoom(true);
+        webSettings.setBuiltInZoomControls(true);
         webSettings.setLoadsImagesAutomatically(true);
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setAppCacheEnabled(true);
+        webSettings.setAppCachePath(
+                getApplicationContext().getDir("cache", Context.MODE_PRIVATE).getPath());
     }
 
     private void getStartUpParams() {

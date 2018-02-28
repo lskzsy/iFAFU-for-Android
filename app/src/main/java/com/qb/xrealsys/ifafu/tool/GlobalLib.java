@@ -11,10 +11,14 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.TypedValue;
 
+import com.qb.xrealsys.ifafu.model.Course;
+
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -26,6 +30,8 @@ import java.util.Locale;
 public class GlobalLib {
 
     public static String[] dateUnit = new String[] {"年", "月", "天", "小时", "分钟", "秒"};
+
+    public static String[] weekDayName = new String[] {"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
 
     public static float GetRawSize(Context context, int unit, float value) {
         Resources res = context.getResources();
@@ -84,5 +90,53 @@ public class GlobalLib {
                 (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clipData = ClipData.newPlainText(label, text);
         clipboardManager.setPrimaryClip(clipData);
+    }
+
+    public static int GetNowWeek(String firstWeek) {
+        Calendar cal = Calendar.getInstance(Locale.CHINA);
+        cal.setFirstDayOfWeek(Calendar.MONDAY);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        try {
+            cal.setTime(simpleDateFormat.parse(firstWeek));
+            int first = cal.get(Calendar.WEEK_OF_YEAR);
+            cal.setTime(new Date(System.currentTimeMillis()));
+            int now   = cal.get(Calendar.WEEK_OF_YEAR);
+            return now - first + 1;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public static String[] GetStudyTime(String firstWeek) {
+        String[] answer = new String[3];
+        Calendar cal = Calendar.getInstance(Locale.CHINA);
+        cal.setFirstDayOfWeek(Calendar.SUNDAY);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+                "MM月dd日", Locale.getDefault());
+
+        Date now = new Date(System.currentTimeMillis());
+        cal.setTime(now);
+        int weekDay = cal.get(Calendar.DAY_OF_WEEK);
+        int nowWeek = GetNowWeek(firstWeek);
+        String nowWeekString = "放假中";
+        if (nowWeek > 0 && nowWeek <= 24) {
+            nowWeekString = String.format(
+                    Locale.getDefault(), "第%d周", nowWeek);
+        }
+        answer[0] = String.format(
+                Locale.getDefault(),
+                "%s %s %s",
+                simpleDateFormat.format(now),
+                weekDayName[weekDay - 1],
+                nowWeekString);
+        answer[1] = String.valueOf(nowWeek);
+        answer[2] = String.valueOf(weekDay);
+
+        return answer;
     }
 }

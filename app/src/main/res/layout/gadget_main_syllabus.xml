@@ -10,26 +10,19 @@
         android:id="@+id/main_syllabus_title"
         android:layout_centerHorizontal="true"
         android:textColor="#000000"
-        android:text="@string/format_main_syllabus_title"
+        android:text="@string/display_loading"
         android:layout_marginTop="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/main_syllabus_content"
+        android:text="@string/display_loading"
+        android:textSize="18sp"
+        android:textColor="#000000"
+        android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal|center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
+        android:layout_height="match_parent" />
 
     <RelativeLayout
         android:orientation="horizontal"
@@ -38,13 +31,21 @@
         android:layout_height="40dp">
 
         <TextView
+            android:id="@+id/main_syllabus_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_centerVertical="true"
             android:layout_alignParentStart="true"
-            android:textColor="#000000"
-            android:text="02月14日 星期四 23周" />
+            android:textColor="#000000" />
+
+        <ImageView
+            android:src="@drawable/icon_weather"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="5dp"
+            android:layout_toStartOf="@id/main_syllabus_weather"
+            android:layout_width="15dp"
+            android:layout_height="15dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -54,7 +55,7 @@
             android:layout_centerVertical="true"
             android:textColor="#000000"
             android:text="获取失败"
-            android:id="@+id/textView2" />
+            android:id="@+id/main_syllabus_weather" />
     </RelativeLayout>
 
 </RelativeLayout>

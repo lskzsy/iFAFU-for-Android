@@ -1,9 +1,18 @@
 package com.qb.xrealsys.ifafu;
 
 import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.WindowManager;
+
+import com.qb.xrealsys.ifafu.dialog.ProgressDialog;
 
 import java.util.List;
 
@@ -17,9 +26,11 @@ public class BaseActivity extends AppCompatActivity {
     protected void onStop() {
         if (!isAppOnForeground()) {
             MainApplication mainApplication = (MainApplication) getApplication();
-            mainApplication.setActive(false);
-//            Intent intent = new Intent(BaseActivity.this, ProtectActivity.class);
-//            startActivity(intent);
+
+            if (Boolean.valueOf(mainApplication.getConfigHelper().GetValue("verify"))) {
+                Intent intent = new Intent(BaseActivity.this, ProtectActivity.class);
+                startActivity(intent);
+            }
         }
 
         super.onStop();

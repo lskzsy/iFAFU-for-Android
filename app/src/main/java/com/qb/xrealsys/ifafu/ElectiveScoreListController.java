@@ -3,7 +3,6 @@ package com.qb.xrealsys.ifafu;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.JsonWriter;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +17,6 @@ import com.qb.xrealsys.ifafu.delegate.UpdateElectiveTargetScoreDelegate;
 import com.qb.xrealsys.ifafu.model.ElectiveScoreItem;
 import com.qb.xrealsys.ifafu.model.Score;
 import com.qb.xrealsys.ifafu.tool.GlobalLib;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,7 +71,7 @@ public class ElectiveScoreListController implements
 
     private Map<Integer, Integer>   mapIdToIndex;
 
-    private LodingViewController    lodingViewController;
+    private LoadingViewController loadingViewController;
 
     public ElectiveScoreListController(Activity activity) {
         this.activity = activity;
@@ -86,8 +83,8 @@ public class ElectiveScoreListController implements
         itemLetter   = new ElectiveScoreItem(activity.findViewById(R.id.electiveScoreItemLetter));
         itemInnovate = new ElectiveScoreItem(activity.findViewById(R.id.electiveScoreItemInnovate));
 
-        lodingViewController = new LodingViewController(activity);
-        lodingViewController.show();
+        loadingViewController = new LoadingViewController(activity);
+        loadingViewController.show();
 
         this.items   =
                 Arrays.asList(itemAll, itemNature, itemSocial, itemArt, itemLetter, itemInnovate);
@@ -204,7 +201,7 @@ public class ElectiveScoreListController implements
                             Locale.getDefault(), "%s", scoreStr));
                 }
 
-                lodingViewController.cancel();
+                loadingViewController.cancel();
             }
         });
     }

@@ -38,7 +38,12 @@ public class ConfigHelper {
     }
 
     public String GetValue(String key) {
-        return userProperties.getProperty(key);
+        String answer = userProperties.getProperty(key);
+        if (answer == null) {
+            return systemProperties.getProperty(key);
+        } else {
+            return userProperties.getProperty(key);
+        }
     }
 
     public void SetValue(String key, String value) {

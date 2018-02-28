@@ -24,7 +24,9 @@
     <string name="display_elective_score_art">艺术、体育类</string>
     <string name="display_elective_score_letter">文学素养类</string>
     <string name="display_elective_score_innovate">创新创业教育类</string>
+    <string name="display_loading">加载中...</string>
     <string name="display_dialog_cancel">取消</string>
+    <string name="display_dialog_close">关闭</string>
     <string name="display_dialog_account_setting_title">选择需要操作的账号</string>
 
     <string name="error_view_params_not_found">页面错误</string>

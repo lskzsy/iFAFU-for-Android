@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@drawable/shape_display_course_info_dialog"
+    android:gravity="center_horizontal"
+    android:layout_width="280dp"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/courseInfoDialogTitle"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:layout_marginTop="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content">
+        
+        <ImageView
+            android:src="@drawable/icon_teacher"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
+        
+        <TextView
+            android:id="@+id/courseInfoDialogTeacherName"
+            android:layout_marginStart="10dp"
+            android:textSize="15sp"
+            android:textColor="#7e7e7e"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="30dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:src="@drawable/icon_time"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
+
+        <TextView
+            android:id="@+id/courseInfoDialogTime"
+            android:layout_marginStart="10dp"
+            android:textSize="15sp"
+            android:textColor="#7e7e7e"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="30dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:src="@drawable/icon_location"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
+
+        <TextView
+            android:id="@+id/courseInfoDialogLocation"
+            android:layout_marginStart="10dp"
+            android:textSize="15sp"
+            android:textColor="#7e7e7e"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="30dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:src="@drawable/icon_attention"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
+
+        <TextView
+            android:text="无附加信息"
+            android:id="@+id/courseInfoDialogExam"
+            android:layout_marginStart="10dp"
+            android:textSize="15sp"
+            android:textColor="#7e7e7e"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="30dp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/courseInfoDialogBtn"
+        android:text="@string/display_dialog_close"
+        android:textColor="#ffffff"
+        android:background="@drawable/shape_blue_corner_button"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="80dp"
+        android:layout_width="240dp"
+        android:layout_height="40dp" />
+
+</LinearLayout>

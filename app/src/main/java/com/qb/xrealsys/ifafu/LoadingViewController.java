@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
  * Created by sky on 26/02/2018.
  */
 
-public class LodingViewController {
+public class LoadingViewController {
 
     private ImageView animIcon;
 
@@ -26,7 +26,7 @@ public class LodingViewController {
 
     private boolean   run;
 
-    public LodingViewController(Activity activity) {
+    public LoadingViewController(Activity activity) {
         this.view   = activity.findViewById(R.id.loadingView);
 
         animIcon    = view.findViewById(R.id.loadingIcon);

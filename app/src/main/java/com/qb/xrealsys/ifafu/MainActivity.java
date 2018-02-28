@@ -8,6 +8,9 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -29,6 +32,7 @@ import com.qb.xrealsys.ifafu.delegate.UpdateMainSyllabusViewDelegate;
 import com.qb.xrealsys.ifafu.delegate.UpdateMainUserViewDelegate;
 import com.qb.xrealsys.ifafu.dialog.AccountSettingDialog;
 import com.qb.xrealsys.ifafu.dialog.ProgressDialog;
+import com.qb.xrealsys.ifafu.model.Course;
 import com.qb.xrealsys.ifafu.model.Score;
 import com.qb.xrealsys.ifafu.model.ScoreTable;
 import com.qb.xrealsys.ifafu.model.Syllabus;
@@ -47,6 +51,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import javax.microedition.khronos.opengles.GL;
 
 public class MainActivity extends BaseActivity
         implements
@@ -116,6 +122,10 @@ public class MainActivity extends BaseActivity
 
     private TextView mainSyllabusTitle;
 
+    private TextView mainSyllabusTime;
+
+    private TextView mainSyllabusContent;
+
     private LinearLayout mainScore;
 
     private UserController currentUserController;
@@ -136,29 +146,43 @@ public class MainActivity extends BaseActivity
 
     private ProgressDialog progressDialog;
 
+    private SpannableString mainSyllabusBlankString;
+
     private boolean isWelcome;
 
     private boolean isAd;
+
+    private boolean isOnce;
+
+    private boolean isInitLoad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        InitElements();
-        InitLeftMenu();
-        InitLeftController();
-
         mainApplication = (MainApplication) getApplicationContext();
-        isWelcome = true;
-        isAd      = false;
+        isWelcome   = true;
+        isAd        = false;
+        isInitLoad  = true;
 
         currentUserController = mainApplication.getUserController();
         configHelper          = mainApplication.getConfigHelper();
         scoreController       = mainApplication.getScoreController();
-        syllabusController    = new SyllabusController(currentUserController, configHelper);
+        syllabusController    = mainApplication.getSyllabusController();
 
-        progressDialog = new ProgressDialog(this);
+        progressDialog          = new ProgressDialog(this);
+        mainSyllabusBlankString = new SpannableString("0今天没有课");
+        mainSyllabusBlankString.setSpan(new ImageSpan(this, R.drawable.drawable_superman),
+                0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        if (Boolean.valueOf(configHelper.GetValue("verify"))) {
+            isOnce = true;
+        }
+
+        InitElements();
+        InitLeftMenu();
+        InitLeftController();
     }
 
     @Override
@@ -176,6 +200,11 @@ public class MainActivity extends BaseActivity
             Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
             startActivity(intent);
             return;
+        }
+
+        if (isOnce) {
+            isOnce = false;
+            gotoProtectActivity(true);
         }
 
         InitClickListen();
@@ -253,13 +282,15 @@ public class MainActivity extends BaseActivity
         studentNumber    = findViewById(R.id.studentNumber);
         isOnline         = findViewById(R.id.isOnline);
 
-        mainUserNumber     = findViewById(R.id.main_user_number);
-        mainUserEnrollment = findViewById(R.id.main_user_enrollment);
-        mainUserInstitute  = findViewById(R.id.main_user_institute);
-        mainUserClas       = findViewById(R.id.main_user_clas);
-        mainScoreTitle     = findViewById(R.id.main_score_title);
-        mainScoreContent   = findViewById(R.id.main_score_content);
-        mainSyllabusTitle  = findViewById(R.id.main_syllabus_title);
+        mainUserNumber      = findViewById(R.id.main_user_number);
+        mainUserEnrollment  = findViewById(R.id.main_user_enrollment);
+        mainUserInstitute   = findViewById(R.id.main_user_institute);
+        mainUserClas        = findViewById(R.id.main_user_clas);
+        mainScoreTitle      = findViewById(R.id.main_score_title);
+        mainScoreContent    = findViewById(R.id.main_score_content);
+        mainSyllabusTitle   = findViewById(R.id.main_syllabus_title);
+        mainSyllabusTime    = findViewById(R.id.main_syllabus_time);
+        mainSyllabusContent = findViewById(R.id.main_syllabus_content);
     }
 
     private void InitClickListen() {
@@ -277,13 +308,16 @@ public class MainActivity extends BaseActivity
     }
 
     private void InitLeftController() {
+        final String systemSettingVerifyOption
+                = isOnce ? "关闭密码" : "启动密码";
+
         List<String>                leftMenuUnits       = new ArrayList<>(
                 Arrays.asList("信息查询", "实用工具", "软件设置", "关于软件"));
 
         Map<String, List<String>>   leftMenuTabs        = new HashMap<String, List<String>>() {{
             put("信息查询", Arrays.asList("成绩查询", "选修学分查询", "等级考试查询", "学生考试查询"));
             put("实用工具", Arrays.asList("我的课表", "一键评教", "选修课抢课", "网页模式", "文件库"));
-            put("软件设置", Arrays.asList("账号管理", "免验证码", "启动密码"));
+            put("软件设置", Arrays.asList("账号管理", "免验证码", systemSettingVerifyOption));
             put("关于软件", Arrays.asList("关于iFAFU", "贡献名单", "使用帮助", "隐私条款与免责声明"));
         }};
 
@@ -335,6 +369,7 @@ public class MainActivity extends BaseActivity
                 gotoExamActivity();
                 break;
             case 4:
+                gotoSyllabusActivity();
                 break;
             case 7:
                 gotoBrower("网页模式", currentUserController.getIndexUrl());
@@ -344,6 +379,15 @@ public class MainActivity extends BaseActivity
                 break;
             case 9:
                 AccountSetting();
+                break;
+            case 10:
+                Toast.makeText(
+                        this,
+                        "暂不支持修改！",
+                        Toast.LENGTH_SHORT).show();
+                break;
+            case 11:
+                gotoProtectActivity(false);
                 break;
             case 12:
                 gotoAboutActivity();
@@ -375,8 +419,26 @@ public class MainActivity extends BaseActivity
     /**
      * Go to other activity
      */
+    private void gotoSyllabusActivity() {
+        Intent intent = new Intent(MainActivity.this, SyllabusActivity.class);
+        startActivity(intent);
+    }
+
+    private void gotoProtectActivity(boolean isVerify) {
+        Intent intent = new Intent(MainActivity.this, ProtectActivity.class);
+        if (!isVerify) {
+            if (Boolean.parseBoolean(configHelper.GetValue("verify"))) {
+                intent.putExtra("mode", 2);
+            } else {
+                intent.putExtra("mode", 1);
+            }
+        }
+        startActivity(intent);
+    }
+
     @Override
     public void ReplaceUser() {
+        isInitLoad = true;
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         intent.putExtra("isKill", false);
         startActivity(intent);
@@ -387,6 +449,7 @@ public class MainActivity extends BaseActivity
         final String defaultAccount     = account;
         final String defaultPassword    = password;
 
+        isInitLoad = true;
         progressDialog.show("正在切换账号...");
         new Thread(new Runnable() {
             @Override
@@ -467,7 +530,14 @@ public class MainActivity extends BaseActivity
         updateNameAndNumber(data.getName(), data.getAccount());
         updateOnlineStatus(data.isLogin());
 
-        updateData();
+        if (isInitLoad) {
+            updateData();
+            isInitLoad = false;
+        } else {
+            updateMainUser(currentUserController.getData());
+            updateMainScore(scoreController.GetData());
+            updateMainSyllabus(syllabusController.GetData());
+        }
     }
 
     private void updateNameAndNumber(String name, String number) {
@@ -498,6 +568,33 @@ public class MainActivity extends BaseActivity
                                         inSyllabus.getSelectedYearOption()),
                                 inSyllabus.getSearchTermOptions().get(
                                         inSyllabus.getSelectedTermOption())));
+
+                String[] studyTime = GlobalLib.GetStudyTime(
+                        configHelper.GetValue("nowTermFirstWeek"));
+                mainSyllabusTime.setText(studyTime[0]);
+                int nowWeek = Integer.parseInt(studyTime[1]);
+                int weekDay = Integer.parseInt(studyTime[2]);
+
+                if (nowWeek < 1 || nowWeek > 24) {
+                    mainSyllabusContent.setText(mainSyllabusBlankString);
+                    return;
+                }
+
+                List<Course> courseList
+                        = syllabusController.GetCourseInfoByWeekAndWeekday(nowWeek, weekDay);
+                if (courseList.size() < 1) {
+                    mainSyllabusContent.setText(mainSyllabusBlankString);
+                } else {
+                    String display = String.format(
+                            Locale.getDefault(),"今天有%d节课\n", courseList.size());
+                    String willStudyTime = syllabusController.GetWillStudyTime(courseList);
+                    if (willStudyTime == null) {
+                        display += "无待上课程";
+                    } else {
+                        display += willStudyTime;
+                    }
+                    mainSyllabusContent.setText(display);
+                }
             }
         });
     }

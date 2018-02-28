@@ -10,7 +10,9 @@ import com.qb.xrealsys.ifafu.tool.HttpResponse;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -66,17 +68,47 @@ public class SyllabusInterface extends WebInterface {
         }
 
         /* Get syllabus information */
-        Pattern patternC = Pattern.compile("<td align=\"Center\" rowspan=\"\\d+\"" +
-                "( width=\"\\d+%\"){0,1}>(.*?)<br>(.*?)<br>(.*?)<br>(.*?)(</td>|<br>)");
+        Map<String, List<Course>> mapNameToCourse = new HashMap<>();
+        Pattern patternC = Pattern.compile("(<td align=\"Center\"( rowspan=\"\\d+\"){0,1}" +
+                "( width=\"\\d+%\"){0,1}>|<br>)((?!&nbsp;).*?)<br>(.*?)<br>(.*?)<br>(.*?)(</td>|<br>)");
         Matcher matcherC = patternC.matcher(html);
         while (matcherC.find()) {
             Course course = new Course();
-            course.setName(matcherC.group(2));
-            analysisCourseTime(course, matcherC.group(3));
-            course.setTeacher(matcherC.group(4));
-            course.setAddress(matcherC.group(5));
+            course.setName(matcherC.group(4));
+            analysisCourseTime(course, matcherC.group(5));
+            course.setTeacher(matcherC.group(6));
+            course.setAddress(matcherC.group(7));
 
-            syllabus.append(course);
+            if (mapNameToCourse.containsKey(course.getName())) {
+                //  merge
+                for (Course queryCourse: mapNameToCourse.get(course.getName())) {
+                    if (queryCourse.getWeekDay() == course.getWeekDay()
+                            && queryCourse.getAddress().equals(course.getAddress())) {
+                        int repeatBegin = queryCourse.getWeekBegin() > course.getWeekBegin() ?
+                                queryCourse.getWeekBegin() : course.getWeekBegin();
+                        int repeatEnd   = queryCourse.getWeekEnd() > course.getWeekEnd() ?
+                                course.getWeekEnd() : queryCourse.getWeekEnd();
+
+                        if (repeatEnd > repeatBegin) {
+                            if (queryCourse.getEnd() + 1 == course.getBegin()) {
+                                queryCourse.setEnd(course.getEnd());
+                                if (repeatBegin == course.getWeekBegin()) {
+                                    course.setWeekBegin(repeatEnd);
+                                } else {
+                                    course.setWeekEnd(repeatBegin);
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                mapNameToCourse.put(course.getName(), new ArrayList<Course>());
+            }
+
+            if (course.getWeekEnd() != course.getWeekBegin()) {
+                syllabus.append(course);
+            }
+            mapNameToCourse.get(course.getName()).add(course);
         }
 
         answer.put("user", user);
@@ -92,18 +124,23 @@ public class SyllabusInterface extends WebInterface {
             put(URLEncoder.encode("四", "GBK"), 4);
             put(URLEncoder.encode("五", "GBK"), 5);
             put(URLEncoder.encode("六", "GBK"), 6);
-            put(URLEncoder.encode("日", "GBK"), 7);
+            put(URLEncoder.encode("日", "GBK"), 0);
         }};
 
-        Pattern pattern = Pattern.compile("周(.*)第(\\d+),(.*?)(\\d+)节\\{第(\\d+)-(\\d+)周\\}");
+        Pattern pattern = Pattern.compile("周(.*)第((\\d+),)?(.*?)(\\d+)节\\{第(\\d+)-(\\d+)周(\\|(.*)周)?\\}");
         Matcher matcher = pattern.matcher(timeString);
 
         if (matcher.find()) {
-            course.setWeek(weekMap.get(URLEncoder.encode(matcher.group(1), "GBK")));
-            course.setBegin(Integer.parseInt(matcher.group(2)));
-            course.setEnd(Integer.parseInt(matcher.group(4)));
-            course.setWeekBegin(Integer.parseInt(matcher.group(5)));
-            course.setWeekEnd(Integer.parseInt(matcher.group(6)));
+            course.setTimeString(timeString);
+            course.setWeekDay(weekMap.get(URLEncoder.encode(matcher.group(1), "GBK")));
+            if (matcher.group(3) == null) {
+                course.setBegin(Integer.parseInt(matcher.group(5)));
+            } else {
+                course.setBegin(Integer.parseInt(matcher.group(3)));
+            }
+            course.setEnd(Integer.parseInt(matcher.group(5)));
+            course.setWeekBegin(Integer.parseInt(matcher.group(6)));
+            course.setWeekEnd(Integer.parseInt(matcher.group(7)));
         }
     }
 

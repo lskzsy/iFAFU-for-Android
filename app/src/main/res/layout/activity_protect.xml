@@ -1,11 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/bg_protect"
+    android:background="#5a97eb"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.qb.xrealsys.ifafu.ProtectActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <ImageView
+        android:id="@+id/protectFinishBtn"
+        android:src="@drawable/icon_down"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:layout_alignParentEnd="true"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
+
+    <TextView
+        android:id="@+id/protectTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        android:textColor="#ffffff"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/protectSubTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/protectTitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:textColor="#ffffff" />
+
+    <com.qb.xrealsys.ifafu.tool.GestureLockViewGroup
+        android:id="@+id/gestureLockViewGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/protectSubTitle"
+        android:layout_marginTop="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:gravity="center_vertical"
+        app:color_finger_on="#ffffff"
+        app:color_finger_up="#ffffff"
+        app:color_no_finger_inner_circle="#5a97eb"
+        app:color_no_finger_outer_circle="#ffffff"
+        app:count="3"
+        app:tryTimes="5">
+
+    </com.qb.xrealsys.ifafu.tool.GestureLockViewGroup>
+
+</RelativeLayout>

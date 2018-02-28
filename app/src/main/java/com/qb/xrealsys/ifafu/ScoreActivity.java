@@ -2,11 +2,9 @@ package com.qb.xrealsys.ifafu;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -70,7 +68,7 @@ public class ScoreActivity extends BaseActivity
 
     private UserController          userController;
 
-    private LodingViewController    lodingViewController;
+    private LoadingViewController   loadingViewController;
 
     private ProgressDialog          progressDialog;
 
@@ -80,8 +78,8 @@ public class ScoreActivity extends BaseActivity
         setContentView(R.layout.activity_score);
 
         progressDialog       = new ProgressDialog(this);
-        lodingViewController = new LodingViewController(this);
-        lodingViewController.show();
+        loadingViewController = new LoadingViewController(this);
+        loadingViewController.show();
 
         getStartUpParams();
         InitElements();
@@ -275,7 +273,7 @@ public class ScoreActivity extends BaseActivity
                 scoreListView.setOnItemClickListener(ScoreActivity.this);
 
                 UpdateOptionsPickerView();
-                lodingViewController.cancel();
+                loadingViewController.cancel();
                 progressDialog.cancel();
             }
         });

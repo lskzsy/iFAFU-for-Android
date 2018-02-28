@@ -2,9 +2,7 @@ package com.qb.xrealsys.ifafu;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +18,6 @@ import com.qb.xrealsys.ifafu.model.Exam;
 import com.qb.xrealsys.ifafu.model.ExamTable;
 import com.qb.xrealsys.ifafu.tool.GlobalLib;
 
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,15 +40,15 @@ public class ExamActivity extends BaseActivity implements
 
     LinearLayout            blankView;
 
-    LodingViewController    lodingViewController;
+    LoadingViewController loadingViewController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exam);
 
-        lodingViewController = new LodingViewController(this);
-        lodingViewController.show();
+        loadingViewController = new LoadingViewController(this);
+        loadingViewController.show();
 
         InitElement();
 
@@ -135,7 +132,7 @@ public class ExamActivity extends BaseActivity implements
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         high));
 
-                lodingViewController.cancel();
+                loadingViewController.cancel();
             }
         });
     }

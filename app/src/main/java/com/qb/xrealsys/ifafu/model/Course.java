@@ -8,7 +8,7 @@ public class Course extends Model {
 
     private String name;
 
-    private int    week;
+    private int    weekDay;
 
     private int    begin;
 
@@ -22,6 +22,16 @@ public class Course extends Model {
 
     private String address;
 
+    private String timeString;
+
+    public String getTimeString() {
+        return timeString;
+    }
+
+    public void setTimeString(String timeString) {
+        this.timeString = timeString;
+    }
+
     public String getName() {
         return name;
     }
@@ -30,12 +40,12 @@ public class Course extends Model {
         this.name = name;
     }
 
-    public int getWeek() {
-        return week;
+    public int getWeekDay() {
+        return weekDay;
     }
 
-    public void setWeek(int week) {
-        this.week = week;
+    public void setWeekDay(int weekDay) {
+        this.weekDay = weekDay;
     }
 
     public int getBegin() {
