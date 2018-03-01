@@ -214,7 +214,7 @@ public class SyllabusActivity extends BaseActivity implements
         Button backNowWeekBtn = new Button(this);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-                (int) GlobalLib.GetRawSize(this, TypedValue.COMPLEX_UNIT_DIP, 25));
+                ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
         layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
         layoutParams.setMarginEnd(
@@ -321,8 +321,8 @@ public class SyllabusActivity extends BaseActivity implements
             drawTitleItem(
                     titleWidth, tabHeight - 1,
                     0, titleHeight + i * tabHeight,
-                    drawTitleTextView(studyBeginTime[i], false, 10, "#aaaaaa"),
-                    drawTitleTextView(String.valueOf(i + 1), false, 16, "#aaaaaa"));
+                    drawTitleTextView(studyBeginTime[i], false, 8, "#aaaaaa"),
+                    drawTitleTextView(String.valueOf(i + 1), false, 14, "#aaaaaa"));
         }
     }
 
