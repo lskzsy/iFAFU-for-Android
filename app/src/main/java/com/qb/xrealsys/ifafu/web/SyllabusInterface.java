@@ -1,10 +1,13 @@
 package com.qb.xrealsys.ifafu.web;
 
+import android.util.Log;
+
 import com.qb.xrealsys.ifafu.UserController;
 import com.qb.xrealsys.ifafu.model.Course;
 import com.qb.xrealsys.ifafu.model.Model;
 import com.qb.xrealsys.ifafu.model.Syllabus;
 import com.qb.xrealsys.ifafu.model.User;
+import com.qb.xrealsys.ifafu.tool.GlobalLib;
 import com.qb.xrealsys.ifafu.tool.HttpHelper;
 import com.qb.xrealsys.ifafu.tool.HttpResponse;
 
@@ -69,15 +72,18 @@ public class SyllabusInterface extends WebInterface {
 
         /* Get syllabus information */
         Map<String, List<Course>> mapNameToCourse = new HashMap<>();
-        Pattern patternC = Pattern.compile("(<td align=\"Center\"( rowspan=\"\\d+\"){0,1}" +
-                "( width=\"\\d+%\"){0,1}>|<br>)((?!&nbsp;).*?)<br>(.*?)<br>(.*?)<br>(.*?)(</td>|<br>)");
+        Pattern patternC = Pattern.compile("(<td( class=\"noprint\"){0,1} align=\"Center\"" +
+                "( rowspan=\"\\d+\"){0,1}( width=\"\\d+%\"){0,1}>|<br>)((?!&nbsp;).*?)<br>" +
+                "(.*?)<br>(.*?)<br>(.*?)(</td>|<br>)");
         Matcher matcherC = patternC.matcher(html);
         while (matcherC.find()) {
             Course course = new Course();
-            course.setName(matcherC.group(4));
-            analysisCourseTime(course, matcherC.group(5));
-            course.setTeacher(matcherC.group(6));
-            course.setAddress(matcherC.group(7));
+            course.setName(matcherC.group(5));
+            course.setTeacher(matcherC.group(7));
+            course.setAddress(matcherC.group(8));
+            if (!analysisCourseTime(course, matcherC.group(6))) {
+                analysisCourseTime2(course, html, matcherC.start(), matcherC.group(6));
+            }
 
             if (mapNameToCourse.containsKey(course.getName())) {
                 //  merge
@@ -93,9 +99,9 @@ public class SyllabusInterface extends WebInterface {
                             if (queryCourse.getEnd() + 1 == course.getBegin()) {
                                 queryCourse.setEnd(course.getEnd());
                                 if (repeatBegin == course.getWeekBegin()) {
-                                    course.setWeekBegin(repeatEnd);
+                                    course.setWeekBegin(repeatEnd + 1);
                                 } else {
-                                    course.setWeekEnd(repeatBegin);
+                                    course.setWeekEnd(repeatBegin - 1);
                                 }
                             }
                         }
@@ -105,7 +111,7 @@ public class SyllabusInterface extends WebInterface {
                 mapNameToCourse.put(course.getName(), new ArrayList<Course>());
             }
 
-            if (course.getWeekEnd() != course.getWeekBegin()) {
+            if (course.getWeekEnd() >= course.getWeekBegin()) {
                 syllabus.append(course);
             }
             mapNameToCourse.get(course.getName()).add(course);
@@ -116,7 +122,7 @@ public class SyllabusInterface extends WebInterface {
         return answer;
     }
 
-    private void analysisCourseTime(Course course, String timeString) throws IOException {
+    private boolean analysisCourseTime(Course course, String timeString) throws IOException {
         Map<String, Integer> weekMap = new HashMap<String, Integer>() {{
             put(URLEncoder.encode("一", "GBK"), 1);
             put(URLEncoder.encode("二", "GBK"), 2);
@@ -141,7 +147,24 @@ public class SyllabusInterface extends WebInterface {
             course.setEnd(Integer.parseInt(matcher.group(5)));
             course.setWeekBegin(Integer.parseInt(matcher.group(6)));
             course.setWeekEnd(Integer.parseInt(matcher.group(7)));
+            if (matcher.group(8) != null) {
+                if (GlobalLib.CompareUtfWithGbk("单", matcher.group(9))) {
+                    course.setOddOrTwice(1);
+                } else if (GlobalLib.CompareUtfWithGbk("双", matcher.group(9))) {
+                    course.setOddOrTwice(2);
+                }
+            } else {
+                course.setOddOrTwice(0);
+            }
+
+            return true;
+        } else {
+            return false;
         }
     }
 
+    private void analysisCourseTime2(
+            Course course, String html, int courseBeginIndex, String timeString) {
+
+    }
 }

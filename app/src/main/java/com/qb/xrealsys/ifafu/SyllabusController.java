@@ -91,7 +91,7 @@ public class SyllabusController {
         }
 
         for (Course course: courseList) {
-            if (nowWeek >= course.getWeekBegin() && nowWeek <= course.getWeekEnd()) {
+            if (isCourseInWeek(nowWeek, course)) {
                 answer.get(course.getWeekDay()).add(course);
             }
         }
@@ -104,9 +104,7 @@ public class SyllabusController {
         List<Course> answer     = new ArrayList<>();
 
         for (Course course: courseList) {
-            if (nowWeek >= course.getWeekBegin()
-                    && nowWeek <= course.getWeekEnd()
-                    && weekDay == course.getWeekDay()) {
+            if (isCourseInWeek(nowWeek, course) && weekDay == course.getWeekDay()) {
                 answer.add(course);
             }
         }
@@ -120,6 +118,23 @@ public class SyllabusController {
                 format,
                 syllabus.getSearchYearOptions().get(syllabus.getSelectedYearOption()),
                 syllabus.getSearchTermOptions().get(syllabus.getSelectedTermOption()));
+    }
+
+    private boolean isCourseInWeek(int nowWeek, Course course) {
+        if (nowWeek < course.getWeekBegin() || nowWeek > course.getWeekEnd()) {
+            return false;
+        }
+
+        int oddOrTwice = course.getOddOrTwice();
+        if (oddOrTwice != 0) {
+            if (oddOrTwice == 1 && nowWeek % 2 == 0) {
+                return false;
+            } else if (oddOrTwice == 2 && nowWeek % 2 == 1) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     class SortCourseComparator implements Comparator<Course> {

@@ -18,11 +18,21 @@ public class Course extends Model {
 
     private int    weekEnd;
 
+    private int    oddOrTwice;
+
     private String teacher;
 
     private String address;
 
     private String timeString;
+
+    public int getOddOrTwice() {
+        return oddOrTwice;
+    }
+
+    public void setOddOrTwice(int oddOrTwice) {
+        this.oddOrTwice = oddOrTwice;
+    }
 
     public String getTimeString() {
         return timeString;
