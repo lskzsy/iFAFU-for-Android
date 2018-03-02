@@ -153,6 +153,7 @@ public class ScoreController {
 
         for (Score score: scoreList) {
             if (
+                    score.isRestudy() ||
                     score.isDelayExam() ||
                     GlobalLib.CompareUtfWithGbk("任意选修课", score.getCourseType()) ||
                     GlobalLib.CompareUtfWithGbk("体育", score.getCourseName())) {
