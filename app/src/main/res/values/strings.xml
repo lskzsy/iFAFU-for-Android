@@ -18,6 +18,7 @@
     <string name="display_score_view_bottom">-- 到底啦 --</string>
     <string name="display_score_info_title1">课程性质</string>
     <string name="display_score_info_title2">成绩详情</string>
+    <string name="display_score_info_title3">补考信息</string>
     <string name="display_elective_score_all">总学分</string>
     <string name="display_elective_score_nature">自然科学类</string>
     <string name="display_elective_score_social">人文社科类</string>

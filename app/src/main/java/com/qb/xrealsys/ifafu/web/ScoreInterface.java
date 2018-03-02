@@ -2,6 +2,8 @@ package com.qb.xrealsys.ifafu.web;
 
 import com.qb.xrealsys.ifafu.LoginErrorException;
 import com.qb.xrealsys.ifafu.UserController;
+import com.qb.xrealsys.ifafu.model.ExamTable;
+import com.qb.xrealsys.ifafu.model.MakeupExam;
 import com.qb.xrealsys.ifafu.model.Score;
 import com.qb.xrealsys.ifafu.model.ScoreTable;
 import com.qb.xrealsys.ifafu.tool.GlobalLib;
@@ -76,7 +78,7 @@ public class ScoreInterface extends WebInterface {
         accessUrl += "&gnmkdm=" + "N121607";
 
         Map<String, String> header = GetRefererHeader(number);
-        HttpHelper request  = new HttpHelper(accessUrl, "gbk");
+        HttpHelper request = new HttpHelper(accessUrl, "gbk");
         HttpResponse response = request.Get(header);
 
         if (response.getStatus() != 200) {
@@ -89,9 +91,9 @@ public class ScoreInterface extends WebInterface {
         }
 
         int oneStrBegin = html.indexOf("\"DataGrid4");
-        int oneStrEnd   = html.indexOf("<td>自然科学类</td>");
-        String oneStr   = html.substring(oneStrBegin, oneStrEnd);
-        String twoStr   = html.substring(oneStrEnd);
+        int oneStrEnd = html.indexOf("<td>自然科学类</td>");
+        String oneStr = html.substring(oneStrBegin, oneStrEnd);
+        String twoStr = html.substring(oneStrEnd);
         Pattern pattern = Pattern.compile("<td>(.*)</td><td>(.*)</td>");
         Matcher matcher = pattern.matcher(oneStr);
         while (matcher.find()) {
@@ -118,7 +120,7 @@ public class ScoreInterface extends WebInterface {
         accessUrl += "&gnmkdm=" + "N121605";
 
         Map<String, String> header = GetRefererHeader(number);
-        HttpHelper request  = new HttpHelper(accessUrl, "gbk");
+        HttpHelper request = new HttpHelper(accessUrl, "gbk");
         HttpResponse response = request.Get(header);
 
         if (response.getStatus() != 200) {
@@ -145,12 +147,12 @@ public class ScoreInterface extends WebInterface {
 
     private void analysisScore(String html, List<Score> scoreList) throws IOException {
         int scoreTableBegin = html.indexOf("补考备注");
-        int scoreTableEnd   = html.indexOf("footbox");
-        String ScoreTable   = html.substring(scoreTableBegin, scoreTableEnd);
-        Pattern patternB    = Pattern.compile("<td>(.*)</td><td>(.*)</td><td>(.*)</td>" +
+        int scoreTableEnd = html.indexOf("footbox");
+        String ScoreTable = html.substring(scoreTableBegin, scoreTableEnd);
+        Pattern patternB = Pattern.compile("<td>(.*)</td><td>(.*)</td><td>(.*)</td>" +
                 "<td>(.*)</td><td>(.*)</td><td>(.*)</td><td>(.*)</td><td>(.*)</td><td>(.*)</td>" +
                 "<td>(.*)</td><td>(.*)</td><td>(.*)</td><td>(.*)</td><td>(.*)</td>");
-        Matcher matcherScore  = patternB.matcher(ScoreTable);
+        Matcher matcherScore = patternB.matcher(ScoreTable);
         while (matcherScore.find()) {
             Score score = new Score();
             score.setYear(matcherScore.group(1));

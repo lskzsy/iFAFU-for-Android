@@ -2,10 +2,13 @@ package com.qb.xrealsys.ifafu;
 
 import com.qb.xrealsys.ifafu.delegate.UpdateElectiveTargetScoreDelegate;
 import com.qb.xrealsys.ifafu.delegate.UpdateMainScoreViewDelegate;
+import com.qb.xrealsys.ifafu.delegate.UpdateMakeupExamInfoDelegate;
+import com.qb.xrealsys.ifafu.model.MakeupExam;
 import com.qb.xrealsys.ifafu.model.Score;
 import com.qb.xrealsys.ifafu.model.ScoreTable;
 import com.qb.xrealsys.ifafu.tool.ConfigHelper;
 import com.qb.xrealsys.ifafu.tool.GlobalLib;
+import com.qb.xrealsys.ifafu.web.MakeupInterface;
 import com.qb.xrealsys.ifafu.web.ScoreInterface;
 
 import java.io.IOException;
@@ -27,17 +30,24 @@ public class ScoreController {
 
     private ScoreInterface                      scoreInterface;
 
+    private MakeupInterface                     makeupInterface;
+
     private Map<String, Float>                  electiveTargetScore;
 
     private UpdateMainScoreViewDelegate         updateMainScoreViewDelegate;
 
     private UpdateElectiveTargetScoreDelegate   updateElectiveTargetScoreDelegate;
 
+    private UpdateMakeupExamInfoDelegate        updateMakeupExamInfoDelegate;
+
     public ScoreController(UserController userController, ConfigHelper configHelper) {
         this.userController = userController;
         this.configHelper   = configHelper;
         this.scoreTable     = new ScoreTable();
         this.scoreInterface = new ScoreInterface(
+                this.configHelper.GetSystemValue("host"),
+                userController);
+        this.makeupInterface = new MakeupInterface(
                 this.configHelper.GetSystemValue("host"),
                 userController);
         this.electiveTargetScore = null;
@@ -90,6 +100,25 @@ public class ScoreController {
         }).start();
     }
 
+    public void GetScoreMakeupExam(Score score) {
+        final Score queryScore = score;
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    MakeupExam makeupExam = makeupInterface.GetMakeupExam(
+                            userController.getData().getAccount(),
+                            userController.getData().getName(),
+                            queryScore);
+                    updateMakeupExamInfoDelegate.informMakeupExamUpdated(makeupExam);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
     public void SyncData() throws IOException {
         new Thread(new Runnable() {
             @Override
@@ -99,6 +128,9 @@ public class ScoreController {
                             userController.getData().getAccount(),
                             userController.getData().getName());
                     updateMainScoreViewDelegate.updateMainScore(scoreTable);
+                    makeupInterface.InitMakeupExam(
+                            userController.getData().getAccount(),
+                            userController.getData().getName());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -139,6 +171,10 @@ public class ScoreController {
     public void setUpdateElectiveTargetScoreDelegate(
             UpdateElectiveTargetScoreDelegate updateElectiveTargetScoreDelegate) {
         this.updateElectiveTargetScoreDelegate = updateElectiveTargetScoreDelegate;
+    }
+
+    public void setUpdateMakeupExamInfoDelegate(UpdateMakeupExamInfoDelegate updateMakeupExamInfoDelegate) {
+        this.updateMakeupExamInfoDelegate = updateMakeupExamInfoDelegate;
     }
 
     public Map<String, Float> getElectiveTargetScore() {
