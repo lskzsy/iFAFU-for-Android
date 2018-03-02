@@ -71,6 +71,7 @@ public class SyllabusInterface extends WebInterface {
         }
 
         /* Get syllabus information */
+        syllabus.setCampus(0);
         Map<String, List<Course>> mapNameToCourse = new HashMap<>();
         Pattern patternC = Pattern.compile("(<td( class=\"noprint\"){0,1} align=\"Center\"" +
                 "( rowspan=\"\\d+\"){0,1}( width=\"\\d+%\"){0,1}>|<br>)((?!&nbsp;).*?)<br>" +
@@ -79,6 +80,9 @@ public class SyllabusInterface extends WebInterface {
         while (matcherC.find()) {
             Course course = new Course();
             course.setName(matcherC.group(5));
+            if (syllabus.getCampus() == 0 && course.getName().contains("旗教")) {
+                syllabus.setCampus(1);
+            }
             course.setTeacher(matcherC.group(7));
             course.setAddress(matcherC.group(8));
             if (!analysisCourseTime(course, matcherC.group(6))) {
@@ -165,6 +169,57 @@ public class SyllabusInterface extends WebInterface {
 
     private void analysisCourseTime2(
             Course course, String html, int courseBeginIndex, String timeString) {
+        int[] line = new int[8];
+        for (int i = 0; i < line.length; i++) {
+            line[i] = 0;
+        }
 
+        String tableContent = html.substring(html.indexOf("上午"), courseBeginIndex);
+        Pattern patternA = Pattern.compile("<td( class=\"noprint\")? align=\"Center\"" +
+                "( rowspan=\"(\\d+)\")?( width=\"\\d+%\")?>");
+        Matcher matcherA = patternA.matcher(tableContent);
+
+        int nowWeekDay      = 1;
+        int nowCourseLine   = 1;
+        while (matcherA.find()) {
+            int rowspan = 1;
+            if (matcherA.group(2) != null) {
+                rowspan = Integer.parseInt(matcherA.group(3));
+            }
+
+            while (line[nowWeekDay] >= nowCourseLine) {
+                nowWeekDay++;
+                if (nowWeekDay == 8) {
+                    nowWeekDay = 1;
+                    nowCourseLine++;
+                }
+            }
+
+            line[nowWeekDay] += rowspan;
+            nowWeekDay += 1;
+            if (nowWeekDay == 8) {
+                nowWeekDay = 1;
+                nowCourseLine++;
+            }
+        }
+
+        while (line[nowWeekDay] >= nowCourseLine) {
+            nowWeekDay++;
+            if (nowWeekDay == 8) {
+                nowWeekDay = 1;
+                nowCourseLine++;
+            }
+        }
+
+        course.setWeekDay(nowWeekDay);
+        course.setBegin(nowCourseLine);
+
+        Pattern patternB = Pattern.compile("\\{第(\\d+)-(\\d+)周\\|(\\d+)节/周\\}");
+        Matcher matcherB = patternB.matcher(timeString);
+        if (matcherB.find()){
+            course.setWeekBegin(Integer.parseInt(matcherB.group(1)));
+            course.setWeekEnd(Integer.parseInt(matcherB.group(2)));
+            course.setEnd(nowCourseLine + Integer.parseInt(matcherB.group(3)) - 1);
+        }
     }
 }

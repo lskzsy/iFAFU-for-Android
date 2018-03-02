@@ -42,10 +42,13 @@ public class SyllabusActivity extends BaseActivity implements
 
     private static final int verticalTabNum   = 12;
 
-    private static final String[] studyBeginTime = new String[] {
+    private static final String[][] studyBeginTime = new String[][] {{
             "8:00", "8:50", "9:55", "10:45", "11:35",
             "14:00", "14:50", "15:35", "16:40",
-            "18:25", "19:15", "20:05"};
+            "18:25", "19:15", "20:05"}, {
+            "8:30", "9:20","10:25","11:15","12:05",
+            "14:00", "14:50", "15:35", "16:40",
+            "18:25", "19:15", "20:05"}};
 
     private static final String[] weekDayName = new String[] {
             "周日", "周一", "周二", "周三", "周四", "周五", "周六",};
@@ -78,6 +81,8 @@ public class SyllabusActivity extends BaseActivity implements
     private List<View>              coursesView;
 
     private Map<String, String>     mapNameToColor;
+
+    private int[]                   baseColorIndex;
 
     private Map<Integer, Course>    mapIdToCourse;
 
@@ -138,6 +143,7 @@ public class SyllabusActivity extends BaseActivity implements
         mapNameToColor          = new HashMap<>();
         mapIdToCourse           = new HashMap<>();
         courseInfoDialog        = new CourseInfoDialog(this);
+        baseColorIndex          = new int[baseColors.length];
 
         configHelper    = mainApplication.getConfigHelper();
         selectedWeek    = GlobalLib.GetNowWeek(configHelper.GetValue("nowTermFirstWeek"));
@@ -260,7 +266,6 @@ public class SyllabusActivity extends BaseActivity implements
         noDataView.setVisibility(View.INVISIBLE);
 
         List<List<Course>> data = syllabusController.GetCourseInfoByWeek(selectedWeek);
-        int[] baseColorIndex       = new int[baseColors.length];
         int   baseColorSwitchLimit = baseColors.length;
         for (int i = 0; i < baseColors.length; i++) {
             baseColorIndex[i] = i;
@@ -317,11 +322,12 @@ public class SyllabusActivity extends BaseActivity implements
         }
 
         //  draw vertical title
+        int campus = syllabusController.GetData().getCampus();
         for (int i = 0; i < verticalTabNum; i++) {
             drawTitleItem(
                     titleWidth, tabHeight - 1,
                     0, titleHeight + i * tabHeight,
-                    drawTitleTextView(studyBeginTime[i], false, 8, "#aaaaaa"),
+                    drawTitleTextView(studyBeginTime[campus][i], false, 8, "#aaaaaa"),
                     drawTitleTextView(String.valueOf(i + 1), false, 14, "#aaaaaa"));
         }
     }
