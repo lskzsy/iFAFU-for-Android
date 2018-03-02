@@ -164,7 +164,14 @@ public class ScoreController {
                 totalMinus += score.getStudyScore();
             }
 
-            totalScore += score.getScore() * score.getStudyScore();
+            if (score.getScore() < 60 && score.getMakeupScore() > 0) {
+                totalScore +=
+                        (score.getMakeupScore() > 60 ? 60 : score.getMakeupScore() )
+                                * score.getStudyScore();
+            } else {
+                totalScore += score.getScore() * score.getStudyScore();
+            }
+
             totalStudyScore += score.getStudyScore();
         }
 
