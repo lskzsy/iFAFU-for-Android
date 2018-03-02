@@ -67,9 +67,9 @@ public class ScoreInfoActivity extends BaseActivity implements
         List<Map<String, Object>> twoAdapterData = new ArrayList<>();
         twoAdapterData.add(makeAdapterMap("平时成绩", ""));
         twoAdapterData.add(makeAdapterMap("实验成绩", ""));
-        twoAdapterData.add(makeAdapterMap("期中成绩", ""));
         twoAdapterData.add(makeAdapterMap("卷面成绩", ""));
         twoAdapterData.add(makeAdapterMap("最终成绩", String.valueOf(score.getScore())));
+        twoAdapterData.add(makeAdapterMap("是否重修", String.valueOf(score.isRestudy())));
         twoAdapterData.add(makeAdapterMap("学分", String.valueOf(score.getStudyScore())));
         twoAdapterData.add(makeAdapterMap("绩点", String.valueOf(score.getScorePoint())));
         SimpleAdapter twoSimpleAdapter = new SimpleAdapter(
