@@ -80,11 +80,11 @@ public class SyllabusInterface extends WebInterface {
         while (matcherC.find()) {
             Course course = new Course();
             course.setName(matcherC.group(5));
-            if (syllabus.getCampus() == 0 && course.getName().contains("旗教")) {
-                syllabus.setCampus(1);
-            }
             course.setTeacher(matcherC.group(7));
             course.setAddress(matcherC.group(8));
+            if (syllabus.getCampus() == 0 && course.getAddress().contains("旗教")) {
+                syllabus.setCampus(1);
+            }
             if (!analysisCourseTime(course, matcherC.group(6))) {
                 analysisCourseTime2(course, html, matcherC.start(), matcherC.group(6));
             }
