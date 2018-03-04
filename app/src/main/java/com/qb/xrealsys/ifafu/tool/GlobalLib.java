@@ -94,7 +94,7 @@ public class GlobalLib {
 
     public static int GetNowWeek(String firstWeek) {
         Calendar cal = Calendar.getInstance(Locale.CHINA);
-        cal.setFirstDayOfWeek(Calendar.MONDAY);
+        cal.setFirstDayOfWeek(Calendar.SUNDAY);
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
                 "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
