@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.qb.xrealsys.ifafu.AboutActivity">
+    tools:context="com.qb.xrealsys.ifafu.About.AboutActivity">
 
     <include layout="@layout/gadget_titlebar" />
 

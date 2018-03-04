@@ -7,7 +7,7 @@
     android:background="#ffffff"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.qb.xrealsys.ifafu.ExamActivity">
+    tools:context="com.qb.xrealsys.ifafu.Exam.ExamActivity">
 
     <include layout="@layout/gadget_titlebar" />
 

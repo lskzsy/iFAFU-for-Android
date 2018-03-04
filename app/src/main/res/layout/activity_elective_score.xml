@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#ffffff"
-    tools:context="com.qb.xrealsys.ifafu.ElectiveScoreActivity">
+    tools:context="com.qb.xrealsys.ifafu.Score.ElectiveScoreActivity">
 
     <include layout="@layout/gadget_titlebar" />
 

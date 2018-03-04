@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.qb.xrealsys.ifafu.MainActivity">
+    tools:context="com.qb.xrealsys.ifafu.Main.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

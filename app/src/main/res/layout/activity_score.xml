@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackGray"
-    tools:context="com.qb.xrealsys.ifafu.ScoreActivity">
+    tools:context="com.qb.xrealsys.ifafu.Score.ScoreActivity">
 
     <include layout="@layout/gadget_titlebar" />
 

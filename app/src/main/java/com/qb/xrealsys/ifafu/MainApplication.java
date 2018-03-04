@@ -2,9 +2,12 @@ package com.qb.xrealsys.ifafu;
 
 import android.app.Application;
 
-import com.qb.xrealsys.ifafu.model.Syllabus;
-import com.qb.xrealsys.ifafu.tool.ConfigHelper;
-import com.qb.xrealsys.ifafu.tool.OSSHelper;
+import com.qb.xrealsys.ifafu.Exam.controller.ExamController;
+import com.qb.xrealsys.ifafu.Score.controller.ScoreController;
+import com.qb.xrealsys.ifafu.Syllabus.controller.SyllabusController;
+import com.qb.xrealsys.ifafu.User.controller.UserController;
+import com.qb.xrealsys.ifafu.Tool.ConfigHelper;
+import com.qb.xrealsys.ifafu.Tool.OSSHelper;
 
 import java.io.IOException;
 
@@ -18,13 +21,13 @@ public class MainApplication extends Application {
 
     private ConfigHelper        configHelper;
 
-    private UserController      userController;
+    private UserController userController;
 
-    private ScoreController     scoreController;
+    private ScoreController scoreController;
 
-    private ExamController      examController;
+    private ExamController examController;
 
-    private SyllabusController  syllabusController;
+    private SyllabusController syllabusController;
 
     @Override
     public void onCreate() {
