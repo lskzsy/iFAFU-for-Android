@@ -29,7 +29,7 @@ public class ProtectActivity extends AppCompatActivity implements View.OnClickLi
 
     private int                  optionMode;
 
-    private MainApplication mainApplication;
+    private MainApplication      mainApplication;
 
     private ConfigHelper         configHelper;
 
