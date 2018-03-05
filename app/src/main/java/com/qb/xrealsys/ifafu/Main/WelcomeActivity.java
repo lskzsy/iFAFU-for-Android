@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.qb.xrealsys.ifafu.MainApplication;
 import com.qb.xrealsys.ifafu.R;
+import com.qb.xrealsys.ifafu.Tool.ConfigHelper;
 import com.qb.xrealsys.ifafu.Tool.OSSHelper;
 
 import java.io.IOException;
@@ -13,7 +14,9 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private MainApplication mainApplication;
 
-    private OSSHelper ossHelper;
+    private OSSHelper       ossHelper;
+
+    private ConfigHelper    configHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +24,8 @@ public class WelcomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_welcome);
 
         mainApplication = (MainApplication) getApplicationContext();
-        ossHelper = mainApplication.getOssHelper();
+        ossHelper       = mainApplication.getOssHelper();
+        configHelper    = mainApplication.getConfigHelper();
     }
 
     @Override
@@ -33,6 +37,7 @@ public class WelcomeActivity extends AppCompatActivity {
             public void run() {
                 try {
                     ossHelper.syncData();
+                    configHelper.SetValue("nowTermFirstWeek", ossHelper.getStudyTime());
                     finish();
                 } catch (IOException e) {
                     e.printStackTrace();

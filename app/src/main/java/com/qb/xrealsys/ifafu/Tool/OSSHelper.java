@@ -2,6 +2,9 @@ package com.qb.xrealsys.ifafu.Tool;
 
 import android.graphics.Bitmap;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 /**
@@ -10,25 +13,65 @@ import java.io.IOException;
 
 public class OSSHelper {
 
-    private String host;
+    private String      host;
 
-    private String key;
+    private String      key;
 
-    private Bitmap background;
+    private Bitmap      background;
 
-    private Bitmap ad;
+    private Bitmap      ad;
 
-    private String responsibility;
+    private String      responsibility;
+
+    private JSONObject  updateInf;
+
+    private String      studyTime;
 
     public OSSHelper(String host, String key) {
         this.host = host;
         this.key  = key;
     }
 
+    public String getStudyTime() {
+        return studyTime;
+    }
+
     public void syncData() throws IOException {
         setBackground();
         setAd();
-        setResponsibility();
+//        setResponsibility();
+        setUpdateInf();
+        setStudyTime();
+    }
+
+    public void setStudyTime() throws IOException {
+        String accessUrl = host + "iFAFU/studyTime.txt";
+
+        HttpHelper      request = new HttpHelper(accessUrl);
+        HttpResponse    response = request.Get();
+
+        if (response.getStatus() == 200) {
+            studyTime = response.getResponse();
+        }
+    }
+
+    public JSONObject getUpdateInf() {
+        return updateInf;
+    }
+
+    public void setUpdateInf() throws IOException {
+        String accessUrl = host + "iFAFU/latestVersion.txt";
+
+        HttpHelper      request = new HttpHelper(accessUrl);
+        HttpResponse    response = request.Get();
+
+        if (response.getStatus() == 200) {
+            try {
+                updateInf = new JSONObject(response.getResponse());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void setBackground() throws IOException {
