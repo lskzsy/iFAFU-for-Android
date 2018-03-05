@@ -82,6 +82,19 @@ public class GlobalLib {
         return localVersion;
     }
 
+    public static int GetLocalVersionCode(Context ctx) {
+        int versionCode = 0;
+        try {
+            PackageInfo packageInfo = ctx.getApplicationContext()
+                    .getPackageManager()
+                    .getPackageInfo(ctx.getPackageName(), 0);
+            versionCode = packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionCode;
+    }
+
     public static void PutTextToClipboard(Context ctx, String label, String text) {
         ClipboardManager clipboardManager =
                 (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);

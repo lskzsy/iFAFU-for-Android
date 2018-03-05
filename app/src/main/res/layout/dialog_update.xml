@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="150dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/drawable_update" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:background="#ffffff"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="@string/display_dialog_update_title"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/updateDialogStyle"
+            android:textSize="18sp"
+            android:textColor="@color/colorUpdateDialogOrange"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/updateDialogVersion"
+            android:textSize="20sp"
+            android:textColor="@color/colorUpdateDialogOrange"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <ScrollView
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/updateDialogDetail"
+                    android:textColor="#000000"
+                    android:textSize="15sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp" />
+            </LinearLayout>
+        </ScrollView>
+
+        <LinearLayout
+            android:background="@color/colorUpdateDialogOrange"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <Button
+                android:id="@+id/updateDialogCancel"
+                android:text="@string/display_dialog_update_btn1"
+                android:textSize="18sp"
+                android:textColor="#aaaaaa"
+                android:background="#ffffff"
+                android:layout_marginTop="1dp"
+                android:layout_width="149dp"
+                android:layout_height="49dp" />
+
+            <Button
+                android:id="@+id/updateDialogOk"
+                android:text="@string/display_dialog_update_btn2"
+                android:textSize="18sp"
+                android:textColor="@color/colorUpdateDialogOrange"
+                android:background="#ffffff"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="1dp"
+                android:layout_width="149dp"
+                android:layout_height="49dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

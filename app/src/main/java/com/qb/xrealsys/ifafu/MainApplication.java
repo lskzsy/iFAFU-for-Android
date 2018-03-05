@@ -3,6 +3,7 @@ package com.qb.xrealsys.ifafu;
 import android.app.Application;
 
 import com.qb.xrealsys.ifafu.Exam.controller.ExamController;
+import com.qb.xrealsys.ifafu.Main.controller.UpdateController;
 import com.qb.xrealsys.ifafu.Score.controller.ScoreController;
 import com.qb.xrealsys.ifafu.Syllabus.controller.SyllabusController;
 import com.qb.xrealsys.ifafu.User.controller.UserController;
@@ -21,13 +22,15 @@ public class MainApplication extends Application {
 
     private ConfigHelper        configHelper;
 
-    private UserController userController;
+    private UserController      userController;
 
-    private ScoreController scoreController;
+    private ScoreController     scoreController;
 
-    private ExamController examController;
+    private ExamController      examController;
 
-    private SyllabusController syllabusController;
+    private SyllabusController  syllabusController;
+
+    private UpdateController    updateController;
 
     @Override
     public void onCreate() {
@@ -42,9 +45,14 @@ public class MainApplication extends Application {
             scoreController     = new ScoreController(userController, configHelper);
             examController      = new ExamController(userController, configHelper);
             syllabusController  = new SyllabusController(userController, configHelper);
+            updateController    = new UpdateController(getBaseContext(), ossHelper, configHelper);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public UpdateController getUpdateController() {
+        return updateController;
     }
 
     public OSSHelper getOssHelper() {

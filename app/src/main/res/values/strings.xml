@@ -29,6 +29,9 @@
     <string name="display_dialog_cancel">取消</string>
     <string name="display_dialog_close">关闭</string>
     <string name="display_dialog_account_setting_title">选择需要操作的账号</string>
+    <string name="display_dialog_update_title">版本更新</string>
+    <string name="display_dialog_update_btn1">暂不更新</string>
+    <string name="display_dialog_update_btn2">更新</string>
 
     <string name="error_view_params_not_found">页面错误</string>
     <string name="error_system">系统错误</string>

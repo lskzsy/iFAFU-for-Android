@@ -11,4 +11,5 @@
     <color name="colorBackTitle">#777777</color>
     <color name="colorElectiveScoreBlue">#4c82fb</color>
     <color name="colorAccountSettingDialog">#aa000000</color>
+    <color name="colorUpdateDialogOrange">#e2733d</color>
 </resources>

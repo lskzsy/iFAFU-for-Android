@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -24,6 +25,10 @@ import com.qb.xrealsys.ifafu.Base.BaseActivity;
 import com.qb.xrealsys.ifafu.Base.controller.TitleBarController;
 import com.qb.xrealsys.ifafu.Exam.ExamActivity;
 import com.qb.xrealsys.ifafu.Main.controller.LeftMenuController;
+import com.qb.xrealsys.ifafu.Main.controller.UpdateController;
+import com.qb.xrealsys.ifafu.Main.delegate.UpdateQueryCallbackDelegate;
+import com.qb.xrealsys.ifafu.Main.dialog.UpdateDialog;
+import com.qb.xrealsys.ifafu.Main.model.UpdateInf;
 import com.qb.xrealsys.ifafu.MainApplication;
 import com.qb.xrealsys.ifafu.Base.ProtectActivity;
 import com.qb.xrealsys.ifafu.R;
@@ -142,6 +147,8 @@ public class MainActivity extends BaseActivity
 
     private ConfigHelper configHelper;
 
+    private UpdateController updateController;
+
     private TitleBarController titleBarController;
 
     private AdController adController;
@@ -151,6 +158,8 @@ public class MainActivity extends BaseActivity
     private AccountSettingDialog accountSettingDialog;
 
     private ProgressDialog progressDialog;
+
+    private UpdateDialog   updateDialog;
 
     private SpannableString mainSyllabusBlankString;
 
@@ -178,15 +187,13 @@ public class MainActivity extends BaseActivity
         configHelper          = mainApplication.getConfigHelper();
         scoreController       = mainApplication.getScoreController();
         syllabusController    = mainApplication.getSyllabusController();
+        updateController      = mainApplication.getUpdateController();
 
         progressDialog          = new ProgressDialog(this);
+        updateDialog            = new UpdateDialog(this, updateController, updateController);
         mainSyllabusBlankString = new SpannableString("0今天没有课");
         mainSyllabusBlankString.setSpan(new ImageSpan(this, R.drawable.drawable_superman),
                 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        if (Boolean.valueOf(configHelper.GetValue("verify"))) {
-            isOnce = true;
-        }
 
         InitElements();
         InitLeftMenu();
@@ -202,11 +209,26 @@ public class MainActivity extends BaseActivity
             return;
         }
 
+
+        if (!updateController.isChecked()) {
+            //  Open update app dialog
+            UpdateInf updateInf = updateController.CheckUpdate();
+            if (updateInf != null) {
+                updateDialog.show(updateInf);
+            }
+        }
+
         InitBackground();
         UpdateAndVerifyUser();
     }
 
     private boolean StartupProcess() {
+        if (isOnce) {
+            isOnce = false;
+            gotoProtectActivity(true);
+            return false;
+        }
+
         if (isAd) {
             isAd = false;
             adController = new AdController(this, mainApplication.getOssHelper().getAd());
@@ -215,13 +237,11 @@ public class MainActivity extends BaseActivity
         if (isWelcome) {
             isWelcome = false;
             isAd      = true;
-            startActivity(new Intent(MainActivity.this, WelcomeActivity.class));
-            return false;
-        }
+            if (Boolean.valueOf(configHelper.GetValue("verify"))) {
+                isOnce = true;
+            }
 
-        if (isOnce) {
-            isOnce = false;
-            gotoProtectActivity(true);
+            startActivity(new Intent(MainActivity.this, WelcomeActivity.class));
             return false;
         }
 
