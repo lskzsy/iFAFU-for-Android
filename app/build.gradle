@@ -6,8 +6,8 @@ android {
         applicationId "com.qb.xrealsys.ifafu"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 0
-        versionName "0.5.4"
+        versionCode 1
+        versionName "0.5.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
