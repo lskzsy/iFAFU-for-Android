@@ -61,15 +61,15 @@ public class SyllabusActivity extends BaseActivity implements
             "#48d9f8", "#f0c83c", "#a9d53c", "#fcb304", "#f784e3",
             "#b8773a", "#2f2f2f", "#8e7fa7", "#6493b5", "#66a752"};
 
-    private MainApplication mainApplication;
+    private MainApplication         mainApplication;
 
-    private SyllabusController syllabusController;
+    private SyllabusController      syllabusController;
 
-    private TitleBarController titleBarController;
+    private TitleBarController      titleBarController;
 
     private ConfigHelper            configHelper;
 
-    private LoadingViewController loadingViewController;
+    private LoadingViewController   loadingViewController;
 
     private RelativeLayout          syllbusContent;
 
@@ -115,6 +115,8 @@ public class SyllabusActivity extends BaseActivity implements
 
     private boolean                 isInit;
 
+    private int                     baseColorSwitchLimit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,6 +149,10 @@ public class SyllabusActivity extends BaseActivity implements
         mapIdToCourse           = new HashMap<>();
         courseInfoDialog        = new CourseInfoDialog(this);
         baseColorIndex          = new int[baseColors.length];
+        baseColorSwitchLimit    = baseColors.length;
+        for (int i = 0; i < baseColors.length; i++) {
+            baseColorIndex[i] = i;
+        }
 
         configHelper    = mainApplication.getConfigHelper();
         selectedWeek    = GlobalLib.GetNowWeek(configHelper.GetValue("nowTermFirstWeek"));
@@ -269,10 +275,6 @@ public class SyllabusActivity extends BaseActivity implements
         noDataView.setVisibility(View.INVISIBLE);
 
         List<List<Course>> data = syllabusController.GetCourseInfoByWeek(selectedWeek);
-        int   baseColorSwitchLimit = baseColors.length;
-        for (int i = 0; i < baseColors.length; i++) {
-            baseColorIndex[i] = i;
-        }
         Random random = new Random(System.currentTimeMillis());
 
         boolean isEmpty = true;
