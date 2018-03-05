@@ -150,7 +150,7 @@ public class SyllabusController {
         int now = calendar.get(Calendar.HOUR_OF_DAY) * 100 + calendar.get(Calendar.MINUTE);
         int j = 0;
         int k = 0;
-        for (int i = 0; i < studyBeginTime.length; i++) {
+        for (int i = 0; i < studyBeginTime[syllabus.getCampus()].length; i++) {
             int time = studyBeginTime[syllabus.getCampus()][i];
             if (now < time) {
                 j = i + 1;
@@ -164,11 +164,12 @@ public class SyllabusController {
         }
 
         for (Course course: courseList) {
-            if (course.getBegin() == j) {
+            if (course.getBegin() >= j) {
                 String answer = String.format(
                         Locale.getDefault(), "下一门课:%s@%s\n",
                         course.getName(), course.getAddress());
 
+                k = studyBeginTime[syllabus.getCampus()][course.getBegin()];
                 if (k - now < 100) {
                     int cMin = k % 100;
                     int nMin = now % 100;

@@ -132,7 +132,7 @@ public class GlobalLib {
                 weekDayName[weekDay - 1],
                 nowWeekString);
         answer[1] = String.valueOf(nowWeek);
-        answer[2] = String.valueOf(weekDay);
+        answer[2] = String.valueOf(weekDay - 1);
 
         return answer;
     }
