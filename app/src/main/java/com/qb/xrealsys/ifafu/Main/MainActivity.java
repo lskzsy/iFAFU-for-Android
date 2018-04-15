@@ -62,6 +62,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 public class MainActivity extends BaseActivity
         implements
@@ -74,92 +75,94 @@ public class MainActivity extends BaseActivity
         TitleBarButtonOnClickedDelegate,
         ReplaceUserDelegate {
     /* if speed enough, slide complete */
-    public static final int SNAP_VELOCITY = 100;
+    public static final int             SNAP_VELOCITY = 100;
 
     /* menu's right limit */
-    private int rightEdge = 0;
+    private int                         rightEdge = 0;
 
     /* finally main stay width */
-    private int menuPadding = 300;
+    private int                         menuPadding = 300;
 
     /* menu's left limit */
-    private int leftEdge;
+    private int                         leftEdge;
 
     /* x for touch down */
-    private float xDown;
+    private float                       xDown;
 
     /* x for touch moving */
-    private float xMove;
+    private float                       xMove;
 
     /* x for touch up */
-    private float xUp;
+    private float                       xUp;
 
     /* calculating slide speed */
-    private VelocityTracker mVelocityTracker;
+    private VelocityTracker             mVelocityTracker;
 
-    private long firstClickBack;
+    private long                        firstClickBack;
 
-    private int screenWidth;
+    private int                         screenWidth;
 
-    private boolean isMenuVisible;
+    private boolean                     isMenuVisible;
 
-    private LeftMenuController leftMenuController;
+    private LeftMenuController          leftMenuController;
 
-    private LinearLayout mainContent;
+    private LinearLayout                mainContent;
 
-    private LinearLayout menu;
+    private LinearLayout                menu;
 
-    private LinearLayout.LayoutParams menuParams;
+    private LinearLayout.LayoutParams   menuParams;
 
-    private TextView bigHeadImg;
+    private TextView                    bigHeadImg;
 
-    private TextView studentNumber;
+    private TextView                    studentNumber;
 
-    private TextView isOnline;
+    private TextView                    isOnline;
 
-    private TextView mainUserNumber;
+    private TextView                    mainUserNumber;
 
-    private TextView mainUserInstitute;
+    private TextView                    mainUserInstitute;
 
-    private TextView mainUserEnrollment;
+    private TextView                    mainUserEnrollment;
 
-    private TextView mainUserClas;
+    private TextView                    mainUserClas;
 
-    private TextView mainScoreTitle;
+    private TextView                    mainScoreTitle;
 
-    private TextView mainScoreContent;
+    private TextView                    mainScoreContent;
 
-    private TextView mainSyllabusTitle;
+    private TextView                    mainSyllabusTitle;
 
-    private TextView mainSyllabusTime;
+    private TextView                    mainSyllabusTime;
 
-    private TextView mainSyllabusContent;
+    private TextView                    mainSyllabusContent;
 
-    private LinearLayout mainScore;
+    private LinearLayout                mainScore;
 
-    private UserAsyncController currentUserController;
+    private UserAsyncController         currentUserController;
 
-    private SyllabusAsyncController syllabusController;
+    private SyllabusAsyncController     syllabusController;
 
-    private ScoreAsyncController scoreController;
+    private ScoreAsyncController        scoreController;
 
-    private ConfigHelper configHelper;
+    private ConfigHelper                configHelper;
 
-    private UpdateController updateController;
+    private UpdateController            updateController;
 
-    private TitleBarController titleBarController;
+    private TitleBarController          titleBarController;
 
-    private AdController adController;
+    private AdController                adController;
 
-    private MainApplication mainApplication;
+    private MainApplication             mainApplication;
 
-    private AccountSettingDialog accountSettingDialog;
+    private AccountSettingDialog        accountSettingDialog;
 
-    private ProgressDialog progressDialog;
+    private ProgressDialog              progressDialog;
 
-    private UpdateDialog   updateDialog;
+    private UpdateDialog                updateDialog;
 
-    private SpannableString mainSyllabusBlankString;
+    private SpannableString             mainSyllabusBlankString;
+
+    private ExecutorService             threadPool;
 
     private boolean isWelcome;
 
@@ -186,6 +189,7 @@ public class MainActivity extends BaseActivity
         scoreController       = mainApplication.getScoreController();
         syllabusController    = mainApplication.getSyllabusController();
         updateController      = mainApplication.getUpdateController();
+        threadPool            = mainApplication.getCachedThreadPool();
 
         progressDialog          = new ProgressDialog(this);
         updateDialog            = new UpdateDialog(this, updateController, updateController);
@@ -490,7 +494,7 @@ public class MainActivity extends BaseActivity
 
         isInitLoad = true;
         progressDialog.show("正在切换账号...");
-        new Thread(new Runnable() {
+        threadPool.execute(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -506,7 +510,7 @@ public class MainActivity extends BaseActivity
                     e.printStackTrace();
                 }
             }
-        }).start();
+        });
     }
 
     private void AccountSetting() {

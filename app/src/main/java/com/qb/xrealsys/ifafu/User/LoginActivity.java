@@ -17,12 +17,15 @@ import com.qb.xrealsys.ifafu.Base.dialog.ProgressDialog;
 import com.qb.xrealsys.ifafu.Base.model.Response;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
-    private MainApplication mainApplication;
+    private MainApplication     mainApplication;
 
     private UserAsyncController currentUserController;
+
+    private ExecutorService     threadPool;
 
     private Button          loginBtn;
 
@@ -52,6 +55,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         mainApplication = (MainApplication) getApplication();
         currentUserController = mainApplication.getUserController();
+        threadPool            = mainApplication.getCachedThreadPool();
 
         isKill = getIntent().getBooleanExtra("isKill", true);
         if (!isKill) {
@@ -92,7 +96,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         final String password = loginPassword.getText().toString();
 
         displayProgress();
-        new Thread(new Runnable() {
+        threadPool.execute(new Runnable() {
             @Override
             public void run() {
                 Looper.prepare();
@@ -114,7 +118,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 }
                 Looper.loop();
             }
-        }).start();
+        });
     }
 
     private void initProgress() {
