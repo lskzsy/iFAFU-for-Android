@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -26,7 +25,6 @@ import com.qb.xrealsys.ifafu.Base.controller.TitleBarController;
 import com.qb.xrealsys.ifafu.Exam.ExamActivity;
 import com.qb.xrealsys.ifafu.Main.controller.LeftMenuController;
 import com.qb.xrealsys.ifafu.Main.controller.UpdateController;
-import com.qb.xrealsys.ifafu.Main.delegate.UpdateQueryCallbackDelegate;
 import com.qb.xrealsys.ifafu.Main.dialog.UpdateDialog;
 import com.qb.xrealsys.ifafu.Main.model.UpdateInf;
 import com.qb.xrealsys.ifafu.MainApplication;
@@ -35,11 +33,11 @@ import com.qb.xrealsys.ifafu.R;
 import com.qb.xrealsys.ifafu.Responsibility.ResponsibilityActivity;
 import com.qb.xrealsys.ifafu.Score.ElectiveScoreActivity;
 import com.qb.xrealsys.ifafu.Score.ScoreActivity;
-import com.qb.xrealsys.ifafu.Score.controller.ScoreController;
+import com.qb.xrealsys.ifafu.Score.controller.ScoreAsyncController;
 import com.qb.xrealsys.ifafu.Syllabus.SyllabusActivity;
-import com.qb.xrealsys.ifafu.Syllabus.controller.SyllabusController;
+import com.qb.xrealsys.ifafu.Syllabus.controller.SyllabusAsyncController;
 import com.qb.xrealsys.ifafu.User.LoginActivity;
-import com.qb.xrealsys.ifafu.User.controller.UserController;
+import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Base.WebActivity;
 import com.qb.xrealsys.ifafu.Main.delegate.LeftMenuClickedDelegate;
 import com.qb.xrealsys.ifafu.User.delegate.ReplaceUserDelegate;
@@ -139,11 +137,11 @@ public class MainActivity extends BaseActivity
 
     private LinearLayout mainScore;
 
-    private UserController currentUserController;
+    private UserAsyncController currentUserController;
 
-    private SyllabusController syllabusController;
+    private SyllabusAsyncController syllabusController;
 
-    private ScoreController scoreController;
+    private ScoreAsyncController scoreController;
 
     private ConfigHelper configHelper;
 

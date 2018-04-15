@@ -1,6 +1,6 @@
 package com.qb.xrealsys.ifafu.Base.web;
 
-import com.qb.xrealsys.ifafu.User.controller.UserController;
+import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Base.model.Search;
 import com.qb.xrealsys.ifafu.Tool.HttpHelper;
 import com.qb.xrealsys.ifafu.Tool.HttpResponse;
@@ -25,9 +25,9 @@ public class WebInterface {
 
     protected String viewStateGenerator;
 
-    protected UserController userController;
+    protected UserAsyncController userController;
 
-    public WebInterface(String inHost, UserController userController) {
+    public WebInterface(String inHost, UserAsyncController userController) {
         this.userController = userController;
         this.host           = inHost;
     }

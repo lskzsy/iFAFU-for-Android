@@ -9,7 +9,7 @@ import android.widget.SimpleAdapter;
 import com.qb.xrealsys.ifafu.Base.BaseActivity;
 import com.qb.xrealsys.ifafu.MainApplication;
 import com.qb.xrealsys.ifafu.R;
-import com.qb.xrealsys.ifafu.Score.controller.ScoreController;
+import com.qb.xrealsys.ifafu.Score.controller.ScoreAsyncController;
 import com.qb.xrealsys.ifafu.Base.controller.TitleBarController;
 import com.qb.xrealsys.ifafu.Base.delegate.TitleBarButtonOnClickedDelegate;
 import com.qb.xrealsys.ifafu.Score.delegate.UpdateMakeupExamInfoDelegate;
@@ -31,7 +31,7 @@ public class ScoreInfoActivity extends BaseActivity implements
 
     private MainApplication mainApplication;
 
-    private ScoreController scoreController;
+    private ScoreAsyncController scoreController;
 
     private TitleBarController titleBarController;
 

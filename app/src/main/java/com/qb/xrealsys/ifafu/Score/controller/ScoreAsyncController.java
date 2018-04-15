@@ -1,6 +1,7 @@
 package com.qb.xrealsys.ifafu.Score.controller;
 
-import com.qb.xrealsys.ifafu.User.controller.UserController;
+import com.qb.xrealsys.ifafu.Base.controller.AsyncController;
+import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Score.delegate.UpdateElectiveTargetScoreDelegate;
 import com.qb.xrealsys.ifafu.Score.delegate.UpdateMainScoreViewDelegate;
 import com.qb.xrealsys.ifafu.Score.delegate.UpdateMakeupExamInfoDelegate;
@@ -21,11 +22,11 @@ import java.util.Map;
  * Created by sky on 14/02/2018.
  */
 
-public class ScoreController {
+public class ScoreAsyncController extends AsyncController {
 
     private ScoreTable                          scoreTable;
 
-    private UserController userController;
+    private UserAsyncController userController;
 
     private ConfigHelper                        configHelper;
 
@@ -41,7 +42,8 @@ public class ScoreController {
 
     private UpdateMakeupExamInfoDelegate        updateMakeupExamInfoDelegate;
 
-    public ScoreController(UserController userController, ConfigHelper configHelper) {
+    public ScoreAsyncController(UserAsyncController userController, ConfigHelper configHelper) {
+        super(userController.getThreadPool());
         this.userController = userController;
         this.configHelper   = configHelper;
         this.scoreTable     = new ScoreTable();
@@ -55,7 +57,7 @@ public class ScoreController {
     }
 
     public void SyncElectiveScore() {
-        new Thread(new Runnable() {
+        threadPool.execute(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -76,7 +78,7 @@ public class ScoreController {
                     e.printStackTrace();
                 }
             }
-        }).start();
+        });
     }
 
     public void SyncData(int year, int term) throws IOException {
@@ -85,7 +87,7 @@ public class ScoreController {
         scoreTable.setSelectedYearOption(year);
         scoreTable.setSelectedTermOption(term);
 
-        new Thread(new Runnable() {
+        threadPool.execute(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -98,13 +100,13 @@ public class ScoreController {
                     e.printStackTrace();
                 }
             }
-        }).start();
+        });
     }
 
     public void GetScoreMakeupExam(Score score) {
         final Score queryScore = score;
 
-        new Thread(new Runnable() {
+        threadPool.execute(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -117,11 +119,11 @@ public class ScoreController {
                     e.printStackTrace();
                 }
             }
-        }).start();
+        });
     }
 
     public void SyncData() throws IOException {
-        new Thread(new Runnable() {
+        threadPool.execute(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -136,7 +138,7 @@ public class ScoreController {
                     e.printStackTrace();
                 }
             }
-        }).start();
+        });
     }
 
     public ScoreTable GetData() {

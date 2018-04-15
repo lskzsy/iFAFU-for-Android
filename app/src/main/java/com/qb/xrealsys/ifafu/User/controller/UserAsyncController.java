@@ -2,6 +2,7 @@ package com.qb.xrealsys.ifafu.User.controller;
 
 import android.content.Context;
 
+import com.qb.xrealsys.ifafu.Base.controller.AsyncController;
 import com.qb.xrealsys.ifafu.R;
 import com.qb.xrealsys.ifafu.Base.model.Response;
 import com.qb.xrealsys.ifafu.User.model.User;
@@ -14,12 +15,13 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
 
 /**
  * Created by sky on 10/02/2018.
  */
 
-public class UserController {
+public class UserAsyncController extends AsyncController {
 
     private User          data;
 
@@ -31,7 +33,8 @@ public class UserController {
 
     private JSONObject    userList;
 
-    public UserController(Context inContext) throws IOException {
+    public UserAsyncController(Context inContext, ExecutorService threadPool) throws IOException {
+        super(threadPool);
         context         = inContext;
 
         data = new User();

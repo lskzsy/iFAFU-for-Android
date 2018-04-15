@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.qb.xrealsys.ifafu.Base.BaseActivity;
 import com.qb.xrealsys.ifafu.MainApplication;
 import com.qb.xrealsys.ifafu.R;
-import com.qb.xrealsys.ifafu.User.controller.UserController;
+import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Base.dialog.ProgressDialog;
 import com.qb.xrealsys.ifafu.Base.model.Response;
 
@@ -22,7 +22,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     private MainApplication mainApplication;
 
-    private UserController currentUserController;
+    private UserAsyncController currentUserController;
 
     private Button          loginBtn;
 

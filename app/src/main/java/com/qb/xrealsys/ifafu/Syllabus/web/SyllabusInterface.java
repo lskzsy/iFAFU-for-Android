@@ -1,6 +1,6 @@
 package com.qb.xrealsys.ifafu.Syllabus.web;
 
-import com.qb.xrealsys.ifafu.User.controller.UserController;
+import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Syllabus.model.Course;
 import com.qb.xrealsys.ifafu.Base.model.Model;
 import com.qb.xrealsys.ifafu.Syllabus.model.Syllabus;
@@ -27,7 +27,7 @@ public class SyllabusInterface extends WebInterface {
 
     private static final String SyllabusPage = "xskbcx.aspx";
 
-    public SyllabusInterface(String inHost, UserController userController) throws IOException {
+    public SyllabusInterface(String inHost, UserAsyncController userController) throws IOException {
         super(inHost, userController);
     }
 

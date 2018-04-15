@@ -1,7 +1,7 @@
 package com.qb.xrealsys.ifafu.User.web;
 
 import com.qb.xrealsys.ifafu.R;
-import com.qb.xrealsys.ifafu.User.controller.UserController;
+import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Base.model.Response;
 import com.qb.xrealsys.ifafu.Tool.HttpHelper;
 import com.qb.xrealsys.ifafu.Tool.HttpResponse;
@@ -22,7 +22,7 @@ public class UserInterface extends WebInterface {
 
     private static final String LoginPage = "default6.aspx";
 
-    public UserInterface(String inHost, UserController userController) throws IOException {
+    public UserInterface(String inHost, UserAsyncController userController) throws IOException {
         super(inHost, userController);
     }
 

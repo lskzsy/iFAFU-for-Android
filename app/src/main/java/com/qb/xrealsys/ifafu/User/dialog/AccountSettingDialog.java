@@ -18,7 +18,7 @@ import android.widget.Toast;
 import com.qb.xrealsys.ifafu.Base.dialog.iOSDialog;
 import com.qb.xrealsys.ifafu.MainApplication;
 import com.qb.xrealsys.ifafu.R;
-import com.qb.xrealsys.ifafu.User.controller.UserController;
+import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.User.delegate.ReplaceUserDelegate;
 import com.qb.xrealsys.ifafu.Base.delegate.iOSDialogButtonOnClickedDelegate;
 import com.qb.xrealsys.ifafu.Tool.GlobalLib;
@@ -50,7 +50,7 @@ public class AccountSettingDialog extends Dialog implements
 
     private MainApplication         mainApplication;
 
-    private UserController          userController;
+    private UserAsyncController userController;
 
     private ReplaceUserDelegate     replaceUserDelegate;
 

@@ -1,6 +1,6 @@
 package com.qb.xrealsys.ifafu.Exam.web;
 
-import com.qb.xrealsys.ifafu.User.controller.UserController;
+import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Exam.model.Exam;
 import com.qb.xrealsys.ifafu.Exam.model.ExamTable;
 import com.qb.xrealsys.ifafu.Tool.HttpHelper;
@@ -22,7 +22,7 @@ public class ExamInterface extends WebInterface {
 
     private String ExamPage = "xskscx.aspx";
 
-    public ExamInterface(String inHost, UserController userController) {
+    public ExamInterface(String inHost, UserAsyncController userController) {
         super(inHost, userController);
     }
 

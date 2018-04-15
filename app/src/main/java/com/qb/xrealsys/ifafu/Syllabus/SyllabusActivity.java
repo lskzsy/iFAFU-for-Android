@@ -18,7 +18,7 @@ import com.qb.xrealsys.ifafu.Base.BaseActivity;
 import com.qb.xrealsys.ifafu.Base.controller.LoadingViewController;
 import com.qb.xrealsys.ifafu.MainApplication;
 import com.qb.xrealsys.ifafu.R;
-import com.qb.xrealsys.ifafu.Syllabus.controller.SyllabusController;
+import com.qb.xrealsys.ifafu.Syllabus.controller.SyllabusAsyncController;
 import com.qb.xrealsys.ifafu.Base.controller.TitleBarController;
 import com.qb.xrealsys.ifafu.Base.delegate.TitleBarButtonOnClickedDelegate;
 import com.qb.xrealsys.ifafu.Score.dialog.CourseInfoDialog;
@@ -63,7 +63,7 @@ public class SyllabusActivity extends BaseActivity implements
 
     private MainApplication         mainApplication;
 
-    private SyllabusController      syllabusController;
+    private SyllabusAsyncController syllabusController;
 
     private TitleBarController      titleBarController;
 

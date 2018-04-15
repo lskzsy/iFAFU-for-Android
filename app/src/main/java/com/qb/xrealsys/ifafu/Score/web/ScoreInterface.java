@@ -1,6 +1,6 @@
 package com.qb.xrealsys.ifafu.Score.web;
 
-import com.qb.xrealsys.ifafu.User.controller.UserController;
+import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Score.model.Score;
 import com.qb.xrealsys.ifafu.Score.model.ScoreTable;
 import com.qb.xrealsys.ifafu.Tool.GlobalLib;
@@ -27,7 +27,7 @@ public class ScoreInterface extends WebInterface {
 
     private String TrainningPlanPage = "pyjh.aspx";
 
-    public ScoreInterface(String inHost, UserController userController) {
+    public ScoreInterface(String inHost, UserAsyncController userController) {
         super(inHost, userController);
     }
 

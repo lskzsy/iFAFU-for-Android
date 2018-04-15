@@ -2,15 +2,17 @@ package com.qb.xrealsys.ifafu;
 
 import android.app.Application;
 
-import com.qb.xrealsys.ifafu.Exam.controller.ExamController;
+import com.qb.xrealsys.ifafu.Exam.controller.ExamAsyncController;
 import com.qb.xrealsys.ifafu.Main.controller.UpdateController;
-import com.qb.xrealsys.ifafu.Score.controller.ScoreController;
-import com.qb.xrealsys.ifafu.Syllabus.controller.SyllabusController;
-import com.qb.xrealsys.ifafu.User.controller.UserController;
+import com.qb.xrealsys.ifafu.Score.controller.ScoreAsyncController;
+import com.qb.xrealsys.ifafu.Syllabus.controller.SyllabusAsyncController;
+import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Tool.ConfigHelper;
 import com.qb.xrealsys.ifafu.Tool.OSSHelper;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by sky on 10/02/2018.
@@ -22,29 +24,32 @@ public class MainApplication extends Application {
 
     private ConfigHelper        configHelper;
 
-    private UserController      userController;
+    private UserAsyncController userController;
 
-    private ScoreController     scoreController;
+    private ScoreAsyncController scoreController;
 
-    private ExamController      examController;
+    private ExamAsyncController examController;
 
-    private SyllabusController  syllabusController;
+    private SyllabusAsyncController syllabusController;
 
     private UpdateController    updateController;
+
+    private ExecutorService     cachedThreadPool;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
         try {
-            userController      = new UserController(getBaseContext());
+            cachedThreadPool    = Executors.newCachedThreadPool();
+            userController      = new UserAsyncController(getBaseContext(), cachedThreadPool);
             configHelper        = new ConfigHelper(getBaseContext());
             ossHelper           = new OSSHelper(
                     configHelper.GetSystemValue("ossHost"),
                     configHelper.GetSystemValue("ossKey"));
-            scoreController     = new ScoreController(userController, configHelper);
-            examController      = new ExamController(userController, configHelper);
-            syllabusController  = new SyllabusController(userController, configHelper);
+            scoreController     = new ScoreAsyncController(userController, configHelper);
+            examController      = new ExamAsyncController(userController, configHelper);
+            syllabusController  = new SyllabusAsyncController(userController, configHelper);
             updateController    = new UpdateController(getBaseContext(), ossHelper, configHelper);
         } catch (IOException e) {
             e.printStackTrace();
@@ -59,7 +64,7 @@ public class MainApplication extends Application {
         return ossHelper;
     }
 
-    public UserController getUserController() {
+    public UserAsyncController getUserController() {
         return userController;
     }
 
@@ -67,15 +72,19 @@ public class MainApplication extends Application {
         return configHelper;
     }
 
-    public ScoreController getScoreController() {
+    public ScoreAsyncController getScoreController() {
         return scoreController;
     }
 
-    public ExamController getExamController() {
+    public ExamAsyncController getExamController() {
         return examController;
     }
 
-    public SyllabusController getSyllabusController() {
+    public SyllabusAsyncController getSyllabusController() {
         return syllabusController;
+    }
+
+    public ExecutorService getCachedThreadPool() {
+        return cachedThreadPool;
     }
 }

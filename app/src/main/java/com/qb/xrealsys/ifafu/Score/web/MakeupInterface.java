@@ -1,6 +1,6 @@
 package com.qb.xrealsys.ifafu.Score.web;
 
-import com.qb.xrealsys.ifafu.User.controller.UserController;
+import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Score.model.MakeupExam;
 import com.qb.xrealsys.ifafu.Score.model.Score;
 import com.qb.xrealsys.ifafu.Tool.HttpHelper;
@@ -23,7 +23,7 @@ public class MakeupInterface extends WebInterface {
 
     private String MakeupExamPage = "xsbkkscx.aspx";
 
-    public MakeupInterface(String inHost, UserController userController) {
+    public MakeupInterface(String inHost, UserAsyncController userController) {
         super(inHost, userController);
     }
 

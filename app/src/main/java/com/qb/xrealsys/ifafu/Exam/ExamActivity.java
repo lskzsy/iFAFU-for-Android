@@ -13,7 +13,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.qb.xrealsys.ifafu.Base.BaseActivity;
-import com.qb.xrealsys.ifafu.Exam.controller.ExamController;
+import com.qb.xrealsys.ifafu.Exam.controller.ExamAsyncController;
 import com.qb.xrealsys.ifafu.Base.controller.LoadingViewController;
 import com.qb.xrealsys.ifafu.MainApplication;
 import com.qb.xrealsys.ifafu.R;
@@ -34,11 +34,11 @@ public class ExamActivity extends BaseActivity implements
         UpdateExamTableDelegate,
         TitleBarButtonOnClickedDelegate {
 
-    TitleBarController titleBarController;
+    TitleBarController      titleBarController;
 
-    MainApplication mainApplication;
+    MainApplication         mainApplication;
 
-    ExamController examController;
+    ExamAsyncController examController;
 
     TextView                viewTitle;
 
@@ -46,7 +46,7 @@ public class ExamActivity extends BaseActivity implements
 
     LinearLayout            blankView;
 
-    LoadingViewController loadingViewController;
+    LoadingViewController   loadingViewController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

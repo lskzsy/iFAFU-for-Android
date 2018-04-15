@@ -15,9 +15,9 @@ import com.qb.xrealsys.ifafu.Base.BaseActivity;
 import com.qb.xrealsys.ifafu.Base.controller.LoadingViewController;
 import com.qb.xrealsys.ifafu.MainApplication;
 import com.qb.xrealsys.ifafu.R;
-import com.qb.xrealsys.ifafu.Score.controller.ScoreController;
+import com.qb.xrealsys.ifafu.Score.controller.ScoreAsyncController;
 import com.qb.xrealsys.ifafu.Base.controller.TitleBarController;
-import com.qb.xrealsys.ifafu.User.controller.UserController;
+import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Base.delegate.TitleBarButtonOnClickedDelegate;
 import com.qb.xrealsys.ifafu.Score.delegate.UpdateMainScoreViewDelegate;
 import com.qb.xrealsys.ifafu.Base.dialog.ProgressDialog;
@@ -41,7 +41,7 @@ public class ScoreActivity extends BaseActivity
         View.OnClickListener,
         OptionsPickerView.OnOptionsSelectListener {
 
-    private ScoreController scoreController;
+    private ScoreAsyncController scoreController;
 
     private ConfigHelper            configHelper;
 
@@ -73,7 +73,7 @@ public class ScoreActivity extends BaseActivity
 
     private MainApplication mainApplication;
 
-    private UserController userController;
+    private UserAsyncController userController;
 
     private LoadingViewController loadingViewController;
 

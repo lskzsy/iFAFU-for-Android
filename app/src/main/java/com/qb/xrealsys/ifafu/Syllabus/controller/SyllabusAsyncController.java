@@ -1,6 +1,7 @@
 package com.qb.xrealsys.ifafu.Syllabus.controller;
 
-import com.qb.xrealsys.ifafu.User.controller.UserController;
+import com.qb.xrealsys.ifafu.Base.controller.AsyncController;
+import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Syllabus.delegate.UpdateMainSyllabusViewDelegate;
 import com.qb.xrealsys.ifafu.Syllabus.delegate.UpdateMainUserViewDelegate;
 import com.qb.xrealsys.ifafu.Syllabus.model.Course;
@@ -23,7 +24,7 @@ import java.util.Map;
  * Created by sky on 12/02/2018.
  */
 
-public class SyllabusController {
+public class SyllabusAsyncController extends AsyncController {
 
     private static int[][] studyBeginTime = new int[][] {
             {800, 850, 955, 1045, 1135, 1400, 1450, 1535, 1640, 1825, 1915, 2005},
@@ -33,7 +34,7 @@ public class SyllabusController {
 
     private User            user;
 
-    private UserController userController;
+    private UserAsyncController userController;
 
     private ConfigHelper    configHelper;
 
@@ -41,7 +42,8 @@ public class SyllabusController {
 
     private UpdateMainSyllabusViewDelegate updateMainSyllabusViewDelegate;
 
-    public SyllabusController(UserController userController, ConfigHelper configHelper) {
+    public SyllabusAsyncController(UserAsyncController userController, ConfigHelper configHelper) {
+        super(userController.getThreadPool());
         this.userController = userController;
         this.user           = userController.getData();
         this.syllabus       = new Syllabus();
@@ -49,7 +51,7 @@ public class SyllabusController {
     }
 
     public void SyncData() throws IOException {
-        new Thread(new Runnable() {
+        threadPool.execute(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -75,7 +77,7 @@ public class SyllabusController {
                     e.printStackTrace();
                 }
             }
-        }).start();
+        });
     }
 
     public Syllabus GetData() {

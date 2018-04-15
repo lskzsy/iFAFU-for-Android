@@ -7,7 +7,7 @@ import com.qb.xrealsys.ifafu.Score.controller.ElectiveScoreListController;
 import com.qb.xrealsys.ifafu.MainApplication;
 import com.qb.xrealsys.ifafu.R;
 import com.qb.xrealsys.ifafu.Base.controller.TitleBarController;
-import com.qb.xrealsys.ifafu.User.controller.UserController;
+import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Base.delegate.TitleBarButtonOnClickedDelegate;
 
 import java.util.Locale;
@@ -17,7 +17,7 @@ public class ElectiveScoreActivity extends BaseActivity
 
     MainApplication mainApplication;
 
-    UserController userController;
+    UserAsyncController userController;
 
     TitleBarController titleBarController;
 

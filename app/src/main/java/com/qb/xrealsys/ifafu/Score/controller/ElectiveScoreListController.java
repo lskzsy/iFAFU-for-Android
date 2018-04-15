@@ -57,7 +57,7 @@ public class ElectiveScoreListController implements
 
     private MainApplication mainApplication;
 
-    private ScoreController scoreController;
+    private ScoreAsyncController scoreController;
 
     private Map<String, Integer>    mapStringToIndex;
 

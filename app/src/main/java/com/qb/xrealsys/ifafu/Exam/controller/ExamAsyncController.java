@@ -1,6 +1,7 @@
 package com.qb.xrealsys.ifafu.Exam.controller;
 
-import com.qb.xrealsys.ifafu.User.controller.UserController;
+import com.qb.xrealsys.ifafu.Base.controller.AsyncController;
+import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Exam.delegate.UpdateExamTableDelegate;
 import com.qb.xrealsys.ifafu.Exam.model.ExamTable;
 import com.qb.xrealsys.ifafu.Tool.ConfigHelper;
@@ -12,19 +13,20 @@ import java.io.IOException;
  * Created by sky on 24/02/2018.
  */
 
-public class ExamController {
+public class ExamAsyncController extends AsyncController {
 
-    private UserController userController;
+    private UserAsyncController userController;
 
-    private ConfigHelper        configHelper;
+    private ConfigHelper            configHelper;
 
-    private ExamTable           examTable;
+    private ExamTable               examTable;
 
-    private ExamInterface       examInterface;
+    private ExamInterface           examInterface;
 
     private UpdateExamTableDelegate updateExamTableDelegate;
 
-    public ExamController(UserController userController, ConfigHelper configHelper) {
+    public ExamAsyncController(UserAsyncController userController, ConfigHelper configHelper) {
+        super(userController.getThreadPool());
         this.userController = userController;
         this.configHelper   = configHelper;
         this.examTable      = new ExamTable();
@@ -34,7 +36,7 @@ public class ExamController {
     }
 
     public void SyncData() {
-        new Thread(new Runnable() {
+        threadPool.execute(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -46,7 +48,7 @@ public class ExamController {
                     e.printStackTrace();
                 }
             }
-        }).start();
+        });
     }
 
     public ExamTable GetData() {
