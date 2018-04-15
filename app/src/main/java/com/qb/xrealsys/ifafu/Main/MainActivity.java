@@ -170,16 +170,16 @@ public class MainActivity extends BaseActivity
 
     private boolean isOnce;
 
-    private boolean isInitLoad;
+    private boolean isNeedFlushData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        isWelcome   = true;
-        isAd        = false;
-        isInitLoad  = true;
+        isWelcome       = true;
+        isAd            = false;
+        isNeedFlushData = true;
 
         firstClickBack = 0;
 
@@ -481,7 +481,7 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void ReplaceUser() {
-        isInitLoad = true;
+        isNeedFlushData = true;
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         intent.putExtra("isKill", false);
         startActivity(intent);
@@ -492,7 +492,7 @@ public class MainActivity extends BaseActivity
         final String defaultAccount     = account;
         final String defaultPassword    = password;
 
-        isInitLoad = true;
+        isNeedFlushData = true;
         progressDialog.show("正在切换账号...");
         threadPool.execute(new Runnable() {
             @Override
@@ -573,9 +573,9 @@ public class MainActivity extends BaseActivity
         updateNameAndNumber(data.getName(), data.getAccount());
         updateOnlineStatus(data.isLogin());
 
-        if (isInitLoad) {
+        if (isNeedFlushData) {
             updateData();
-            isInitLoad = false;
+            isNeedFlushData = false;
         } else {
             updateMainUser(currentUserController.getData());
             updateMainScore(scoreController.GetData());
@@ -678,11 +678,11 @@ public class MainActivity extends BaseActivity
                 List<String> termOptions = inScoreTable.getSearchTermOptions();
                 mainScoreTitle.setText(
                         String.format(Locale.getDefault(), getString(R.string.format_main_score_title),
-                                yearOptions.get(inScoreTable.getSelectedYearOption()),
-                                termOptions.get(inScoreTable.getSelectedTermOption())
+                                yearOptions.get(inScoreTable.getDefaultSelectedYear()),
+                                termOptions.get(inScoreTable.getDefaultSelectedTerm())
                         ));
 
-                List<Score> scoreList   = inScoreTable.getData();
+                List<Score> scoreList   = inScoreTable.getDefaultScore();
                 int         scoreCount  = scoreList.size();
                 int         lastRead    = 0;
 

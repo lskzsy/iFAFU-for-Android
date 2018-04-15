@@ -69,13 +69,13 @@ public class ScoreActivity extends BaseActivity
 
     private boolean                 isUpdate;
 
-    private TitleBarController titleBarController;
+    private TitleBarController      titleBarController;
 
-    private MainApplication mainApplication;
+    private MainApplication         mainApplication;
 
-    private UserAsyncController userController;
+    private UserAsyncController     userController;
 
-    private LoadingViewController loadingViewController;
+    private LoadingViewController   loadingViewController;
 
     private ProgressDialog          progressDialog;
 
@@ -84,7 +84,7 @@ public class ScoreActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score);
 
-        progressDialog       = new ProgressDialog(this);
+        progressDialog        = new ProgressDialog(this);
         loadingViewController = new LoadingViewController(this);
         loadingViewController.show();
 
