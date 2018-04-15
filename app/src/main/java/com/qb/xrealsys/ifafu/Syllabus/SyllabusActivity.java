@@ -47,10 +47,10 @@ public class SyllabusActivity extends BaseActivity implements
 
     private static final String[][] studyBeginTime = new String[][] {{
             "8:00", "8:50", "9:55", "10:45", "11:35",
-            "14:00", "14:50", "15:35", "16:40",
+            "14:00", "14:50", "15:50", "16:40",
             "18:25", "19:15", "20:05"}, {
             "8:30", "9:20","10:25","11:15","12:05",
-            "14:00", "14:50", "15:35", "16:40",
+            "14:00", "14:50", "15:50", "16:40",
             "18:25", "19:15", "20:05"}};
 
     private static final String[] weekDayName = new String[] {

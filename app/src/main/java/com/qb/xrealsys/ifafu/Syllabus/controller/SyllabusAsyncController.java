@@ -27,8 +27,8 @@ import java.util.Map;
 public class SyllabusAsyncController extends AsyncController {
 
     private static int[][] studyBeginTime = new int[][] {
-            {800, 850, 955, 1045, 1135, 1400, 1450, 1535, 1640, 1825, 1915, 2005},
-            {830, 920, 1025, 1115, 1205, 1400, 1450, 1535, 1640, 1825, 1915, 2005}};
+            {800, 850, 955, 1045, 1135, 1400, 1450, 1550, 1640, 1825, 1915, 2005},
+            {830, 920, 1025, 1115, 1205, 1400, 1450, 1550, 1640, 1825, 1915, 2005}};
 
     private Syllabus        syllabus;
 
