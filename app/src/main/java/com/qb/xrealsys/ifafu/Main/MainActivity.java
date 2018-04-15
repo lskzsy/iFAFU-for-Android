@@ -1,20 +1,21 @@
 package com.qb.xrealsys.ifafu.Main;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
+import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.VelocityTracker;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,7 +67,6 @@ import java.util.concurrent.ExecutorService;
 
 public class MainActivity extends BaseActivity
         implements
-        View.OnTouchListener,
         View.OnClickListener,
         LeftMenuClickedDelegate,
         UpdateMainUserViewDelegate,
@@ -74,43 +74,16 @@ public class MainActivity extends BaseActivity
         UpdateMainSyllabusViewDelegate,
         TitleBarButtonOnClickedDelegate,
         ReplaceUserDelegate {
-    /* if speed enough, slide complete */
-    public static final int             SNAP_VELOCITY = 100;
-
-    /* menu's right limit */
-    private int                         rightEdge = 0;
-
-    /* finally main stay width */
-    private int                         menuPadding = 300;
-
-    /* menu's left limit */
-    private int                         leftEdge;
-
-    /* x for touch down */
-    private float                       xDown;
-
-    /* x for touch moving */
-    private float                       xMove;
-
-    /* x for touch up */
-    private float                       xUp;
-
-    /* calculating slide speed */
-    private VelocityTracker             mVelocityTracker;
 
     private long                        firstClickBack;
 
-    private int                         screenWidth;
-
-    private boolean                     isMenuVisible;
+    private DrawerLayout                mainDrawer;
 
     private LeftMenuController          leftMenuController;
 
+    private NavigationView              leftMenuView;
+
     private LinearLayout                mainContent;
-
-    private LinearLayout                menu;
-
-    private LinearLayout.LayoutParams   menuParams;
 
     private TextView                    bigHeadImg;
 
@@ -137,6 +110,8 @@ public class MainActivity extends BaseActivity
     private TextView                    mainSyllabusContent;
 
     private LinearLayout                mainScore;
+
+    private RelativeLayout              mainSyllbus;
 
     private UserAsyncController         currentUserController;
 
@@ -250,6 +225,34 @@ public class MainActivity extends BaseActivity
         return true;
     }
 
+    public void InitLeftMenu() {
+        mainDrawer.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                DisplayMetrics dm = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(dm);
+                mainContent.layout(
+                        leftMenuView.getRight(), 0,
+                        leftMenuView.getRight() + dm.widthPixels, dm.heightPixels);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
+    }
+
     private void InitBackground() {
         Bitmap background = mainApplication.getOssHelper().getBackground();
         if (background != null) {
@@ -316,10 +319,11 @@ public class MainActivity extends BaseActivity
     }
 
     private void InitElements() {
-        mainContent   = findViewById(R.id.mainContent);
-        menu          = findViewById(R.id.leftMenu);
-        menuParams    = (LinearLayout.LayoutParams) menu.getLayoutParams();
-        mainScore     = findViewById(R.id.mainScore);
+        mainContent     = findViewById(R.id.mainContent);
+        mainScore       = findViewById(R.id.mainScore);
+        mainSyllbus     = findViewById(R.id.mainSyllbus);
+        mainDrawer      = findViewById(R.id.mainDrawer);
+        leftMenuView    = findViewById(R.id.leftMenuView);
 
         bigHeadImg       = findViewById(R.id.bigHeadImg);
         studentNumber    = findViewById(R.id.studentNumber);
@@ -337,17 +341,8 @@ public class MainActivity extends BaseActivity
     }
 
     private void InitClickListen() {
-//        mainScore.setOnClickListener(this);
-    }
-
-    private void InitLeftMenu() {
-        mainContent.setOnTouchListener(this);
-        WindowManager window = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-        screenWidth = window.getDefaultDisplay().getWidth();
-        menuParams.width = screenWidth - menuPadding;
-        leftEdge = -menuParams.width;
-        menuParams.leftMargin = leftEdge;
-        mainContent.getLayoutParams().width = screenWidth;
+        mainScore.setOnClickListener(this);
+        mainSyllbus.setOnClickListener(this);
     }
 
     private void InitLeftController() {
@@ -730,6 +725,9 @@ public class MainActivity extends BaseActivity
             case R.id.mainScore:
                 gotoScoreActivity();
                 break;
+            case R.id.mainSyllbus:
+                gotoSyllabusActivity();
+                break;
         }
     }
 
@@ -743,149 +741,19 @@ public class MainActivity extends BaseActivity
     }
 
     private void headImgClicked() {
-        if (isMenuVisible) {
-            scrollToContent();
+        if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
+            mainDrawer.closeDrawer(GravityCompat.START);
         } else {
-            scrollToMenu();
+            mainDrawer.openDrawer(GravityCompat.START);
         }
     }
 
-    /**
-     * Solving Left menu logic
-     */
     @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        createVelocityTracker(event);
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                xDown = event.getRawX();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                xMove = event.getRawX();
-                int distanceX = (int) (xMove - xDown);
-                if (isMenuVisible) {
-                    menuParams.leftMargin = distanceX;
-                } else {
-                    menuParams.leftMargin = leftEdge + distanceX;
-                }
-                if (menuParams.leftMargin < leftEdge) {
-                    menuParams.leftMargin = leftEdge;
-                } else if (menuParams.leftMargin > rightEdge) {
-                    menuParams.leftMargin = rightEdge;
-                }
-                menu.setLayoutParams(menuParams);
-                break;
-            case MotionEvent.ACTION_UP:
-                xUp = event.getRawX();
-                if (wantToShowMenu()) {
-                    if (shouldScrollToMenu()) {
-                        scrollToMenu();
-                    } else {
-                        scrollToContent();
-                    }
-                } else if (wantToShowContent()) {
-                    if (shouldScrollToContent()) {
-                        scrollToContent();
-                    } else {
-                        scrollToMenu();
-                    }
-                }
-                recycleVelocityTracker();
-                break;
-        }
-        return true;
-    }
-
-    private void recycleVelocityTracker() {
-        mVelocityTracker.recycle();
-        mVelocityTracker = null;
-    }
-
-    private void scrollToMenu() {
-        new ScrollTask().execute(30);
-    }
-
-    private void scrollToContent() {
-        new ScrollTask().execute(-30);
-    }
-
-    private boolean wantToShowContent() {
-        return xUp - xDown < 0 && isMenuVisible;
-    }
-
-    private boolean wantToShowMenu() {
-        return xUp - xDown > 0 && !isMenuVisible;
-    }
-
-    private boolean shouldScrollToMenu() {
-        return xUp - xDown > menu.getWidth() / 2
-                || getScrollVelocity() > SNAP_VELOCITY;
-    }
-
-    private boolean shouldScrollToContent() {
-        return xDown - xUp + menuPadding > menu.getWidth() / 2
-                || getScrollVelocity() > SNAP_VELOCITY;
-    }
-
-    private int getScrollVelocity() {
-        mVelocityTracker.computeCurrentVelocity(1000);
-        int velocity = (int) mVelocityTracker.getXVelocity();
-        return Math.abs(velocity);
-    }
-
-    private void createVelocityTracker(MotionEvent event) {
-        if (mVelocityTracker == null) {
-            mVelocityTracker = VelocityTracker.obtain();
-        }
-        mVelocityTracker.addMovement(event);
-    }
-
-    class ScrollTask extends AsyncTask<Integer, Integer, Integer> {
-
-        @Override
-        protected Integer doInBackground(Integer... speed) {
-            int leftMargin = menuParams.leftMargin;
-            while (true) {
-                leftMargin = leftMargin + speed[0];
-                if (leftMargin > rightEdge) {
-                    leftMargin = rightEdge;
-                    break;
-                }
-                if (leftMargin < leftEdge) {
-                    leftMargin = leftEdge;
-                    break;
-                }
-                publishProgress(leftMargin);
-                sleep(5);
-            }
-            if (speed[0] > 0) {
-                isMenuVisible = true;
-            } else {
-                isMenuVisible = false;
-            }
-            return leftMargin;
-        }
-
-
-        @Override
-        protected void onProgressUpdate(Integer... leftMargin) {
-            menuParams.leftMargin = leftMargin[0];
-            menu.setLayoutParams(menuParams);
-        }
-
-
-        @Override
-        protected void onPostExecute(Integer leftMargin) {
-            menuParams.leftMargin = leftMargin;
-            menu.setLayoutParams(menuParams);
-        }
-    }
-
-    private void sleep(long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    public void onBackPressed() {
+        if(mainDrawer.isDrawerOpen(GravityCompat.START)) {
+            mainDrawer.closeDrawer(GravityCompat.START);
+        }else {
+            super.onBackPressed();
         }
     }
 }
