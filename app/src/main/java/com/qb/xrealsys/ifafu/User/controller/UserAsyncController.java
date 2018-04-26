@@ -1,8 +1,10 @@
 package com.qb.xrealsys.ifafu.User.controller;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.qb.xrealsys.ifafu.Base.controller.AsyncController;
+import com.qb.xrealsys.ifafu.DB.UserConfig;
 import com.qb.xrealsys.ifafu.R;
 import com.qb.xrealsys.ifafu.Base.model.Response;
 import com.qb.xrealsys.ifafu.User.model.User;
@@ -16,6 +18,9 @@ import java.io.IOException;
 
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * Created by sky on 10/02/2018.
@@ -77,21 +82,7 @@ public class UserAsyncController extends AsyncController {
             data.setLogin(true);
             data.setName(response.getMessage());
             if (isSave) {
-                saveUserInfo(data.getAccount(), data.getPassword());
-
-                try {
-                    userList.getJSONObject(data.getAccount());
-                } catch (JSONException e) {
-                    try {
-                        JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("name", data.getName());
-                        jsonObject.put("password", data.getPassword());
-                        userList.put(data.getAccount(), jsonObject);
-                        configHelper.SetValue("userList", userList.toString());
-                    } catch (JSONException ee) {
-                        ee.printStackTrace();
-                    }
-                }
+                saveUserInfo();
             }
 
             return new Response(true, 0, R.string.success_login);
@@ -119,8 +110,8 @@ public class UserAsyncController extends AsyncController {
         userInterface = new UserInterface(configHelper.GetSystemValue("host"), this);
     }
 
-    public JSONObject getUserList() {
-        return userList;
+    public RealmResults<UserConfig> getUserList() {
+        return Realm.getDefaultInstance().where(UserConfig.class).findAll();
     }
 
     public User getData() {
@@ -137,8 +128,19 @@ public class UserAsyncController extends AsyncController {
         return true;
     }
 
-    public void saveUserInfo(String account, String password) {
-        configHelper.SetValue("account", account);
-        configHelper.SetValue("password", password);
+    public void saveUserInfo() {
+        configHelper.SetValue("account", data.getAccount());
+        configHelper.SetValue("password", data.getPassword());
+
+        Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                UserConfig user = new UserConfig(
+                        data.getAccount(),
+                        data.getPassword(),
+                        data.getName());
+                realm.insertOrUpdate(user);
+            }
+        });
     }
 }

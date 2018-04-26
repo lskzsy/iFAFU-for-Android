@@ -62,4 +62,6 @@
     <string name="format_elective_score_item_title_content">需满%s分</string>
     <string name="format_clear_user">您确定要清除账号%s存在本机的账号的密码数据吗？此操作是不可逆的。</string>
     <string name="format_user_manager_switch_user">你选择了账号:%s\n请选择需要进行的操作</string>
+    <string name="appwidget_text">iFAFU小工具</string>
+    <string name="add_widget">Add widget</string>
 </resources>

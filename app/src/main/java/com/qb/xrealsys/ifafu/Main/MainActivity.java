@@ -269,7 +269,7 @@ public class MainActivity extends BaseActivity
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
             } else {
-                new Thread(new Runnable() {
+                threadPool.execute(new Runnable() {
                     @Override
                     public void run() {
                         try {
@@ -284,7 +284,7 @@ public class MainActivity extends BaseActivity
                             e.printStackTrace();
                         }
                     }
-                }).start();
+                });
             }
         } else {
             updateActivity();
@@ -299,6 +299,10 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onPause() {
         super.onPause();
+
+        if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
+            mainDrawer.closeDrawer(GravityCompat.START);
+        }
     }
 
     @Override
@@ -458,6 +462,10 @@ public class MainActivity extends BaseActivity
      * Go to other activity
      */
     private void gotoSyllabusActivity() {
+        if (!currentUserController.isLogin()) {
+            return;
+        }
+
         Intent intent = new Intent(MainActivity.this, SyllabusActivity.class);
         startActivity(intent);
     }
@@ -524,6 +532,10 @@ public class MainActivity extends BaseActivity
     }
 
     private void gotoScoreActivity() {
+        if (!currentUserController.isLogin()) {
+            return;
+        }
+
         Intent intent = new Intent(MainActivity.this, ScoreActivity.class);
         startActivity(intent);
     }
@@ -538,11 +550,19 @@ public class MainActivity extends BaseActivity
     }
 
     private void gotoElectiveScoreActivity() {
+        if (!currentUserController.isLogin()) {
+            return;
+        }
+
         Intent intent = new Intent(MainActivity.this, ElectiveScoreActivity.class);
         startActivity(intent);
     }
 
     private void gotoExamActivity() {
+        if (!currentUserController.isLogin()) {
+            return;
+        }
+
         Intent intent = new Intent(MainActivity.this, ExamActivity.class);
         startActivity(intent);
     }

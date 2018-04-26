@@ -127,7 +127,7 @@ public class ScoreAsyncController extends AsyncController {
             @Override
             public void run() {
                 try {
-                    scoreTable          = scoreInterface.GetScoreTable(
+                    scoreTable = scoreInterface.GetScoreTable(
                             userController.getData().getAccount(),
                             userController.getData().getName());
                     scoreTable.updateDefaultData();

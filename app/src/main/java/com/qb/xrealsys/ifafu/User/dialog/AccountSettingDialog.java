@@ -16,6 +16,7 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.qb.xrealsys.ifafu.Base.dialog.iOSDialog;
+import com.qb.xrealsys.ifafu.DB.UserConfig;
 import com.qb.xrealsys.ifafu.MainApplication;
 import com.qb.xrealsys.ifafu.R;
 import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
@@ -23,16 +24,14 @@ import com.qb.xrealsys.ifafu.User.delegate.ReplaceUserDelegate;
 import com.qb.xrealsys.ifafu.Base.delegate.iOSDialogButtonOnClickedDelegate;
 import com.qb.xrealsys.ifafu.Tool.GlobalLib;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import io.realm.RealmResults;
 
 /**
  * Created by sky on 25/02/2018.
@@ -42,7 +41,7 @@ public class AccountSettingDialog extends Dialog implements
         View.OnClickListener,
         AdapterView.OnItemClickListener {
 
-    private iOSDialog userManagerDialog;
+    private iOSDialog               userManagerDialog;
 
     private iOSDialog               queryPasswordDialog;
 
@@ -50,11 +49,11 @@ public class AccountSettingDialog extends Dialog implements
 
     private MainApplication         mainApplication;
 
-    private UserAsyncController userController;
+    private UserAsyncController     userController;
 
     private ReplaceUserDelegate     replaceUserDelegate;
 
-    private JSONObject              userList;
+    private RealmResults<UserConfig> userList;
 
     public AccountSettingDialog(@NonNull Context context, ReplaceUserDelegate replaceUserDelegate) {
         super(context, R.style.styleAccountSettingDialog);
@@ -76,27 +75,20 @@ public class AccountSettingDialog extends Dialog implements
     }
 
     private void InitList() {
-        ListView    listView = findViewById(R.id.accountSettingList);
+        ListView listView = findViewById(R.id.accountSettingList);
 
         userList = userController.getUserList();
 
         List<Map<String, Object>> adapterData = new ArrayList<>();
-        int userCount = 1;
-        try {
-            Iterator<String> numberIter = userList.keys();
-            while (numberIter.hasNext()) {
-                String      number = numberIter.next();
-                JSONObject  object = (JSONObject) userList.get(number);
-                Map<String, Object> map = new HashMap<>();
-                map.put("icon", R.drawable.icon_user);
-                map.put("id", number);
-                map.put("content", String.format(Locale.getDefault(), "%s(%s)",
-                        object.getString("name"), number));
-                adapterData.add(map);
-                userCount++;
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+
+        for (int i = 0; i < userList.size(); i++) {
+            UserConfig user = userList.get(i);
+            Map<String, Object> map = new HashMap<>();
+            map.put("icon", R.drawable.icon_user);
+            map.put("id", i);
+            map.put("content", String.format(Locale.getDefault(), "%s(%s)",
+                    user.getName(), user.getAccount()));
+            adapterData.add(map);
         }
 
         Map<String, Object> finalMap = new HashMap<>();
@@ -116,7 +108,7 @@ public class AccountSettingDialog extends Dialog implements
                 (int) GlobalLib.GetRawSize(
                         this.getContext(),
                         TypedValue.COMPLEX_UNIT_DIP,
-                        (int)51 * userCount)));
+                        51 *  (userList.size() + 1))));
         listView.setOnItemClickListener(this);
     }
 
@@ -152,25 +144,18 @@ public class AccountSettingDialog extends Dialog implements
 
     private void showUserManagerDialog(AdapterView<?> parent, int position) {
         userManagerDialog = new iOSDialog(this.getContext());
-        Map<String, Object> object =
-                (Map<String, Object>) parent.getAdapter().getItem(position);
-        String userName  = "";
-        String userPass  = "";
 
-        try {
-            JSONObject user = userList.getJSONObject(object.get("id").toString());
-            userName = user.getString("name");
-            userPass = user.getString("password");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        UserConfig user = userList.get(position);
+        String userName = user.getName();
+        String userPass = user.getPassword();
+        String userAcc  = user.getAccount();
 
         final String userString   = String.format(
                 Locale.getDefault(),
                 "%s(%s)",
-                userName, object.get("id").toString());
+                userName, userAcc);
         final String userPassword = userPass;
-        final String userNumber   = object.get("id").toString();
+        final String userNumber   = userAcc;
 
         userManagerDialog.setButtons(Arrays.asList("切换账号", "清除此账号", "查看密码", "取消"))
                 .setTitle("账号管理")

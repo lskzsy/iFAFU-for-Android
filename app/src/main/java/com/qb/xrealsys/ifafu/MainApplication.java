@@ -14,31 +14,39 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+
 /**
  * Created by sky on 10/02/2018.
  */
 
 public class MainApplication extends Application {
 
-    private OSSHelper           ossHelper;
+    private OSSHelper                   ossHelper;
 
-    private ConfigHelper        configHelper;
+    private ConfigHelper                configHelper;
 
-    private UserAsyncController userController;
+    private UserAsyncController         userController;
 
-    private ScoreAsyncController scoreController;
+    private ScoreAsyncController        scoreController;
 
-    private ExamAsyncController examController;
+    private ExamAsyncController         examController;
 
-    private SyllabusAsyncController syllabusController;
+    private SyllabusAsyncController     syllabusController;
 
-    private UpdateController    updateController;
+    private UpdateController            updateController;
 
-    private ExecutorService     cachedThreadPool;
+    private ExecutorService             cachedThreadPool;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Realm.init(this);
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder()
+                .name("ifafu.realm").deleteRealmIfMigrationNeeded().build();
+        Realm.setDefaultConfiguration(realmConfig);
 
         try {
             cachedThreadPool    = Executors.newCachedThreadPool();
