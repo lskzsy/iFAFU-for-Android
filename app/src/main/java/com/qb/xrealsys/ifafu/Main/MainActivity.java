@@ -615,9 +615,9 @@ public class MainActivity extends BaseActivity
     private void updateActivity() {
         User data = currentUserController.getData();
 
-        syllabusController.setUpdateMainUserViewDelegate(this);
         syllabusController.setUpdateMainSyllabusViewDelegate(this);
         scoreController.setUpdateMainScoreViewDelegate(this);
+        scoreController.setUpdateMainUserViewDelegate(this);
 
         titleBarController = new TitleBarController(MainActivity.this);
         titleBarController

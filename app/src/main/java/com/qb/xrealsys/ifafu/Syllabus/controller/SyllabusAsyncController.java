@@ -30,17 +30,15 @@ public class SyllabusAsyncController extends AsyncController {
             {800, 850, 955, 1045, 1135, 1400, 1450, 1550, 1640, 1825, 1915, 2005},
             {830, 920, 1025, 1115, 1205, 1400, 1450, 1550, 1640, 1825, 1915, 2005}};
 
-    private Syllabus        syllabus;
+    private Syllabus                        syllabus;
 
-    private User            user;
+    private User                            user;
 
-    private UserAsyncController userController;
+    private UserAsyncController             userController;
 
-    private ConfigHelper    configHelper;
+    private ConfigHelper                    configHelper;
 
-    private UpdateMainUserViewDelegate updateMainUserViewDelegate;
-
-    private UpdateMainSyllabusViewDelegate updateMainSyllabusViewDelegate;
+    private UpdateMainSyllabusViewDelegate  updateMainSyllabusViewDelegate;
 
     public SyllabusAsyncController(UserAsyncController userController, ConfigHelper configHelper) {
         super(userController.getThreadPool());
@@ -59,16 +57,6 @@ public class SyllabusAsyncController extends AsyncController {
                             configHelper.GetSystemValue("host"),
                             userController);
                     Map<String, Model> answer = syllabusInterface.GetSyllabus(user.getAccount(), user.getName());
-                    if (answer == null) {
-                        updateMainUserViewDelegate.updateError("获取失败");
-                        return;
-                    }
-
-                    User answerUser = (User) answer.get("user");
-                    user.setClas(answerUser.getClas());
-                    user.setEnrollment(answerUser.getEnrollment());
-                    user.setInstitute(answerUser.getInstitute());
-                    updateMainUserViewDelegate.updateMainUser(user);
 
                     syllabus = (Syllabus) answer.get("syllabus");
                     Collections.sort(syllabus.getData(), new SortCourseComparator());
@@ -190,10 +178,6 @@ public class SyllabusAsyncController extends AsyncController {
         }
 
         return null;
-    }
-
-    public void setUpdateMainUserViewDelegate(UpdateMainUserViewDelegate updateMainUserViewDelegate) {
-        this.updateMainUserViewDelegate = updateMainUserViewDelegate;
     }
 
     public void setUpdateMainSyllabusViewDelegate(UpdateMainSyllabusViewDelegate updateMainSyllabusViewDelegate) {

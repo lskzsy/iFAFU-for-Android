@@ -1,6 +1,8 @@
 package com.qb.xrealsys.ifafu.Score.controller;
 
 import com.qb.xrealsys.ifafu.Base.controller.AsyncController;
+import com.qb.xrealsys.ifafu.Base.model.Model;
+import com.qb.xrealsys.ifafu.Syllabus.delegate.UpdateMainUserViewDelegate;
 import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Score.delegate.UpdateElectiveTargetScoreDelegate;
 import com.qb.xrealsys.ifafu.Score.delegate.UpdateMainScoreViewDelegate;
@@ -12,6 +14,7 @@ import com.qb.xrealsys.ifafu.Tool.ConfigHelper;
 import com.qb.xrealsys.ifafu.Tool.GlobalLib;
 import com.qb.xrealsys.ifafu.Score.web.MakeupInterface;
 import com.qb.xrealsys.ifafu.Score.web.ScoreInterface;
+import com.qb.xrealsys.ifafu.User.model.User;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,6 +31,8 @@ public class ScoreAsyncController extends AsyncController {
 
     private UserAsyncController                 userController;
 
+    private User                                user;
+
     private ConfigHelper                        configHelper;
 
     private ScoreInterface                      scoreInterface;
@@ -42,9 +47,12 @@ public class ScoreAsyncController extends AsyncController {
 
     private UpdateMakeupExamInfoDelegate        updateMakeupExamInfoDelegate;
 
+    private UpdateMainUserViewDelegate          updateMainUserViewDelegate;
+
     public ScoreAsyncController(UserAsyncController userController, ConfigHelper configHelper) {
         super(userController.getThreadPool());
         this.userController = userController;
+        this.user           = userController.getData();
         this.configHelper   = configHelper;
         this.scoreTable     = new ScoreTable();
         this.scoreInterface = new ScoreInterface(
@@ -63,12 +71,12 @@ public class ScoreAsyncController extends AsyncController {
                 try {
                     if (electiveTargetScore == null) {
                         electiveTargetScore = scoreInterface.GetElectiveTargetScore(
-                                userController.getData().getAccount(),
-                                userController.getData().getName());
+                                user.getAccount(),
+                                user.getName());
                     }
                     scoreTable.setData(scoreInterface.updateScoreTable(
-                            userController.getData().getAccount(),
-                            userController.getData().getName(),
+                            user.getAccount(),
+                            user.getName(),
                             scoreTable.getSearchYearOptions().get(0),
                             scoreTable.getSearchTermOptions().get(0)
                     ));
@@ -92,8 +100,8 @@ public class ScoreAsyncController extends AsyncController {
             public void run() {
                 try {
                     scoreTable.setData(scoreInterface.updateScoreTable(
-                            userController.getData().getAccount(),
-                            userController.getData().getName(),
+                            user.getAccount(),
+                            user.getName(),
                             y, t));
                     updateMainScoreViewDelegate.updateMainScore(scoreTable);
                 } catch (IOException e) {
@@ -111,8 +119,8 @@ public class ScoreAsyncController extends AsyncController {
             public void run() {
                 try {
                     MakeupExam makeupExam = makeupInterface.GetMakeupExam(
-                            userController.getData().getAccount(),
-                            userController.getData().getName(),
+                            user.getAccount(),
+                            user.getName(),
                             queryScore);
                     updateMakeupExamInfoDelegate.informMakeupExamUpdated(makeupExam);
                 } catch (IOException e) {
@@ -127,9 +135,22 @@ public class ScoreAsyncController extends AsyncController {
             @Override
             public void run() {
                 try {
-                    scoreTable = scoreInterface.GetScoreTable(
-                            userController.getData().getAccount(),
-                            userController.getData().getName());
+                    Map<String, Model> answer = scoreInterface.GetScoreTable(
+                            user.getAccount(),
+                            user.getName());
+
+                    if (answer == null) {
+                        updateMainUserViewDelegate.updateError("获取失败");
+                        return;
+                    }
+
+                    User answerUser = (User) answer.get("user");
+                    user.setClas(answerUser.getClas());
+                    user.setEnrollment(answerUser.getEnrollment());
+                    user.setInstitute(answerUser.getInstitute());
+                    updateMainUserViewDelegate.updateMainUser(user);
+
+                    scoreTable = (ScoreTable) answer.get("scoreTable");
                     scoreTable.updateDefaultData();
                     updateMainScoreViewDelegate.updateMainScore(scoreTable);
                     makeupInterface.InitMakeupExam(
@@ -179,6 +200,10 @@ public class ScoreAsyncController extends AsyncController {
 
     public void setUpdateMakeupExamInfoDelegate(UpdateMakeupExamInfoDelegate updateMakeupExamInfoDelegate) {
         this.updateMakeupExamInfoDelegate = updateMakeupExamInfoDelegate;
+    }
+
+    public void setUpdateMainUserViewDelegate(UpdateMainUserViewDelegate updateMainUserViewDelegate) {
+        this.updateMainUserViewDelegate = updateMainUserViewDelegate;
     }
 
     public Map<String, Float> getElectiveTargetScore() {

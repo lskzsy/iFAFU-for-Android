@@ -1,12 +1,13 @@
 package com.qb.xrealsys.ifafu.Syllabus.model;
 
-import com.qb.xrealsys.ifafu.Base.model.Model;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by sky on 14/02/2018.
  */
 
-public class Course extends Model {
+public class Course extends RealmObject {
 
     private String name;
 
@@ -27,6 +28,17 @@ public class Course extends Model {
     private String address;
 
     private String timeString;
+
+    @PrimaryKey
+    private String account;
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
 
     public int getOddOrTwice() {
         return oddOrTwice;

@@ -1,5 +1,6 @@
 package com.qb.xrealsys.ifafu.Score.web;
 
+import com.qb.xrealsys.ifafu.Base.model.Model;
 import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Score.model.Score;
 import com.qb.xrealsys.ifafu.Score.model.ScoreTable;
@@ -7,6 +8,7 @@ import com.qb.xrealsys.ifafu.Tool.GlobalLib;
 import com.qb.xrealsys.ifafu.Tool.HttpHelper;
 import com.qb.xrealsys.ifafu.Tool.HttpResponse;
 import com.qb.xrealsys.ifafu.Base.web.WebInterface;
+import com.qb.xrealsys.ifafu.User.model.User;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -109,8 +111,10 @@ public class ScoreInterface extends WebInterface {
         return answer;
     }
 
-    public ScoreTable GetScoreTable(String number, String name) throws IOException {
-        ScoreTable scoreTable = new ScoreTable();
+    public Map<String, Model> GetScoreTable(String number, String name) throws IOException {
+        ScoreTable          scoreTable  = new ScoreTable();
+        User                user        = new User();
+        Map<String, Model>  answer      = new HashMap<>();
 
         String accessUrl = makeAccessUrlHead() + ScorePage;
         accessUrl += "?xh=" + number;
@@ -130,6 +134,20 @@ public class ScoreInterface extends WebInterface {
             return GetScoreTable(number, name);
         }
 
+        /* Get student information */
+        Pattern patternA = Pattern.compile("学院：(.*)</td>");
+        Pattern patternB = Pattern.compile("行政班：(.*)</td>");
+        Matcher matcherA = patternA.matcher(html);
+        Matcher matcherB = patternB.matcher(html);
+
+        if (matcherA.find() && matcherB.find()) {
+            user.setInstitute(matcherA.group(1));
+            user.setClas(matcherB.group(1));
+            user.setEnrollment(Integer.parseInt("20" + user.getClas().substring(0, 2)));
+        } else {
+            return null;
+        }
+
         /* Get view params */
         setViewParams(html);
 
@@ -140,7 +158,9 @@ public class ScoreInterface extends WebInterface {
         List<Score> scoreList = scoreTable.getData();
         analysisScore(html, scoreList);
 
-        return scoreTable;
+        answer.put("scoreTable", scoreTable);
+        answer.put("user", user);
+        return answer;
     }
 
     private void analysisScore(String html, List<Score> scoreList) throws IOException {

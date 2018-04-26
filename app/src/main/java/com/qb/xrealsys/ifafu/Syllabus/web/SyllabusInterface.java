@@ -32,7 +32,6 @@ public class SyllabusInterface extends WebInterface {
     }
 
     public Map<String, Model> GetSyllabus(String number, String name) throws IOException {
-        User        user            = new User();
         Syllabus    syllabus        = new Syllabus();
         Map<String, Model> answer   = new HashMap<>();
         String      accessUrl = makeAccessUrlHead() + SyllabusPage;
@@ -55,20 +54,6 @@ public class SyllabusInterface extends WebInterface {
         /* Get search option */
         getSearchOptions(html, syllabus, "id=\"xnd\"", "学年第");
 
-        /* Get student information */
-        Pattern patternA = Pattern.compile("学院：(.*)</span>");
-        Pattern patternB = Pattern.compile("行政班：(.*)</span>");
-        Matcher matcherA = patternA.matcher(html);
-        Matcher matcherB = patternB.matcher(html);
-
-        if (matcherA.find() && matcherB.find()) {
-            user.setInstitute(matcherA.group(1));
-            user.setClas(matcherB.group(1));
-            user.setEnrollment(Integer.parseInt("20" + user.getClas().substring(0, 2)));
-        } else {
-            return null;
-        }
-
         /* Get syllabus information */
         syllabus.setCampus(0);
         Map<String, List<Course>> mapNameToCourse = new HashMap<>();
@@ -78,6 +63,7 @@ public class SyllabusInterface extends WebInterface {
         Matcher matcherC = patternC.matcher(html);
         while (matcherC.find()) {
             Course course = new Course();
+            course.setAccount(number);
             course.setName(matcherC.group(5));
             course.setTeacher(matcherC.group(7));
             course.setAddress(matcherC.group(8));
@@ -120,7 +106,6 @@ public class SyllabusInterface extends WebInterface {
             mapNameToCourse.get(course.getName()).add(course);
         }
 
-        answer.put("user", user);
         answer.put("syllabus", syllabus);
         return answer;
     }
