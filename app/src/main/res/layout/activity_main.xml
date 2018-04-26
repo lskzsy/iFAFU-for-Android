@@ -25,75 +25,86 @@
 
             <include android:id="@+id/titlebar" layout="@layout/gadget_titlebar"/>
 
-            <LinearLayout
-                android:layout_weight="1.35"
+            <in.srain.cube.views.ptr.PtrFrameLayout
+                android:id="@+id/ptrFrame"
+                xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"/>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
+                cube_ptr:ptr_resistance="1.7"
+                cube_ptr:ptr_ratio_of_header_height_to_refresh="1.2"
+                cube_ptr:ptr_duration_to_close="300"
+                cube_ptr:ptr_duration_to_close_header="2000"
+                cube_ptr:ptr_keep_header_when_refresh="true"
+                cube_ptr:ptr_pull_to_fresh="true" >
 
                 <LinearLayout
+                    android:id="@+id/store_house_ptr_image_content"
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="10dp"
-                    android:elevation="5dip"
-                    android:background="@drawable/shape_mainwindow"
-                    android:layout_centerHorizontal="true">
-                    <include layout="@layout/gadget_main_user" />
-                </LinearLayout>
-            </RelativeLayout>
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-                <LinearLayout
+                    <ProgressBar
+                        style="?android:attr/progressBarStyle"
+                        android:layout_gravity="center"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp" />
+
+                </LinearLayout>
+
+                <ScrollView
+                    android:scrollbars="none"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="10dp"
-                    android:elevation="5dip"
-                    android:background="@drawable/shape_mainwindow"
-                    android:layout_centerHorizontal="true">
-                    <include layout="@layout/gadget_main_score" />
-                </LinearLayout>
-            </RelativeLayout>
+                    android:layout_height="match_parent">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="10dp"
-                    android:elevation="5dip"
-                    android:background="@drawable/shape_mainwindow"
-                    android:layout_centerHorizontal="true">
-                    <include layout="@layout/gadget_main_syllabus" />
-                </LinearLayout>
-            </RelativeLayout>
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-            <LinearLayout
-                android:layout_weight="1.2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"/>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            android:orientation="vertical"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginEnd="20dp"
+                            android:layout_marginTop="20dp"
+                            android:elevation="5dip"
+                            android:background="@drawable/shape_mainwindow"
+                            android:layout_gravity="center_horizontal">
+                            <include layout="@layout/gadget_main_user" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            android:orientation="vertical"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginEnd="20dp"
+                            android:layout_marginTop="20dp"
+                            android:elevation="5dip"
+                            android:background="@drawable/shape_mainwindow"
+                            android:layout_gravity="center_horizontal">
+                            <include layout="@layout/gadget_main_score" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            android:orientation="vertical"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginEnd="20dp"
+                            android:layout_marginTop="20dp"
+                            android:elevation="5dip"
+                            android:background="@drawable/shape_mainwindow"
+                            android:layout_gravity="center_horizontal">
+                            <include layout="@layout/gadget_main_syllabus" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </ScrollView>
+            </in.srain.cube.views.ptr.PtrFrameLayout>
 
         </LinearLayout>
 

@@ -28,6 +28,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -82,6 +83,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+
+import in.srain.cube.views.ptr.PtrDefaultHandler;
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
 
 public class MainActivity extends BaseActivity
         implements
@@ -156,6 +161,8 @@ public class MainActivity extends BaseActivity
     private SpannableString             mainSyllabusBlankString;
 
     private ExecutorService             threadPool;
+
+    private PtrFrameLayout              ptrFrameLayout;
 
     private boolean isWelcome;
 
@@ -350,6 +357,7 @@ public class MainActivity extends BaseActivity
         bigHeadImg       = findViewById(R.id.bigHeadImg);
         studentNumber    = findViewById(R.id.studentNumber);
         isOnline         = findViewById(R.id.isOnline);
+        ptrFrameLayout   = findViewById(R.id.ptrFrame);
 
         mainUserNumber      = findViewById(R.id.main_user_number);
         mainUserEnrollment  = findViewById(R.id.main_user_enrollment);
@@ -360,6 +368,20 @@ public class MainActivity extends BaseActivity
         mainSyllabusTitle   = findViewById(R.id.main_syllabus_title);
         mainSyllabusTime    = findViewById(R.id.main_syllabus_time);
         mainSyllabusContent = findViewById(R.id.main_syllabus_content);
+
+        ptrFrameLayout.setPtrHandler(new PtrHandler() {
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+            }
+
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                Log.d("log", "Refresh data...");
+                isNeedFlushData = true;
+                updateActivity();
+            }
+        });
     }
 
     private void InitClickListen() {
@@ -673,6 +695,8 @@ public class MainActivity extends BaseActivity
                     }
                     mainSyllabusContent.setText(display);
                 }
+
+                ptrFrameLayout.refreshComplete();
             }
         });
     }
