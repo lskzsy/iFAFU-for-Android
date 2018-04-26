@@ -58,6 +58,10 @@
             android:name=".Syllabus.SyllabusActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
+        <activity
+            android:name=".Responsibility.CopyingActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <receiver android:name=".Widget.iFAFUWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -67,7 +71,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/i_fafuwidget_info" />
         </receiver>
-
     </application>
 
 </manifest>

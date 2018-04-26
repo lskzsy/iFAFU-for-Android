@@ -48,6 +48,7 @@ import com.qb.xrealsys.ifafu.Main.model.UpdateInf;
 import com.qb.xrealsys.ifafu.MainApplication;
 import com.qb.xrealsys.ifafu.Base.ProtectActivity;
 import com.qb.xrealsys.ifafu.R;
+import com.qb.xrealsys.ifafu.Responsibility.CopyingActivity;
 import com.qb.xrealsys.ifafu.Responsibility.ResponsibilityActivity;
 import com.qb.xrealsys.ifafu.Score.ElectiveScoreActivity;
 import com.qb.xrealsys.ifafu.Score.ScoreActivity;
@@ -377,7 +378,7 @@ public class MainActivity extends BaseActivity
             put("信息查询", Arrays.asList("成绩查询", "选修学分查询", "等级考试查询", "学生考试查询"));
             put("实用工具", Arrays.asList("我的课表", "一键评教", "选修课抢课", "网页模式", "文件库"));
             put("软件设置", Arrays.asList("账号管理", "免验证码", systemSettingVerifyOption));
-            put("关于软件", Arrays.asList("关于iFAFU", "贡献名单", "使用帮助", "隐私条款与免责声明"));
+            put("关于软件", Arrays.asList("关于iFAFU", "贡献名单", "开源协议", "隐私条款与免责声明"));
         }};
 
         Map<String, List<Integer>>  leftMenuTabIcons    = new HashMap<String, List<Integer>>() {{
@@ -452,10 +453,7 @@ public class MainActivity extends BaseActivity
                 gotoAboutActivity();
                 break;
             case 14:
-                Toast.makeText(
-                        this,
-                        "暂无帮助信息！",
-                        Toast.LENGTH_SHORT).show();
+                gotoCopyingActivity();
                 break;
             case 15:
                 gotoResponsibilityActivity();
@@ -540,6 +538,11 @@ public class MainActivity extends BaseActivity
 
     private void gotoResponsibilityActivity() {
         Intent intent = new Intent(MainActivity.this, ResponsibilityActivity.class);
+        startActivity(intent);
+    }
+
+    private void gotoCopyingActivity() {
+        Intent intent = new Intent(MainActivity.this, CopyingActivity.class);
         startActivity(intent);
     }
 

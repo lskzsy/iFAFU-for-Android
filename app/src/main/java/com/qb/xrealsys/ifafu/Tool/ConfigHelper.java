@@ -2,6 +2,7 @@ package com.qb.xrealsys.ifafu.Tool;
 
 import android.content.Context;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -56,5 +57,21 @@ public class ConfigHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getCopying() {
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+        try {
+            InputStream fis = context.getAssets().open("copying.txt");
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = fis.read(buffer)) != -1) {
+                result.write(buffer, 0, length);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return result.toString();
     }
 }
