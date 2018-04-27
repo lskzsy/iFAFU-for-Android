@@ -29,7 +29,6 @@ public class Course extends RealmObject {
 
     private String timeString;
 
-    @PrimaryKey
     private String account;
 
     public String getAccount() {

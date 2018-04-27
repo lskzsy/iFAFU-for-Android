@@ -12,6 +12,7 @@ import android.widget.RemoteViews;
 import com.qb.xrealsys.ifafu.MainApplication;
 import com.qb.xrealsys.ifafu.R;
 import com.qb.xrealsys.ifafu.Syllabus.controller.SyllabusAsyncController;
+import com.qb.xrealsys.ifafu.Syllabus.delegate.UpdateMainSyllabusViewDelegate;
 import com.qb.xrealsys.ifafu.Syllabus.model.Course;
 import com.qb.xrealsys.ifafu.Syllabus.model.Syllabus;
 import com.qb.xrealsys.ifafu.Tool.ConfigHelper;
@@ -28,11 +29,7 @@ public class iFAFUWidget extends AppWidgetProvider {
 
     static private SyllabusAsyncController syllabusController;
 
-    static private UserAsyncController     userController;
-
     static private ConfigHelper            configHelper;
-
-    static private SpannableString         mainSyllabusBlankString;
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         // Construct the RemoteViews object
@@ -41,11 +38,8 @@ public class iFAFUWidget extends AppWidgetProvider {
         Syllabus inSyllabus = syllabusController.GetData();
         views.setTextViewText(R.id.main_syllabus_title, String.format(Locale.getDefault(),
                 context.getString(R.string.format_main_syllabus_title),
-
-        inSyllabus.getSearchYearOptions().get(
-                inSyllabus.getSelectedYearOption()),
-        inSyllabus.getSearchTermOptions().get(
-                inSyllabus.getSelectedTermOption())));
+                inSyllabus.getSearchYearOptions().get(inSyllabus.getSelectedYearOption()),
+                inSyllabus.getSearchTermOptions().get(inSyllabus.getSelectedTermOption())));
 
         String[] studyTime = GlobalLib.GetStudyTime(
                 configHelper.GetValue("nowTermFirstWeek"));
@@ -54,14 +48,14 @@ public class iFAFUWidget extends AppWidgetProvider {
         int nowWeek = Integer.parseInt(studyTime[1]);
         int weekDay = Integer.parseInt(studyTime[2]);
         if (nowWeek < 1 || nowWeek > 24) {
-            views.setTextViewText(R.id.main_syllabus_content, mainSyllabusBlankString);
+            views.setTextViewText(R.id.main_syllabus_content, "今天没有课");
             return;
         }
 
         List<Course> courseList
                 = syllabusController.GetCourseInfoByWeekAndWeekday(nowWeek, weekDay);
         if (courseList.size() < 1) {
-            views.setTextViewText(R.id.main_syllabus_content, mainSyllabusBlankString);
+            views.setTextViewText(R.id.main_syllabus_content, "今天没有课");
         } else {
             String display = String.format(
                     Locale.getDefault(),"今天有%d节课\n", courseList.size());
@@ -81,25 +75,25 @@ public class iFAFUWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
+        Log.d("log", "Widget onUpdate.");
         MainApplication mainApplication = (MainApplication) context.getApplicationContext();
 
-        userController     = mainApplication.getUserController();
         syllabusController = mainApplication.getSyllabusController();
         configHelper       = mainApplication.getConfigHelper();
+        syllabusController.SyncDataWithLocal();
 
-        mainSyllabusBlankString = new SpannableString("0今天没有课");
-        mainSyllabusBlankString.setSpan(new ImageSpan(context, R.drawable.drawable_superman),
-                0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        Log.d("debug", String.valueOf(userController == null));
-
-        if (userController == null || !userController.isLogin()) {
-            return;
-        }
-
-        for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
-        }
+        final int[]             fAppWidgetIds       = appWidgetIds;
+        final Context           fContext            = context;
+        final AppWidgetManager  fAppWidgetManager   = appWidgetManager;
+        syllabusController.setUpdateMainSyllabusViewDelegate(new UpdateMainSyllabusViewDelegate() {
+            @Override
+            public void updateMainSyllabus(Syllabus syllabus) {
+                Log.d("debug", "SyncMessage: success.");
+                for (int appWidgetId : fAppWidgetIds) {
+                    updateAppWidget(fContext, fAppWidgetManager, appWidgetId);
+                }
+            }
+        });
     }
 
     @Override

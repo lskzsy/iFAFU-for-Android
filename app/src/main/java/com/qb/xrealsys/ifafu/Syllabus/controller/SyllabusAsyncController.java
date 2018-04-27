@@ -1,6 +1,10 @@
 package com.qb.xrealsys.ifafu.Syllabus.controller;
 
+import android.util.Log;
+
 import com.qb.xrealsys.ifafu.Base.controller.AsyncController;
+import com.qb.xrealsys.ifafu.DB.SystemConfig;
+import com.qb.xrealsys.ifafu.DB.UserConfig;
 import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Syllabus.delegate.UpdateMainSyllabusViewDelegate;
 import com.qb.xrealsys.ifafu.Syllabus.delegate.UpdateMainUserViewDelegate;
@@ -13,12 +17,16 @@ import com.qb.xrealsys.ifafu.Syllabus.web.SyllabusInterface;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * Created by sky on 12/02/2018.
@@ -48,6 +56,35 @@ public class SyllabusAsyncController extends AsyncController {
         this.configHelper   = configHelper;
     }
 
+    public void SyncDataWithLocal() {
+        threadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                Realm   realm   = Realm.getDefaultInstance();
+                String  account = configHelper.GetValue("account");
+
+                SystemConfig    systemConfig = realm.where(SystemConfig.class)
+                        .equalTo("account", account).findFirst();
+                RealmResults<Course> results = realm.where(Course.class)
+                        .equalTo("account", account).findAll();
+
+                syllabus.setData(results);
+
+                if (systemConfig != null) {
+                    syllabus.setSearchYearOptions(Arrays.asList(systemConfig.getDefaultYear()));
+                    syllabus.setSearchTermOptions(Arrays.asList(systemConfig.getDefaultTerm()));
+                } else {
+                    syllabus.setSearchYearOptions(Arrays.asList("加载中"));
+                    syllabus.setSearchTermOptions(Arrays.asList("加载中"));
+                }
+                syllabus.setSelectedYearOption(0);
+                syllabus.setSelectedTermOption(0);
+
+                updateMainSyllabusViewDelegate.updateMainSyllabus(syllabus);
+            }
+        });
+    }
+
     public void SyncData() throws IOException {
         threadPool.execute(new Runnable() {
             @Override
@@ -61,9 +98,33 @@ public class SyllabusAsyncController extends AsyncController {
                     syllabus = (Syllabus) answer.get("syllabus");
                     Collections.sort(syllabus.getData(), new SortCourseComparator());
                     updateMainSyllabusViewDelegate.updateMainSyllabus(syllabus);
+                    SyncLocalSyllabus();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }
+        });
+    }
+
+    private void SyncLocalSyllabus() {
+        Realm mRealm = Realm.getDefaultInstance();
+
+        final RealmResults<Course> results = mRealm.where(Course.class)
+                .equalTo("account", user.getAccount()).findAll();
+        mRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                results.deleteAllFromRealm();
+
+                List<Course> courseList = syllabus.getData();
+                SystemConfig systemConfig = new SystemConfig();
+                systemConfig.setAccount(user.getAccount());
+                systemConfig.setDefaultYear(
+                        syllabus.getSearchYearOptions().get(syllabus.getSelectedYearOption()));
+                systemConfig.setDefaultTerm(
+                        syllabus.getSearchTermOptions().get(syllabus.getSelectedTermOption()));
+                realm.insert(courseList);
+                realm.insertOrUpdate(systemConfig);
             }
         });
     }
