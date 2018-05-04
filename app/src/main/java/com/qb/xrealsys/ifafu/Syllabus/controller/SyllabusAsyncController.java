@@ -48,6 +48,8 @@ public class SyllabusAsyncController extends AsyncController {
 
     private UpdateMainSyllabusViewDelegate  updateMainSyllabusViewDelegate;
 
+    private UpdateMainSyllabusViewDelegate  updateWidgetSyllabusViewDelegate;
+
     public SyllabusAsyncController(UserAsyncController userController, ConfigHelper configHelper) {
         super(userController.getThreadPool());
         this.userController = userController;
@@ -80,7 +82,7 @@ public class SyllabusAsyncController extends AsyncController {
                 syllabus.setSelectedYearOption(0);
                 syllabus.setSelectedTermOption(0);
 
-                updateMainSyllabusViewDelegate.updateMainSyllabus(syllabus);
+                updateWidgetSyllabusViewDelegate.updateMainSyllabus(syllabus);
             }
         });
     }
@@ -243,5 +245,9 @@ public class SyllabusAsyncController extends AsyncController {
 
     public void setUpdateMainSyllabusViewDelegate(UpdateMainSyllabusViewDelegate updateMainSyllabusViewDelegate) {
         this.updateMainSyllabusViewDelegate = updateMainSyllabusViewDelegate;
+    }
+
+    public void setUpdateWidgetSyllabusViewDelegate(UpdateMainSyllabusViewDelegate updateWidgetSyllabusViewDelegate) {
+        this.updateWidgetSyllabusViewDelegate = updateWidgetSyllabusViewDelegate;
     }
 }

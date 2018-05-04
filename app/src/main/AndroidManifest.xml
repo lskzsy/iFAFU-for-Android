@@ -65,6 +65,8 @@
         <receiver android:name=".Widget.iFAFUWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.qb.xrealsys.ifafu.Widget.btn.call" />
+                <action android:name="com.qb.xrealsys.ifafu.Widget.update.all" />
             </intent-filter>
 
             <meta-data

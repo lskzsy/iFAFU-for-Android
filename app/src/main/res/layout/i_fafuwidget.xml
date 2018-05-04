@@ -2,6 +2,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/shape_mainwindow"
+    android:focusable="true"
+    android:clickable="true"
+    android:id="@+id/IFAFUWidgetContent"
     android:padding="@dimen/widget_margin">
 
     <include layout="@layout/gadget_main_syllabus" />
