@@ -57,21 +57,21 @@ public class SyllabusInterface extends WebInterface {
         /* Get syllabus information */
         syllabus.setCampus(0);
         Map<String, List<Course>> mapNameToCourse = new HashMap<>();
-        Pattern patternC = Pattern.compile("(<td( class=\"noprint\"){0,1} align=\"Center\"" +
-                "( rowspan=\"\\d+\"){0,1}( width=\"\\d+%\"){0,1}>|<br>)((?!&nbsp;).*?)<br>" +
-                "(.*?)<br>(.*?)<br>(.*?)(</td>|<br>)");
+        Pattern patternC = Pattern.compile("(<br>|<td( class=\"noprint\"){0,1} align=\"Center\"" +
+                "( rowspan=\"\\d+\"){0,1}( width=\"\\d+%\"){0,1}>)(((?!td).)*?)<br>" +
+                "(.*?)<br>(.*?)<br>(.*?)(<br>|</td>)");
         Matcher matcherC = patternC.matcher(html);
         while (matcherC.find()) {
             Course course = new Course();
             course.setAccount(number);
             course.setName(matcherC.group(5));
-            course.setTeacher(matcherC.group(7));
-            course.setAddress(matcherC.group(8));
+            course.setTeacher(matcherC.group(8));
+            course.setAddress(matcherC.group(9));
             if (syllabus.getCampus() == 0 && course.getAddress().contains("旗教")) {
                 syllabus.setCampus(1);
             }
-            if (!analysisCourseTime(course, matcherC.group(6))) {
-                analysisCourseTime2(course, html, matcherC.start(), matcherC.group(6));
+            if (!analysisCourseTime(course, matcherC.group(7))) {
+                analysisCourseTime2(course, html, matcherC.start(), matcherC.group(7));
             }
 
             if (mapNameToCourse.containsKey(course.getName())) {
