@@ -120,8 +120,9 @@ public class UpdateController implements UpdatePauseDelegate, UpdateQueryCallbac
                 Intent install = new Intent(Intent.ACTION_VIEW);
                 Uri downloadFileUri = dManager.getUriForDownloadedFile(downloadApkId);
                 if (downloadFileUri != null) {
+                    install.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     install.setDataAndType(downloadFileUri, "application/vnd.android.package-archive");
-                    install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(install);
                 } else {
                     Toast.makeText(ctx, "下载失败", Toast.LENGTH_SHORT).show();
