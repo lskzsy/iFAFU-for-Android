@@ -59,7 +59,7 @@ public class SyllabusInterface extends WebInterface {
         Map<String, List<Course>> mapNameToCourse = new HashMap<>();
         Pattern patternC = Pattern.compile("(<br>|<td( class=\"noprint\"){0,1} align=\"Center\"" +
                 "( rowspan=\"\\d+\"){0,1}( width=\"\\d+%\"){0,1}>)(((?!td).)*?)<br>" +
-                "(((?!td).)*?)<br>(((?!td).)*?)<br>(((?!td).)*?)(<br>(.*?)年(.*?)月(.*?)日(.*?)<br>(.*?)){0,1}(<br>|</td>)");
+                "(((?!td).)*?)<br>(((?!td).)*?)<br>(((?!td).)*?)(<br>(((?!td).)*?)年(.*?)月(.*?)日(.*?)<br>(.*?)){0,1}(<br>|</td>)");
         Matcher matcherC = patternC.matcher(html);
         while (matcherC.find()) {
             Course course = new Course();
