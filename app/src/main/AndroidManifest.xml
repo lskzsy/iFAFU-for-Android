@@ -57,10 +57,13 @@
         <activity
             android:name=".Syllabus.SyllabusActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name=".Responsibility.CopyingActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".CommentTeacher.CommentTeacherActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <receiver android:name=".Widget.iFAFUWidget">
             <intent-filter>
