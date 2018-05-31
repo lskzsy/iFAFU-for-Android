@@ -7,6 +7,7 @@ import com.qb.xrealsys.ifafu.Base.controller.AsyncController;
 import com.qb.xrealsys.ifafu.DB.UserConfig;
 import com.qb.xrealsys.ifafu.R;
 import com.qb.xrealsys.ifafu.Base.model.Response;
+import com.qb.xrealsys.ifafu.Tool.ZFVerify;
 import com.qb.xrealsys.ifafu.User.model.User;
 import com.qb.xrealsys.ifafu.Tool.ConfigHelper;
 import com.qb.xrealsys.ifafu.User.web.UserInterface;
@@ -38,14 +39,16 @@ public class UserAsyncController extends AsyncController {
 
     private JSONObject    userList;
 
-    public UserAsyncController(Context inContext, ExecutorService threadPool) throws IOException {
+    private ZFVerify      zfVerify;
+
+    public UserAsyncController(Context inContext, ExecutorService threadPool, ZFVerify zfVerify) throws IOException {
         super(threadPool);
         context         = inContext;
 
         data = new User();
 
         data.setLogin(false);
-
+        this.zfVerify   = zfVerify;
         configHelper    = new ConfigHelper(context);
         userInterface   = new UserInterface(configHelper.GetSystemValue("host"), this);
         try {
@@ -58,6 +61,10 @@ public class UserAsyncController extends AsyncController {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public ZFVerify getZfVerify() {
+        return zfVerify;
     }
 
     public String getIndexUrl() {

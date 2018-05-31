@@ -72,7 +72,8 @@ public class MainApplication extends Application {
 
         try {
             cachedThreadPool        = Executors.newCachedThreadPool();
-            userController          = new UserAsyncController(getBaseContext(), cachedThreadPool);
+            zfVerify                = new ZFVerify(getBaseContext());
+            userController          = new UserAsyncController(getBaseContext(), cachedThreadPool, zfVerify);
             configHelper            = new ConfigHelper(getBaseContext());
             ossHelper               = new OSSHelper(
                     configHelper.GetSystemValue("ossHost"),
@@ -82,7 +83,6 @@ public class MainApplication extends Application {
             syllabusController      = new SyllabusAsyncController(userController, configHelper);
             updateController        = new UpdateController(getBaseContext(), ossHelper, configHelper);
             envaTeacherController   = new EnvaTeacherController(userController, configHelper);
-            zfVerify                = new ZFVerify(getBaseContext());
         } catch (IOException e) {
             e.printStackTrace();
         }

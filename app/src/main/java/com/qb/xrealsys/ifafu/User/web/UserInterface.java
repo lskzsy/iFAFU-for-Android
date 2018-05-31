@@ -1,6 +1,7 @@
 package com.qb.xrealsys.ifafu.User.web;
 
 import com.qb.xrealsys.ifafu.R;
+import com.qb.xrealsys.ifafu.Tool.ZFVerify;
 import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Base.model.Response;
 import com.qb.xrealsys.ifafu.Tool.HttpHelper;
@@ -20,7 +21,7 @@ import java.util.regex.Pattern;
 
 public class UserInterface extends WebInterface {
 
-    private static final String LoginPage = "default6.aspx";
+    private static final String LoginPage = "default2.aspx";
 
     public UserInterface(String inHost, UserAsyncController userController) throws IOException {
         super(inHost, userController);
@@ -30,25 +31,34 @@ public class UserInterface extends WebInterface {
         return makeAccessUrlHead() + "xs_main.aspx?xh=" + number;
     }
 
+    public String getVerifyCodeUrl() {
+        return makeAccessUrlHead() + "CheckCode.aspx";
+    }
+
     public Response Login(String account, String password) throws IOException {
         String accessUrl = makeAccessUrlHead() + LoginPage;
         if (!syncViewParams(accessUrl)) {
             return new Response(false, 0, R.string.error_view_params_not_found);
         }
 
+        /* Get verify code */
+        ZFVerify zfVerify = userController.getZfVerify();
+        String verifyCode = zfVerify.todo(zfVerify.getVerifyImg(getVerifyCodeUrl()));
+
         HttpHelper request           = new HttpHelper(accessUrl, "gbk");
         Map<String, String> postData = new HashMap<>();
         postData.put("__VIEWSTATE", URLEncoder.encode(viewState, "gbk"));
         postData.put("__VIEWSTATEGENERATOR", viewStateGenerator);
-        postData.put("tname", "");
-        postData.put("tbtns", "");
-        postData.put("tnameXw", "yhdl");
+        postData.put("Textbox1", "");
+        postData.put("lbLanguage", "");
         postData.put("tbtnsXw", URLEncoder.encode("yhdl|xwxsdl", "gbk"));
-        postData.put("txtYhm", account);
-        postData.put("txtXm", "");
-        postData.put("txtMm", password);
-        postData.put("rblJs", "%B5%C7+%C2%BC");
-        postData.put("btnDl", "%D1%A7%C9%FA");
+        postData.put("txtUserName", account);
+        postData.put("Button1", "");
+        postData.put("txtSecretCode", verifyCode);
+        postData.put("TextBox2", password);
+        postData.put("hidPdrs", "");
+        postData.put("hidsc", "");
+        postData.put("RadioButtonList1", "%D1%A7%C9%FA");
 
         HttpResponse response = request.Post(postData, false);
         if (response.getStatus() != 200) {
@@ -59,7 +69,11 @@ public class UserInterface extends WebInterface {
         Pattern      patternA = Pattern.compile("alert\\('(.*)'\\)");
         Matcher      matcherA = patternA.matcher(html);
         if (matcherA.find()) {
-            return new Response(false, 0, matcherA.group(1));
+            if (matcherA.group(1).contains("验证码")) {
+                return Login(account, password);
+            } else {
+                return new Response(false, 0, matcherA.group(1));
+            }
         }
 
         Pattern      patternB = Pattern.compile("xhxm\">(.*)同学");
