@@ -1,6 +1,7 @@
 package com.qb.xrealsys.ifafu.Score.web;
 
 import com.qb.xrealsys.ifafu.Base.model.Model;
+import com.qb.xrealsys.ifafu.Base.model.Response;
 import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Score.model.Score;
 import com.qb.xrealsys.ifafu.Score.model.ScoreTable;
@@ -132,6 +133,12 @@ public class ScoreInterface extends WebInterface {
         String html = response.getResponse();
         if (!LoginedCheck(html)) {
             return GetScoreTable(number, name);
+        }
+
+        /* Error */
+        if (html.indexOf("教学质量评价") > 0) {
+            answer.put("error", new Response(false, -1, "还未评教，无法获取数据"));
+            return answer;
         }
 
         /* Get student information */

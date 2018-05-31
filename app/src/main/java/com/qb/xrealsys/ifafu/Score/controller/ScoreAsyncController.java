@@ -2,6 +2,7 @@ package com.qb.xrealsys.ifafu.Score.controller;
 
 import com.qb.xrealsys.ifafu.Base.controller.AsyncController;
 import com.qb.xrealsys.ifafu.Base.model.Model;
+import com.qb.xrealsys.ifafu.Base.model.Response;
 import com.qb.xrealsys.ifafu.Syllabus.delegate.UpdateMainUserViewDelegate;
 import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Score.delegate.UpdateElectiveTargetScoreDelegate;
@@ -141,6 +142,12 @@ public class ScoreAsyncController extends AsyncController {
 
                     if (answer == null) {
                         updateMainUserViewDelegate.updateError("获取失败");
+                        return;
+                    }
+
+                    if (answer.containsKey("error")) {
+                        Response response = (Response) answer.get("error");
+                        updateMainUserViewDelegate.updateError(response.getMessage());
                         return;
                     }
 

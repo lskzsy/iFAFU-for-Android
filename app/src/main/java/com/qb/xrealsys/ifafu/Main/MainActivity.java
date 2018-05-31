@@ -735,6 +735,11 @@ public class MainActivity extends BaseActivity
             public void run() {
                 List<String> yearOptions = inScoreTable.getSearchYearOptions();
                 List<String> termOptions = inScoreTable.getSearchTermOptions();
+                if (yearOptions.size() == 0 || termOptions.size() == 0) {
+                    updateError("暂无数据");
+                    return;
+                }
+
                 mainScoreTitle.setText(
                         String.format(Locale.getDefault(), getString(R.string.format_main_score_title),
                                 yearOptions.get(inScoreTable.getDefaultSelectedYear()),
