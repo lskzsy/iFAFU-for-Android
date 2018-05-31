@@ -18,10 +18,12 @@ package com.qb.xrealsys.ifafu;
 
 import android.app.Application;
 
+import com.qb.xrealsys.ifafu.CommentTeacher.controller.EnvaTeacherController;
 import com.qb.xrealsys.ifafu.Exam.controller.ExamAsyncController;
 import com.qb.xrealsys.ifafu.Main.controller.UpdateController;
 import com.qb.xrealsys.ifafu.Score.controller.ScoreAsyncController;
 import com.qb.xrealsys.ifafu.Syllabus.controller.SyllabusAsyncController;
+import com.qb.xrealsys.ifafu.Tool.ZFVerify;
 import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Tool.ConfigHelper;
 import com.qb.xrealsys.ifafu.Tool.OSSHelper;
@@ -55,6 +57,10 @@ public class MainApplication extends Application {
 
     private ExecutorService             cachedThreadPool;
 
+    private EnvaTeacherController       envaTeacherController;
+
+    private ZFVerify                    zfVerify;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -65,16 +71,18 @@ public class MainApplication extends Application {
         Realm.setDefaultConfiguration(realmConfig);
 
         try {
-            cachedThreadPool    = Executors.newCachedThreadPool();
-            userController      = new UserAsyncController(getBaseContext(), cachedThreadPool);
-            configHelper        = new ConfigHelper(getBaseContext());
-            ossHelper           = new OSSHelper(
+            cachedThreadPool        = Executors.newCachedThreadPool();
+            userController          = new UserAsyncController(getBaseContext(), cachedThreadPool);
+            configHelper            = new ConfigHelper(getBaseContext());
+            ossHelper               = new OSSHelper(
                     configHelper.GetSystemValue("ossHost"),
                     configHelper.GetSystemValue("ossKey"));
-            scoreController     = new ScoreAsyncController(userController, configHelper);
-            examController      = new ExamAsyncController(userController, configHelper);
-            syllabusController  = new SyllabusAsyncController(userController, configHelper);
-            updateController    = new UpdateController(getBaseContext(), ossHelper, configHelper);
+            scoreController         = new ScoreAsyncController(userController, configHelper);
+            examController          = new ExamAsyncController(userController, configHelper);
+            syllabusController      = new SyllabusAsyncController(userController, configHelper);
+            updateController        = new UpdateController(getBaseContext(), ossHelper, configHelper);
+            envaTeacherController   = new EnvaTeacherController(userController, configHelper);
+            zfVerify                = new ZFVerify(getBaseContext());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -110,5 +118,13 @@ public class MainApplication extends Application {
 
     public ExecutorService getCachedThreadPool() {
         return cachedThreadPool;
+    }
+
+    public EnvaTeacherController getEnvaTeacherController() {
+        return envaTeacherController;
+    }
+
+    public ZFVerify getZfVerify() {
+        return zfVerify;
     }
 }

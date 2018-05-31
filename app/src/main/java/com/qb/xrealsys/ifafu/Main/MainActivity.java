@@ -38,6 +38,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.qb.xrealsys.ifafu.About.AboutActivity;
+import com.qb.xrealsys.ifafu.CommentTeacher.CommentTeacherActivity;
 import com.qb.xrealsys.ifafu.Main.controller.AdController;
 import com.qb.xrealsys.ifafu.Base.BaseActivity;
 import com.qb.xrealsys.ifafu.Base.controller.TitleBarController;
@@ -71,6 +72,7 @@ import com.qb.xrealsys.ifafu.Syllabus.model.Course;
 import com.qb.xrealsys.ifafu.Score.model.Score;
 import com.qb.xrealsys.ifafu.Score.model.ScoreTable;
 import com.qb.xrealsys.ifafu.Syllabus.model.Syllabus;
+import com.qb.xrealsys.ifafu.User.dialog.VerifyDialog;
 import com.qb.xrealsys.ifafu.User.model.User;
 import com.qb.xrealsys.ifafu.Tool.ConfigHelper;
 import com.qb.xrealsys.ifafu.Tool.GlobalLib;
@@ -453,6 +455,13 @@ public class MainActivity extends BaseActivity
             case 4:
                 gotoSyllabusActivity();
                 break;
+            case 5:
+                gotoCommentTeacherActivity();
+                break;
+            case 6:
+                VerifyDialog verifyDialog = new VerifyDialog(this);
+                verifyDialog.show();
+                break;
             case 7:
                 gotoBrower("网页模式", currentUserController.getIndexUrl());
                 break;
@@ -498,6 +507,11 @@ public class MainActivity extends BaseActivity
     /**
      * Go to other activity
      */
+    private void gotoCommentTeacherActivity() {
+        Intent intent = new Intent(MainActivity.this, CommentTeacherActivity.class);
+        startActivity(intent);
+    }
+
     private void gotoSyllabusActivity() {
         if (!currentUserController.isLogin()) {
             return;
