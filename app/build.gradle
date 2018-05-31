@@ -31,7 +31,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     compile 'com.github.bumptech.glide:glide:4.0.0-RC0'
     kapt 'com.github.bumptech.glide:compiler:4.0.0-RC1'
 }
@@ -47,3 +47,5 @@ repositories {
 kapt {
     generateStubs true
 }
+
+apply plugin: 'kotlin-android-extensions'
