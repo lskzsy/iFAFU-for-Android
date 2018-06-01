@@ -39,7 +39,7 @@ class CommentTeacherActivity :
         this.titleBarController  = TitleBarController(this)
         this.titleBarController!!
                 .setHeadBack()
-                .setTwoLineTitle("一键评教", String.format(
+                .setTwoLineTitle("一键评教中...", String.format(
                         Locale.getDefault(), "%s(%s)",
                         this.userController!!.data.name,
                         this.userController!!.data.account))
@@ -64,6 +64,7 @@ class CommentTeacherActivity :
             Toast.makeText(
                     this@CommentTeacherActivity,
                     response.message, Toast.LENGTH_SHORT).show()
+            finish()
         }
     }
 }

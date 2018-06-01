@@ -137,7 +137,7 @@ public class ScoreInterface extends WebInterface {
 
         /* Error */
         if (html.indexOf("教学质量评价") > 0) {
-            answer.put("error", new Response(false, -1, "还未评教，无法获取数据"));
+            answer.put("error", new Response(false, -1, "还未评教，无法获取数据，请前往\"一键评教\""));
             return answer;
         }
 
