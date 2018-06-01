@@ -32,7 +32,7 @@ public class VerifyDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_verify);
-        setCanceledOnTouchOutside(false);
+//        setCanceledOnTouchOutside(false);
         verifyImage     = findViewById(R.id.verifyImg);
         verifyAnswer    = findViewById(R.id.verifyAnswer);
 

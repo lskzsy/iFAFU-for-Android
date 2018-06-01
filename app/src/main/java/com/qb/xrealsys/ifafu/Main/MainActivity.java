@@ -459,8 +459,10 @@ public class MainActivity extends BaseActivity
                 gotoCommentTeacherActivity();
                 break;
             case 6:
-                VerifyDialog verifyDialog = new VerifyDialog(this);
-                verifyDialog.show();
+                Toast.makeText(
+                        this,
+                        "联系作者激活后可使用！",
+                        Toast.LENGTH_SHORT).show();
                 break;
             case 7:
                 gotoBrower("网页模式", currentUserController.getIndexUrl());
@@ -472,10 +474,8 @@ public class MainActivity extends BaseActivity
                 AccountSetting();
                 break;
             case 10:
-                Toast.makeText(
-                        this,
-                        "暂不支持修改！",
-                        Toast.LENGTH_SHORT).show();
+                VerifyDialog verifyDialog = new VerifyDialog(this);
+                verifyDialog.show();
                 break;
             case 11:
                 gotoProtectActivity(false);
