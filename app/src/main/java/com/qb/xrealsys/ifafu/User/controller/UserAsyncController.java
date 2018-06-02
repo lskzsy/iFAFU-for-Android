@@ -37,7 +37,7 @@ public class UserAsyncController extends AsyncController {
 
     private ConfigHelper  configHelper;
 
-    private JSONObject    userList;
+//    private JSONObject    userList;
 
     private ZFVerify      zfVerify;
 
@@ -45,22 +45,22 @@ public class UserAsyncController extends AsyncController {
         super(threadPool);
         context         = inContext;
 
-        data = new User();
+        data            = new User();
 
         data.setLogin(false);
         this.zfVerify   = zfVerify;
         configHelper    = new ConfigHelper(context);
         userInterface   = new UserInterface(configHelper.GetSystemValue("host"), this);
-        try {
-            String userListStr = configHelper.GetValue("userList");
-            if (userListStr == null) {
-                userList = new JSONObject("{}");
-            } else {
-                userList = new JSONObject(userListStr);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            String userListStr = configHelper.GetValue("userList");
+//            if (userListStr == null) {
+//                userList = new JSONObject("{}");
+//            } else {
+//                userList = new JSONObject(userListStr);
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public ZFVerify getZfVerify() {
@@ -130,8 +130,19 @@ public class UserAsyncController extends AsyncController {
             return false;
         }
 
-        userList.remove(number);
-        configHelper.SetValue("userList", userList.toString());
+        final String inNumber = number;
+        Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
+
+            @Override
+            public void execute(Realm realm) {
+                RealmResults<UserConfig> results =
+                        realm.where(UserConfig.class)
+                                .equalTo("account", inNumber).findAll();
+                results.deleteAllFromRealm();
+            }
+        });
+//        userList.remove(number);
+//        configHelper.SetValue("userList", userList.toString());
         return true;
     }
 

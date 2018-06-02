@@ -14,6 +14,8 @@ public class UserConfig extends RealmObject {
 
     private String password;
 
+    private String authPassword;
+
     private String name;
 
     public UserConfig() {
@@ -47,5 +49,13 @@ public class UserConfig extends RealmObject {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAuthPassword() {
+        return authPassword;
+    }
+
+    public void setAuthPassword(String authPassword) {
+        this.authPassword = authPassword;
     }
 }
