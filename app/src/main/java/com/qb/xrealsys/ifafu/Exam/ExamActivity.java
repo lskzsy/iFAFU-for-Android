@@ -38,7 +38,7 @@ public class ExamActivity extends BaseActivity implements
 
     MainApplication         mainApplication;
 
-    ExamAsyncController examController;
+    ExamAsyncController     examController;
 
     TextView                viewTitle;
 
