@@ -28,10 +28,15 @@
     <string name="display_loading">加载中...</string>
     <string name="display_dialog_cancel">取消</string>
     <string name="display_dialog_close">关闭</string>
+    <string name="display_dialog_submit">提交</string>
     <string name="display_dialog_account_setting_title">选择需要操作的账号</string>
     <string name="display_dialog_update_title">版本更新</string>
     <string name="display_dialog_update_btn1">暂不更新</string>
     <string name="display_dialog_update_btn2">更新</string>
+    <string name="display_main_card_title">校园一卡通</string>
+    <string name="display_main_card_error">还未登录校园一卡通，请点击登录</string>
+    <string name="display_card_login_password">同i农大密码</string>
+    <string name="display_card_login_title">- 统一身份认证 -</string>
 
     <string name="error_view_params_not_found">页面错误</string>
     <string name="error_system">系统错误</string>
@@ -42,6 +47,8 @@
 
     <string name="success_login">登录成功</string>
 
+    <string name="default_verify_input">验证码：</string>
+    <string name="default_password_input">密码：</string>
     <string name="default_main_s_number">学号：</string>
     <string name="default_main_s_institute">学院：</string>
     <string name="default_main_s_enrollment">入学年份：</string>
@@ -52,6 +59,7 @@
     <string name="default_student_head">归墟</string>
     <string name="default_running">加载中…</string>
 
+    <string name="format_main_card">校园卡余额%s元，详情请点击查看</string>
     <string name="format_study_time">%s学年第%s学期</string>
     <string name="format_main_score_title">%s学年第%s学期学习成绩</string>
     <string name="format_main_score_content">已出%d门，暂无新成绩</string>

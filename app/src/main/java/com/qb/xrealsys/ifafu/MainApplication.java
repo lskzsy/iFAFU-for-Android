@@ -18,6 +18,7 @@ package com.qb.xrealsys.ifafu;
 
 import android.app.Application;
 
+import com.qb.xrealsys.ifafu.Card.controller.CardController;
 import com.qb.xrealsys.ifafu.CommentTeacher.controller.EnvaTeacherController;
 import com.qb.xrealsys.ifafu.Exam.controller.ExamAsyncController;
 import com.qb.xrealsys.ifafu.Main.controller.UpdateController;
@@ -59,6 +60,8 @@ public class MainApplication extends Application {
 
     private EnvaTeacherController       envaTeacherController;
 
+    private CardController              cardController;
+
     private ZFVerify                    zfVerify;
 
     @Override
@@ -78,6 +81,7 @@ public class MainApplication extends Application {
             ossHelper               = new OSSHelper(
                     configHelper.GetSystemValue("ossHost"),
                     configHelper.GetSystemValue("ossKey"));
+            cardController          = new CardController(userController, configHelper);
             scoreController         = new ScoreAsyncController(userController, configHelper);
             examController          = new ExamAsyncController(userController, configHelper);
             syllabusController      = new SyllabusAsyncController(userController, configHelper);
@@ -122,6 +126,10 @@ public class MainApplication extends Application {
 
     public EnvaTeacherController getEnvaTeacherController() {
         return envaTeacherController;
+    }
+
+    public CardController getCardController() {
+        return cardController;
     }
 
     public ZFVerify getZfVerify() {

@@ -20,9 +20,9 @@ public class WebActivity extends BaseActivity implements TitleBarButtonOnClicked
 
     private String                  loadUrl;
 
-    private TitleBarController titleBarController;
+    private TitleBarController      titleBarController;
 
-    private LoadingViewController loadingViewController;
+    private LoadingViewController   loadingViewController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

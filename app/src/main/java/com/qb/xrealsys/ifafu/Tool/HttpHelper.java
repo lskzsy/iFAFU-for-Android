@@ -97,6 +97,25 @@ public class HttpHelper {
         }
     }
 
+    public HttpResponse GetWithoutRedirect() throws IOException {
+        Map<String, String> empty = new HashMap<>();
+        try {
+            HttpURLConnection connection = (HttpURLConnection) mUrl.openConnection();
+            connection.setConnectTimeout(gDefaultConnectTimeout);
+            connection.setRequestMethod("GET");
+            connection.setInstanceFollowRedirects(false);
+
+            //  Init connection
+            InitConnectionInf(connection, empty, mTimeout);
+
+            //  Get Response
+            return GetResponse(connection, mEncode);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
     public HttpResponse Get() throws IOException {
         Map<String, String> empty = new HashMap<>();
         return Get(empty);

@@ -20,6 +20,8 @@ public class User extends Model implements Serializable {
 
     private int           enrollment;
 
+    private String        authPassword;
+
     private String        clas;
 
     private String        token;
@@ -88,5 +90,13 @@ public class User extends Model implements Serializable {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getAuthPassword() {
+        return authPassword;
+    }
+
+    public void setAuthPassword(String authPassword) {
+        this.authPassword = authPassword;
     }
 }

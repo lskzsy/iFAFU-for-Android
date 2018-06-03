@@ -38,6 +38,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.qb.xrealsys.ifafu.About.AboutActivity;
+import com.qb.xrealsys.ifafu.Base.model.Response;
+import com.qb.xrealsys.ifafu.Card.CardActivity;
+import com.qb.xrealsys.ifafu.Card.controller.CardController;
+import com.qb.xrealsys.ifafu.Card.delegate.CardLoginCallbackDelegate;
+import com.qb.xrealsys.ifafu.Card.delegate.UpdateMainCardViewDelegate;
+import com.qb.xrealsys.ifafu.Card.dialog.CardLoginDialog;
 import com.qb.xrealsys.ifafu.CommentTeacher.CommentTeacherActivity;
 import com.qb.xrealsys.ifafu.Main.controller.AdController;
 import com.qb.xrealsys.ifafu.Base.BaseActivity;
@@ -77,6 +83,8 @@ import com.qb.xrealsys.ifafu.User.model.User;
 import com.qb.xrealsys.ifafu.Tool.ConfigHelper;
 import com.qb.xrealsys.ifafu.Tool.GlobalLib;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,7 +106,7 @@ public class MainActivity extends BaseActivity
         UpdateMainScoreViewDelegate,
         UpdateMainSyllabusViewDelegate,
         TitleBarButtonOnClickedDelegate,
-        ReplaceUserDelegate {
+        ReplaceUserDelegate, UpdateMainCardViewDelegate, CardLoginCallbackDelegate {
 
     private long                        firstClickBack;
 
@@ -134,6 +142,10 @@ public class MainActivity extends BaseActivity
 
     private TextView                    mainSyllabusContent;
 
+    private LinearLayout                mainCard;
+
+    private TextView                    mainCardContent;
+
     private LinearLayout                mainScore;
 
     private RelativeLayout              mainSyllbus;
@@ -143,6 +155,8 @@ public class MainActivity extends BaseActivity
     private SyllabusAsyncController     syllabusController;
 
     private ScoreAsyncController        scoreController;
+
+    private CardController              cardController;
 
     private ConfigHelper                configHelper;
 
@@ -155,6 +169,8 @@ public class MainActivity extends BaseActivity
     private MainApplication             mainApplication;
 
     private AccountSettingDialog        accountSettingDialog;
+
+    private CardLoginDialog             cardLoginDialog;
 
     private ProgressDialog              progressDialog;
 
@@ -191,6 +207,7 @@ public class MainActivity extends BaseActivity
         scoreController       = mainApplication.getScoreController();
         syllabusController    = mainApplication.getSyllabusController();
         updateController      = mainApplication.getUpdateController();
+        cardController        = mainApplication.getCardController();
         threadPool            = mainApplication.getCachedThreadPool();
 
         progressDialog          = new ProgressDialog(this);
@@ -352,6 +369,7 @@ public class MainActivity extends BaseActivity
     private void InitElements() {
         mainContent     = findViewById(R.id.mainContent);
         mainScore       = findViewById(R.id.mainScore);
+        mainCard        = findViewById(R.id.mainCard);
         mainSyllbus     = findViewById(R.id.mainSyllbus);
         mainDrawer      = findViewById(R.id.mainDrawer);
         leftMenuView    = findViewById(R.id.leftMenuView);
@@ -370,6 +388,7 @@ public class MainActivity extends BaseActivity
         mainSyllabusTitle   = findViewById(R.id.main_syllabus_title);
         mainSyllabusTime    = findViewById(R.id.main_syllabus_time);
         mainSyllabusContent = findViewById(R.id.main_syllabus_content);
+        mainCardContent     = findViewById(R.id.main_card_content);
 
         ptrFrameLayout.setPtrHandler(new PtrHandler() {
             @Override
@@ -389,6 +408,7 @@ public class MainActivity extends BaseActivity
     private void InitClickListen() {
         mainScore.setOnClickListener(this);
         mainSyllbus.setOnClickListener(this);
+        mainCard.setOnClickListener(this);
     }
 
     private void InitLeftController() {
@@ -499,6 +519,7 @@ public class MainActivity extends BaseActivity
         try {
             syllabusController.SyncData();
             scoreController.SyncData();
+            cardController.SyncData();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -510,6 +531,18 @@ public class MainActivity extends BaseActivity
     private void gotoCommentTeacherActivity() {
         Intent intent = new Intent(MainActivity.this, CommentTeacherActivity.class);
         startActivity(intent);
+    }
+
+    private void gotoCardActivity() {
+        if (!cardController.isAuthentication()) {
+            cardLoginDialog = new CardLoginDialog(this, cardController, this);
+            cardLoginDialog.show();
+        } else {
+            cardLoginDialog.cancel();
+            cardController.SyncData();
+            Intent intent = new Intent(MainActivity.this, CardActivity.class);
+            startActivity(intent);
+        }
     }
 
     private void gotoSyllabusActivity() {
@@ -632,6 +665,7 @@ public class MainActivity extends BaseActivity
         syllabusController.setUpdateMainSyllabusViewDelegate(this);
         scoreController.setUpdateMainScoreViewDelegate(this);
         scoreController.setUpdateMainUserViewDelegate(this);
+        cardController.setDelegate(this);
 
         titleBarController = new TitleBarController(MainActivity.this);
         titleBarController
@@ -651,6 +685,7 @@ public class MainActivity extends BaseActivity
             updateMainUser(currentUserController.getData());
             updateMainScore(scoreController.GetData());
             updateMainSyllabus(syllabusController.GetData());
+            cardController.SyncData();
         }
     }
 
@@ -667,6 +702,24 @@ public class MainActivity extends BaseActivity
             isOnline.setText("● 离线");
             isOnline.setTextColor(Color.parseColor("#ff0000"));
         }
+    }
+
+    @Override
+    public void updateMainCard(final Response response) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (response.isSuccess()) {
+                    mainCardContent.setText(
+                            String.format(
+                                    Locale.getDefault(),
+                                    getString(R.string.format_main_card),
+                                    response.getMessage()));
+                } else {
+                    mainCardContent.setText(getString(R.string.display_main_card_error));
+                }
+            }
+        });
     }
 
     @Override
@@ -811,6 +864,9 @@ public class MainActivity extends BaseActivity
             case R.id.mainSyllbus:
                 gotoSyllabusActivity();
                 break;
+            case R.id.mainCard:
+                gotoCardActivity();
+                break;
         }
     }
 
@@ -838,5 +894,10 @@ public class MainActivity extends BaseActivity
         }else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void CardLoginCallback() {
+        gotoCardActivity();
     }
 }

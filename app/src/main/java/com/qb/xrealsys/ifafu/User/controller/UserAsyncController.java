@@ -92,6 +92,13 @@ public class UserAsyncController extends AsyncController {
                 saveUserInfo();
             }
 
+            UserConfig userConfig = Realm.getDefaultInstance().where(UserConfig.class)
+                    .equalTo("account", data.getAccount()).findFirst();
+            if (userConfig != null) {
+                data.setAuthPassword(userConfig.getAuthPassword());
+            }
+//            data.setAuthPassword();
+
             return new Response(true, 0, R.string.success_login);
         }
 
@@ -146,6 +153,22 @@ public class UserAsyncController extends AsyncController {
         return true;
     }
 
+    public void saveAuthPassword(final String authPassword) {
+        data.setAuthPassword(authPassword);
+
+        Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
+
+            @Override
+            public void execute(Realm realm) {
+                UserConfig userConfig =
+                        realm.where(UserConfig.class)
+                                .equalTo("account", data.getAccount()).findFirst();
+                userConfig.setAuthPassword(authPassword);
+                realm.insertOrUpdate(userConfig);
+            }
+        });
+    }
+
     public void saveUserInfo() {
         configHelper.SetValue("account", data.getAccount());
         configHelper.SetValue("password", data.getPassword());
@@ -160,5 +183,9 @@ public class UserAsyncController extends AsyncController {
                 realm.insertOrUpdate(user);
             }
         });
+    }
+
+    public boolean haveAuthPassword() {
+        return data.getAuthPassword() != null;
     }
 }
