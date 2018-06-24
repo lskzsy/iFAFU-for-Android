@@ -8,10 +8,10 @@
 
     <Button
         android:id="@+id/headimg"
-        android:layout_width="40.0dip"
-        android:layout_height="40.0dip"
+        android:layout_width="40.0dp"
+        android:layout_height="40.0dp"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="5dip"
+        android:layout_marginTop="5dp"
         android:background="@drawable/shape_headimg"
         android:gravity="center_vertical|center_horizontal"
         android:textColor="#FFFFFF"
@@ -75,5 +75,29 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp" >
+
+        <Button
+            android:visibility="invisible"
+            android:id="@+id/rightBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="#FFFFFF" />
+
+        <ProgressBar
+            android:visibility="invisible"
+            android:id="@+id/rightProgress"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
 
 </RelativeLayout>

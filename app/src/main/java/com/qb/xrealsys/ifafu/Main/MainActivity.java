@@ -400,6 +400,7 @@ public class MainActivity extends BaseActivity
             public void onRefreshBegin(PtrFrameLayout frame) {
                 Log.d("log", "Refresh data...");
                 isNeedFlushData = true;
+                titleBarController.setRightProgress(View.VISIBLE);
                 updateActivity();
             }
         });
@@ -764,6 +765,7 @@ public class MainActivity extends BaseActivity
                 }
 
                 ptrFrameLayout.refreshComplete();
+                titleBarController.setRightProgress(View.INVISIBLE);
             }
         });
     }

@@ -163,6 +163,7 @@ public class SyllabusActivity extends BaseActivity implements
                 .setTwoLineTitle(
                         "课表",
                         syllabusController.GetNowStudyTime(getString(R.string.format_study_time)))
+                .setRightBtn(R.drawable.icon_pushpin_1)
                 .setOnClickedListener(this);
 
         initOptionsPickerView();

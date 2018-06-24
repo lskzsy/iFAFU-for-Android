@@ -187,7 +187,8 @@ public class ScoreInterface extends WebInterface {
             score.setCourseType(matcherScore.group(5));
             score.setCourseOwner(getRealStringData(matcherScore.group(6)));
             score.setStudyScore(Float.parseFloat(matcherScore.group(7)));
-            if (GlobalLib.CompareUtfWithGbk("缓考", matcherScore.group(8))) {
+            if (GlobalLib.CompareUtfWithGbk("缓考", matcherScore.group(8)) ||
+                    GlobalLib.CompareUtfWithGbk("免修", matcherScore.group(8))) {
                 score.setDelayExam(true);
                 score.setScore(0);
             } else {
