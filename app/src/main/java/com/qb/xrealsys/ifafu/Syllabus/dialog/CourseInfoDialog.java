@@ -1,4 +1,4 @@
-package com.qb.xrealsys.ifafu.Score.dialog;
+package com.qb.xrealsys.ifafu.Syllabus.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
