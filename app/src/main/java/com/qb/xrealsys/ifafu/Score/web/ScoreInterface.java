@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 
 public class ScoreInterface extends WebInterface {
 
-    private String ScorePage = "xscjcx_dq.aspx";
+    private String ScorePage = "xscjcx_dq_fafu.aspx";
 
     private String TrainningPlanPage = "pyjh.aspx";
 
