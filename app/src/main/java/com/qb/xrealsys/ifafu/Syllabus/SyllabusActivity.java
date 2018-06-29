@@ -21,7 +21,7 @@ import com.qb.xrealsys.ifafu.R;
 import com.qb.xrealsys.ifafu.Syllabus.controller.SyllabusAsyncController;
 import com.qb.xrealsys.ifafu.Base.controller.TitleBarController;
 import com.qb.xrealsys.ifafu.Base.delegate.TitleBarButtonOnClickedDelegate;
-import com.qb.xrealsys.ifafu.Score.dialog.CourseInfoDialog;
+import com.qb.xrealsys.ifafu.Syllabus.dialog.CourseInfoDialog;
 import com.qb.xrealsys.ifafu.Syllabus.model.Course;
 import com.qb.xrealsys.ifafu.Tool.ConfigHelper;
 import com.qb.xrealsys.ifafu.Tool.GlobalLib;

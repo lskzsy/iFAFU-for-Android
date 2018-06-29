@@ -15,6 +15,7 @@
     <string name="display_responsibility">1.您的账号和密码为本地存储，并且是加密的，iFAFU不会在任何情况下尝试将您的账号和密码提交到jwgl.fafu.edu以外的地方。\n2.iFAFU可能会将您的设备标识等上传至iFAFU服务器，您的设备标识是加密的，并且此加密过程不可逆，iFAFU不会将其用于统计已安装的用户的数量之外的其他用途。\n3.iFAFU的所有请求均提交到jwgl.fafu.edu，除了下列请求之外：a.请求验证软件更新；b.请求验证是否有新通知；c.请求用户权限判定（此请求不会提交您的任何用户信息，仅获取“有更高权限”的用户列表来判定）d.其他一些用于控制程序或是显示信息并且不涉及用户隐私的请求。\n4.iFAFU会尽最大可能保护您的隐私，iFAFU也会采取手段尝试阻止恶意的对iFAFU的反编译或逆向破解等行为，但不代表所以您下载的并且可以正常运行的iFAFU均未被恶意注入代码，因此请勿下载未知来源的iFAFU。\n5.iFAFU所查询的数据均来自jwgl.fafu.edu，iFAFU不对数据的准确性负责，此外由于jwgl.fafu.edu与iFAFU并非合作开发，iFAFU仅负责提交相应请求，处理对应数据，因此服务器代码更改对iFAFU的数据处理准确性等可能有重大影响，此外不同账号，不同时期返回的数据纷繁复杂，具有很大的不可预测性，还有开发者本身的失误等诸多因素影响，iFAFU无法保证数据处理的准确性，因此iFAFU的一切数据仅供参考，不具备任何效力！\n6.iFAFU是非营利性的，设计初衷也是为了帮助许多受教务系统网页端困恼，希望以更快更简便的方式获取更有用的数据，减少不必要的操作行为的用户。iFAFU承诺不会在程序中插入、推送任何商业性质的广告，不会向用户收取任何费用，不会泄露用户的任何隐私，区别普通用户和VIP用户仅用于控制iFAFU抢课功能的权限，此限制是为了避免大规模的使用iFAFU恶意囤课，卖课的行为，您可以向开发者申请授权，此授权也是免费的。iFAFU承诺不以任何方式盈利，也希望用户不能使用iFAFU中的任何功能向他人收取任何费用。\n7.iFAFU尚有很多不足之处，iFAFU的成长离不开很多充满善意的希望iFAFU越变越好的小伙伴们，若您在使用过程中发现任何BUG或是有任何意见和建议都可以联系我，若您的建议被采纳，将会显示在“鸣谢”列表之中，在此对您的使用和支持深表感激。\n8.以上内容对您的权益和iFAFU都极为重要，请仔细查看，若您开始使用本程序即代表您同意以上内容，若您对以上内容有异议，请停用本程序，若您愿意，欢迎随时联系我，告知我们不当之处，我会在核实后对以上内容作出对应调整，感谢您的理解和支持。\n-充满诚意的 RealSys&#38;照相\n2018.02.24</string>
     <string name="display_input_login_account">请输入学号</string>
     <string name="display_input_login_password">请输入密码</string>
+    <string name="display_input_elective_course_query">请输入课程名称</string>
     <string name="display_score_view_bottom">-- 到底啦 --</string>
     <string name="display_score_info_title1">课程性质</string>
     <string name="display_score_info_title2">成绩详情</string>
@@ -27,6 +28,8 @@
     <string name="display_elective_score_innovate">创新创业教育类</string>
     <string name="display_loading">加载中...</string>
     <string name="display_dialog_cancel">取消</string>
+    <string name="display_dialog_filter">过滤</string>
+    <string name="display_dialog_query">搜索</string>
     <string name="display_dialog_close">关闭</string>
     <string name="display_dialog_submit">提交</string>
     <string name="display_dialog_account_setting_title">选择需要操作的账号</string>
@@ -37,6 +40,14 @@
     <string name="display_main_card_error">还未登录校园一卡通，请点击登录</string>
     <string name="display_card_login_password">同i农大密码</string>
     <string name="display_card_login_title">- 统一身份认证 -</string>
+    <string name="display_elective_course_filter_btn">过滤课程</string>
+    <string name="display_elective_course_query_btn">查找课程</string>
+    <string name="display_elective_course_elective_btn">已选课程</string>
+    <string name="display_elective_course_nature_input">课程性质</string>
+    <string name="display_elective_course_have_input">有无余量</string>
+    <string name="display_elective_course_owner_input">课程归属</string>
+    <string name="display_elective_course_campus_input">上课校区</string>
+    <string name="display_elective_course_time_input">上课时间</string>
 
     <string name="error_view_params_not_found">页面错误</string>
     <string name="error_system">系统错误</string>

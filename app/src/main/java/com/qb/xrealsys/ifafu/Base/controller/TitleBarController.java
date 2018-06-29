@@ -91,6 +91,10 @@ public class TitleBarController implements View.OnClickListener {
         return this;
     }
 
+    public boolean isRightProgressRunning() {
+        return this.rightProgress.getVisibility() == View.VISIBLE;
+    }
+
     public TitleBarController setRightProgress(int visible) {
         this.rightProgress.setVisibility(visible);
         return this;

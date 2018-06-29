@@ -20,6 +20,7 @@ import android.app.Application;
 
 import com.qb.xrealsys.ifafu.Card.controller.CardController;
 import com.qb.xrealsys.ifafu.CommentTeacher.controller.EnvaTeacherController;
+import com.qb.xrealsys.ifafu.ElectiveCourse.controller.ElectiveCourseController;
 import com.qb.xrealsys.ifafu.Exam.controller.ExamAsyncController;
 import com.qb.xrealsys.ifafu.Main.controller.UpdateController;
 import com.qb.xrealsys.ifafu.Score.controller.ScoreAsyncController;
@@ -62,6 +63,8 @@ public class MainApplication extends Application {
 
     private CardController              cardController;
 
+    private ElectiveCourseController    electiveCourseController;
+
     private ZFVerify                    zfVerify;
 
     @Override
@@ -74,19 +77,20 @@ public class MainApplication extends Application {
         Realm.setDefaultConfiguration(realmConfig);
 
         try {
-            cachedThreadPool        = Executors.newCachedThreadPool();
-            zfVerify                = new ZFVerify(getBaseContext());
-            userController          = new UserAsyncController(getBaseContext(), cachedThreadPool, zfVerify);
-            configHelper            = new ConfigHelper(getBaseContext());
-            ossHelper               = new OSSHelper(
+            cachedThreadPool            = Executors.newCachedThreadPool();
+            zfVerify                    = new ZFVerify(getBaseContext());
+            userController              = new UserAsyncController(getBaseContext(), cachedThreadPool, zfVerify);
+            configHelper                = new ConfigHelper(getBaseContext());
+            ossHelper                   = new OSSHelper(
                     configHelper.GetSystemValue("ossHost"),
                     configHelper.GetSystemValue("ossKey"));
-            cardController          = new CardController(userController, configHelper);
-            scoreController         = new ScoreAsyncController(userController, configHelper);
-            examController          = new ExamAsyncController(userController, configHelper);
-            syllabusController      = new SyllabusAsyncController(userController, configHelper);
-            updateController        = new UpdateController(getBaseContext(), ossHelper, configHelper);
-            envaTeacherController   = new EnvaTeacherController(userController, configHelper);
+            cardController              = new CardController(userController, configHelper);
+            scoreController             = new ScoreAsyncController(userController, configHelper);
+            examController              = new ExamAsyncController(userController, configHelper);
+            syllabusController          = new SyllabusAsyncController(userController, configHelper);
+            updateController            = new UpdateController(getBaseContext(), ossHelper, configHelper);
+            envaTeacherController       = new EnvaTeacherController(userController, configHelper);
+            electiveCourseController    = new ElectiveCourseController(userController, configHelper);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -134,5 +138,9 @@ public class MainApplication extends Application {
 
     public ZFVerify getZfVerify() {
         return zfVerify;
+    }
+
+    public ElectiveCourseController getElectiveCourseController() {
+        return electiveCourseController;
     }
 }

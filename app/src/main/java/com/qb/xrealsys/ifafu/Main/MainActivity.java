@@ -45,6 +45,7 @@ import com.qb.xrealsys.ifafu.Card.delegate.CardLoginCallbackDelegate;
 import com.qb.xrealsys.ifafu.Card.delegate.UpdateMainCardViewDelegate;
 import com.qb.xrealsys.ifafu.Card.dialog.CardLoginDialog;
 import com.qb.xrealsys.ifafu.CommentTeacher.CommentTeacherActivity;
+import com.qb.xrealsys.ifafu.ElectiveCourse.ElectiveCourseActivity;
 import com.qb.xrealsys.ifafu.Main.controller.AdController;
 import com.qb.xrealsys.ifafu.Base.BaseActivity;
 import com.qb.xrealsys.ifafu.Base.controller.TitleBarController;
@@ -480,10 +481,11 @@ public class MainActivity extends BaseActivity
                 gotoCommentTeacherActivity();
                 break;
             case 6:
-                Toast.makeText(
-                        this,
-                        "联系作者激活后可使用！",
-                        Toast.LENGTH_SHORT).show();
+//                Toast.makeText(
+//                        this,
+//                        "联系作者激活后可使用！",
+//                        Toast.LENGTH_SHORT).show();
+                gotoElectiveCourse();
                 break;
             case 7:
                 gotoBrower("网页模式", currentUserController.getIndexUrl());
@@ -529,6 +531,11 @@ public class MainActivity extends BaseActivity
     /**
      * Go to other activity
      */
+    private void gotoElectiveCourse() {
+        Intent intent = new Intent(MainActivity.this, ElectiveCourseActivity.class);
+        startActivity(intent);
+    }
+
     private void gotoCommentTeacherActivity() {
         Intent intent = new Intent(MainActivity.this, CommentTeacherActivity.class);
         startActivity(intent);

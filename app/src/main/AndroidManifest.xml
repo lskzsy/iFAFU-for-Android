@@ -63,9 +63,12 @@
         <activity
             android:name=".CommentTeacher.CommentTeacherActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name=".Card.CardActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".ElectiveCourse.ElectiveCourseActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <receiver android:name=".Widget.iFAFUWidget">
@@ -79,6 +82,7 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/i_fafuwidget_info" />
         </receiver>
+
     </application>
 
 </manifest>

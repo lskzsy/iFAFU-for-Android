@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="#ffffff"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ElectiveCourse.ElectiveCourseActivity">
+
+    <include layout="@layout/gadget_titlebar" />
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <Button
+            android:id="@+id/filterBtn"
+            android:background="@drawable/shape_elective_course_btn"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            android:text="@string/display_elective_course_filter_btn"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/queryBtn"
+            android:background="@drawable/shape_elective_course_btn"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            android:text="@string/display_elective_course_query_btn"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/electiveBtn"
+            android:background="@drawable/shape_elective_course_btn"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            android:text="@string/display_elective_course_elective_btn"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/gadget_table_blank" />
+
+        <ListView
+            android:id="@+id/electiveCourseList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </ListView>
+
+    </RelativeLayout>
+
+</LinearLayout>
