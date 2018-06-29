@@ -7,6 +7,7 @@ import android.widget.*
 import com.qb.xrealsys.ifafu.Base.controller.TitleBarController
 import com.qb.xrealsys.ifafu.Base.delegate.TitleBarButtonOnClickedDelegate
 import com.qb.xrealsys.ifafu.ElectiveCourse.controller.ElectiveCourseController
+import com.qb.xrealsys.ifafu.ElectiveCourse.delegate.ElectiveCourseFilterDelegate
 import com.qb.xrealsys.ifafu.ElectiveCourse.delegate.ElectiveCourseSearchDelegate
 import com.qb.xrealsys.ifafu.ElectiveCourse.delegate.UpdateElectiveCourseListViewDelegate
 import com.qb.xrealsys.ifafu.ElectiveCourse.dialog.ElectiveCourseFilterDialog
@@ -18,7 +19,7 @@ import com.qb.xrealsys.ifafu.User.controller.UserAsyncController
 import java.util.*
 import kotlin.collections.HashMap
 
-class ElectiveCourseActivity : AppCompatActivity(), TitleBarButtonOnClickedDelegate, UpdateElectiveCourseListViewDelegate, View.OnClickListener, ElectiveCourseSearchDelegate {
+class ElectiveCourseActivity : AppCompatActivity(), TitleBarButtonOnClickedDelegate, UpdateElectiveCourseListViewDelegate, View.OnClickListener, ElectiveCourseSearchDelegate, ElectiveCourseFilterDelegate {
 
     private var mainApplication: MainApplication? = null
 
@@ -35,6 +36,14 @@ class ElectiveCourseActivity : AppCompatActivity(), TitleBarButtonOnClickedDeleg
     private var queryBtn: Button? = null
 
     private var filterBtn: Button? = null
+
+    private var nextPageBtn: Button? = null
+
+    private var lastPageBtn: Button? = null
+
+    private var pageView: LinearLayout? = null
+
+    private var pageContentView: TextView? = null
 
     private var searchDialog: ElectiveCourseSearchDialog? = null
 
@@ -70,8 +79,15 @@ class ElectiveCourseActivity : AppCompatActivity(), TitleBarButtonOnClickedDeleg
         noDataView = findViewById(R.id.noDataView)
         queryBtn = findViewById(R.id.queryBtn)
         filterBtn = findViewById(R.id.filterBtn)
+        nextPageBtn = findViewById(R.id.nextPage)
+        lastPageBtn = findViewById(R.id.lastPage)
+        pageView = findViewById(R.id.pageView)
+        pageContentView = findViewById(R.id.pageContent)
         filterBtn!!.setOnClickListener(this)
         queryBtn!!.setOnClickListener(this)
+        lastPageBtn!!.setOnClickListener(this)
+        nextPageBtn!!.setOnClickListener(this)
+        pageView!!.visibility = View.INVISIBLE
     }
 
     private fun initData() {
@@ -85,7 +101,7 @@ class ElectiveCourseActivity : AppCompatActivity(), TitleBarButtonOnClickedDeleg
             }
         }
         this.searchDialog = ElectiveCourseSearchDialog(this, this)
-        this.filterDialog = ElectiveCourseFilterDialog(this, electiveCourseController!!.getFilter())
+        this.filterDialog = ElectiveCourseFilterDialog(this, electiveCourseController!!.getFilter(), this)
     }
 
     override fun titleBarOnClicked(id: Int) {
@@ -94,15 +110,28 @@ class ElectiveCourseActivity : AppCompatActivity(), TitleBarButtonOnClickedDeleg
         }
     }
 
+    private fun modifyPageElement(listSize: Int) {
+        if (listSize < 1) {
+            noDataView!!.visibility = View.VISIBLE
+            pageView!!.visibility = View.INVISIBLE
+        } else {
+            noDataView!!.visibility = View.INVISIBLE
+            if (this.electiveCourseController!!.pageViewDisplay()) {
+                pageView!!.visibility = View.VISIBLE
+                pageContentView!!.text = electiveCourseController!!.getPageString()
+                lastPageBtn!!.isEnabled = electiveCourseController!!.canLastPage()
+                nextPageBtn!!.isEnabled = electiveCourseController!!.canNextPagte()
+            } else {
+                pageView!!.visibility = View.INVISIBLE
+            }
+        }
+    }
+
     override fun updateElectiveCourseList(electiveCourseList: MutableList<ElectiveCourse>) {
         runOnUiThread {
             val adaptData = ArrayList<Map<String, Any>>()
             titleBarController!!.setRightProgress(View.INVISIBLE)
-            if (electiveCourseList.size < 1) {
-                noDataView!!.visibility = View.VISIBLE
-            } else {
-                noDataView!!.visibility = View.INVISIBLE
-            }
+            modifyPageElement(electiveCourseList.size)
 
             for (electiveCourse in electiveCourseList) {
                 val map = HashMap<String, Any>()
@@ -112,7 +141,7 @@ class ElectiveCourseActivity : AppCompatActivity(), TitleBarButtonOnClickedDeleg
                 map["teacher"] = electiveCourse.teacher!!
                 map["score"] = "学分: ${electiveCourse.studyScore}"
                 map["have"] = "剩余: ${electiveCourse.have}/${electiveCourse.allHave}"
-                map["btn"] = "取消预订"
+                map["btn"] = "选课"
                 adaptData.add(map)
             }
 
@@ -148,6 +177,14 @@ class ElectiveCourseActivity : AppCompatActivity(), TitleBarButtonOnClickedDeleg
                 R.id.filterBtn-> {
                     this.filterDialog!!.show()
                 }
+                R.id.lastPage -> {
+                    titleBarController!!.setRightProgress(View.VISIBLE)
+                    this.electiveCourseController!!.lastPage()
+                }
+                R.id.nextPage -> {
+                    titleBarController!!.setRightProgress(View.VISIBLE)
+                    this.electiveCourseController!!.nextPage()
+                }
             }
         }
     }
@@ -157,5 +194,11 @@ class ElectiveCourseActivity : AppCompatActivity(), TitleBarButtonOnClickedDeleg
         titleBarController!!.setRightProgress(View.VISIBLE)
 //        Toast.makeText(this, "搜索\"$courseName\"", Toast.LENGTH_SHORT).show()
         electiveCourseController!!.searchByName(courseName)
+    }
+
+    override fun filterElectiveCourse() {
+        this.filterDialog!!.cancel()
+        titleBarController!!.setRightProgress(View.VISIBLE)
+        electiveCourseController!!.filter()
     }
 }

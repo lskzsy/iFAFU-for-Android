@@ -24,7 +24,33 @@ class ElectiveFilter {
 
     var courseTimeIndex: Int = 0
 
+    var courseNameFilter: String? = null
+
     fun getCourseCampusName(): String {
         return this.courseCampusName[this.courseCampus[this.courseCampusIndex].toInt()]
+    }
+
+    fun getCourseCampusName(index: Int): String {
+        return this.courseCampusName[index]
+    }
+
+    fun getCourseCampus(): String {
+        return this.courseCampus[this.courseCampusIndex]
+    }
+
+    fun getCourseNature(): String {
+        return this.courseNature[this.courseNatureIndex]
+    }
+
+    fun getCourseHave(): String {
+        return this.isFree[this.isFreeIndex]
+    }
+
+    fun getCourseOwner(): String {
+        return this.courseOwner[this.courseOwnerIndex]
+    }
+
+    fun getCourseTime(): String {
+        return this.courseTime[this.courseTimeIndex]
     }
 }

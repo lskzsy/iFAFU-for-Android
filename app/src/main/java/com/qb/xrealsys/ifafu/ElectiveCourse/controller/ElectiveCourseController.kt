@@ -48,6 +48,7 @@ class ElectiveCourseController (
     fun searchByName(courseName: String) {
         this.threadPool.execute {
             val user: User = this.userController.data
+            this.electiveCourseList.curPage = 1
             val response: Response = this.electiveCourseInterface.searchElectiveCourseByName(
                     user.account,
                     user.name,
@@ -60,6 +61,58 @@ class ElectiveCourseController (
             } else {
                 updateDelegate!!.errorElectiveCourseList(response.message)
             }
+        }
+    }
+
+    fun filter() {
+        this.electiveCourseList.curPage = 1
+        search()
+    }
+
+    fun search() {
+        this.threadPool.execute {
+            val user: User = this.userController.data
+            val response: Response = this.electiveCourseInterface.searchElectiveCourse(
+                    user.account,
+                    user.name,
+                    this.electiveCourseList)
+            if (response.isSuccess) {
+                if (this.updateDelegate != null) {
+                    updateDelegate!!.updateElectiveCourseList(electiveCourseList.courses)
+                }
+            } else {
+                updateDelegate!!.errorElectiveCourseList(response.message)
+            }
+        }
+    }
+
+    fun pageViewDisplay(): Boolean {
+        return 1 != this.electiveCourseList.pageSize
+    }
+
+    fun canNextPagte(): Boolean {
+        return this.electiveCourseList.curPage < this.electiveCourseList.pageSize
+    }
+
+    fun canLastPage(): Boolean {
+        return this.electiveCourseList.curPage > 1
+    }
+
+    fun getPageString(): String {
+        return "${this.electiveCourseList.curPage}/${this.electiveCourseList.pageSize}"
+    }
+
+    fun nextPage() {
+        if (canNextPagte()) {
+            this.electiveCourseList.curPage++
+            search()
+        }
+    }
+
+    fun lastPage() {
+        if (canLastPage()) {
+            this.electiveCourseList.curPage--
+            search()
         }
     }
 }

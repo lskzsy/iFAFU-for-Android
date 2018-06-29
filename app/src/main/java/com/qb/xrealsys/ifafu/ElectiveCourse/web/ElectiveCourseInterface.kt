@@ -54,14 +54,33 @@ class ElectiveCourseInterface (
 
     fun searchElectiveCourseByName(
             number: String, name: String, courseList: ElectiveCourseList, courseName: String): Response {
+        courseList.filter.courseNameFilter = courseName
         return searchElectiveCourse(
-                number, name, courseList, "", "有", "", "1", "", courseName)
+                number, name, courseList, "", "有", "", "1", "", courseName, courseList.curPage)
+    }
+
+    fun searchElectiveCourse(
+            number: String, name: String, courseList: ElectiveCourseList): Response {
+        val filter: ElectiveFilter = courseList.filter
+        var courseName= ""
+        if (filter.courseNameFilter != null) {
+            courseName = filter.courseNameFilter!!
+        }
+        return searchElectiveCourse(
+                number, name, courseList,
+                filter.getCourseNature(),
+                filter.getCourseHave(),
+                filter.getCourseOwner(),
+                filter.getCourseCampus(),
+                filter.getCourseTime(),
+                courseName,
+                courseList.curPage)
     }
 
     fun searchElectiveCourse(
             number: String, name: String, courseList: ElectiveCourseList,
             nature: String, have: String, owner: String, campus: String,
-            time: String, courseName: String): Response {
+            time: String, courseName: String, curPage: Int): Response {
         var accessUrl: String = makeAccessUrlHead() + electiveCoursePage
         accessUrl += "?xh=$number"
         accessUrl += "&xm=" + URLEncoder.encode(name, "gbk")
@@ -79,7 +98,7 @@ class ElectiveCourseInterface (
         postData["ddl_xqbs"] = campus
         postData["ddl_sksj"] = URLEncoder.encode(time, "gbk")
         postData["TextBox1"] = URLEncoder.encode(courseName, "gbk")
-        postData["dpkcmcGrid%3AtxtChoosePage"] = "1"
+        postData["dpkcmcGrid%3AtxtChoosePage"] = curPage.toString()
         postData["dpkcmcGrid%3AtxtPageSize"] = "15"
 
         val response = request.Post(postData, false)
@@ -89,7 +108,7 @@ class ElectiveCourseInterface (
 
         val html = response.response
         if (!LoginedCheck(html)) {
-            return searchElectiveCourse(number, name, courseList, nature, have, owner, campus, time, courseName)
+            return searchElectiveCourse(number, name, courseList, nature, have, owner, campus, time, courseName, curPage)
         }
 
 //        setViewParams(html)
@@ -131,7 +150,7 @@ class ElectiveCourseInterface (
             electiveCourseList.courses.add(course)
         }
 
-        val matcherPage: Matcher = patternPage.matcher(content)
+        val matcherPage: Matcher = patternPage.matcher(html)
         if (matcherPage.find()) {
             electiveCourseList.curPage = matcherPage.group(1).toInt()
             electiveCourseList.pageSize = matcherPage.group(2).toInt()

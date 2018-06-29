@@ -6,11 +6,7 @@ class ElectiveCourseList {
 
     var courses: MutableList<ElectiveCourse> = ArrayList()
 
-    var pageSize: Int = 0
+    var pageSize: Int = 1
 
-    var curPage: Int = 0
-
-    fun clearCourses() {
-        this.courses.clear()
-    }
+    var curPage: Int = 1
 }

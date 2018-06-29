@@ -48,6 +48,8 @@
     <string name="display_elective_course_owner_input">课程归属</string>
     <string name="display_elective_course_campus_input">上课校区</string>
     <string name="display_elective_course_time_input">上课时间</string>
+    <string name="display_next_page">下一页</string>
+    <string name="display_last_page">上一页</string>
 
     <string name="error_view_params_not_found">页面错误</string>
     <string name="error_system">系统错误</string>
