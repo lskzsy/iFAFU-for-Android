@@ -100,7 +100,7 @@ class ElectiveCourseInterface (
         }
 
         val html = response.response
-        if (!LoginedCheck(html)) {
+        if (!LoginedCheck(html) || html.contains("防刷")) {
             return electiveCourse(number, name, electiveCourseList, courseIndex)
         }
         setViewParams(html)
@@ -148,7 +148,7 @@ class ElectiveCourseInterface (
         }
 
         val html = response.response
-        if (!LoginedCheck(html)) {
+        if (!LoginedCheck(html) || html.contains("防刷")) {
             return electiveCourse(number, name, task)
         }
 
@@ -196,7 +196,7 @@ class ElectiveCourseInterface (
         }
 
         val html = response.response
-        if (!LoginedCheck(html)) {
+        if (!LoginedCheck(html) || html.contains("防刷")) {
             return electiveCourse(number, name, electiveCourseList, courseIndex)
         }
         setViewParams(html)
@@ -215,7 +215,7 @@ class ElectiveCourseInterface (
             number: String, name: String, courseList: ElectiveCourseList, courseName: String): Response {
         courseList.filter.courseNameFilter = courseName
         return searchElectiveCourse(
-                number, name, courseList, "", "有", "", "1", "", courseName, courseList.curPage)
+                number, name, courseList, "", "", "", "1", "", courseName, courseList.curPage)
     }
 
     fun searchElectiveCourse(
@@ -266,7 +266,7 @@ class ElectiveCourseInterface (
         }
 
         val html = response.response
-        if (!LoginedCheck(html)) {
+        if (!LoginedCheck(html) || html.contains("防刷")) {
             return searchElectiveCourse(number, name, courseList, nature, have, owner, campus, time, courseName, curPage)
         }
 
