@@ -54,13 +54,47 @@ class ElectiveCourseController (
         return electiveCourseInterface.viewStateGenerator
     }
 
+    fun getIndexResponse(): Response {
+        val user: User = this.userController.data
+        return this.electiveCourseInterface.getElectiveCourseIndex(
+                user.account,
+                user.name,
+                this.electiveCourseList)
+    }
+
+    fun selectCourse(task: ElectiveTask): Response {
+        val user: User = this.userController.data
+        val response: Response = this.electiveCourseInterface.searchElectiveCourse(
+                user.account,
+                user.name,
+                this.electiveCourseList,
+                task.natureFilter!!,
+                task.haveFilter!!,
+                task.ownerFilter!!,
+                task.campusFilter!!,
+                task.timeFilter!!,
+                task.nameFilter!!,
+                1)
+
+        if (response.isSuccess && electiveCourseList.courses.size > 0) {
+            val course: ElectiveCourse = electiveCourseList.courses[0]
+            task.focus = true
+            task.courseIndex = course.courseIndex
+            task.courseName = course.name
+            task.viewState = getViewState()
+            task.viewStateGenerator = getViewStateGenerator()
+            task.curPage = getCurPage().toString()
+            task.courseOwner = course.owner
+
+            return Response(true, 0, "")
+        }
+
+        return Response(false, 0, "")
+    }
+
     fun getIndex() {
         this.threadPool.execute {
-            val user: User = this.userController.data
-            val response: Response = this.electiveCourseInterface.getElectiveCourseIndex(
-                    user.account,
-                    user.name,
-                    this.electiveCourseList)
+            val response: Response = getIndexResponse()
             if (response.isSuccess) {
                 if (this.updateDelegate != null) {
                     updateDelegate!!.updateElectiveCourseList(electiveCourseList.courses)
@@ -99,7 +133,7 @@ class ElectiveCourseController (
         search()
     }
 
-    fun search() {
+    private fun search() {
         this.threadPool.execute {
             val user: User = this.userController.data
             val response: Response = this.electiveCourseInterface.searchElectiveCourse(

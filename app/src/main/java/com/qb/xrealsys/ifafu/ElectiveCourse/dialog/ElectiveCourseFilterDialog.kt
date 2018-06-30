@@ -127,7 +127,6 @@ class ElectiveCourseFilterDialog (context: Context?, filter: ElectiveFilter, del
         } else {
             filterView.findViewById<TextView>(R.id.itemInput).text = "不限"
         }
-
     }
 
     override fun onClick(v: View?) {

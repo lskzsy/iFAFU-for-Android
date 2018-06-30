@@ -57,6 +57,10 @@ class ElectiveCourseInterface (
             return Response(false, 0, matcher.group(1))
         }
 
+        if (html.contains("防刷")) {
+            return Response(false, 0, "")
+        }
+
         setViewParams(html)
         analysisFilter(html, courseList.filter)
         analysisElectiveCourseList(html, courseList)
@@ -125,7 +129,7 @@ class ElectiveCourseInterface (
         postData["__VIEWSTATEGENERATOR"] = task.viewStateGenerator!!
         postData["ddl_kcxz"] = URLEncoder.encode(task.natureFilter!!, "gbk")
         postData["ddl_ywyl"] = URLEncoder.encode(task.haveFilter!!, "gbk")
-        postData["ddl_kcgs"] = URLEncoder.encode(task.courseOwner!!, "gbk")
+        postData["ddl_kcgs"] = URLEncoder.encode(task.ownerFilter!!, "gbk")
         postData["ddl_xqbs"] = task.campusFilter!!
         postData["ddl_sksj"] = URLEncoder.encode(task.timeFilter!!, "gbk")
         var courseName = ""

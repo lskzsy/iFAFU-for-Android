@@ -16,6 +16,7 @@ import com.qb.xrealsys.ifafu.ElectiveCourse.controller.ElectiveCourseController
 import com.qb.xrealsys.ifafu.ElectiveCourse.controller.ElectiveCourseTaskController
 import com.qb.xrealsys.ifafu.ElectiveCourse.delegate.*
 import com.qb.xrealsys.ifafu.ElectiveCourse.dialog.ElectiveCourseFilterDialog
+import com.qb.xrealsys.ifafu.ElectiveCourse.dialog.ElectiveCoursePredictionDialog
 import com.qb.xrealsys.ifafu.ElectiveCourse.dialog.ElectiveCourseSearchDialog
 import com.qb.xrealsys.ifafu.ElectiveCourse.model.ElectiveCourse
 import com.qb.xrealsys.ifafu.ElectiveCourse.model.ElectiveTask
@@ -34,7 +35,7 @@ class ElectiveCourseActivity :
         View.OnClickListener,
         ElectiveCourseSearchDelegate,
         ElectiveCourseFilterDelegate,
-        ItemButtonClickListener, ElectiveCourseCallbackDelegate, ElectiveCourseTaskDelegate {
+        ItemButtonClickListener, ElectiveCourseCallbackDelegate, ElectiveCourseTaskDelegate, ElectiveCoursePredictionDelegate {
 
     private var mainApplication: MainApplication? = null
 
@@ -69,6 +70,8 @@ class ElectiveCourseActivity :
     private var searchDialog: ElectiveCourseSearchDialog? = null
 
     private var filterDialog: ElectiveCourseFilterDialog? = null
+
+    private var predictionDialog: ElectiveCoursePredictionDialog? = null
 
     private var noDataView: LinearLayout? = null
 
@@ -134,12 +137,18 @@ class ElectiveCourseActivity :
         }
         this.searchDialog = ElectiveCourseSearchDialog(this, this)
         this.filterDialog = ElectiveCourseFilterDialog(this, electiveCourseController!!.getFilter(), this)
+        this.predictionDialog = ElectiveCoursePredictionDialog(this, this.electiveCourseTaskController!!, this)
     }
 
     override fun titleBarOnClicked(id: Int) {
         when (id) {
             R.id.headback -> finish()
         }
+    }
+
+    private fun lockQueryAndFilter() {
+        this.filterBtn!!.isEnabled = false
+        this.queryBtn!!.isEnabled = true
     }
 
     private fun modifyPageElement(listSize: Int) {
@@ -222,8 +231,26 @@ class ElectiveCourseActivity :
         val adaptData = ArrayList<Map<String, Any>>()
         for (courseTask in courseTasks) {
             val map = HashMap<String, Any>()
-            map["icon"] = this.mapTitleToIcon!![courseTask.courseOwner!!]!!
-            map["name"] = courseTask.courseName!!
+            if (courseTask.focus) {
+                if (courseTask.courseOwner == null) {
+                    map["icon"] = this.mapTitleToIcon!![courseTask.ownerFilter!!]!!
+                } else {
+                    map["icon"] = this.mapTitleToIcon!![courseTask.courseOwner!!]!!
+                }
+                map["name"] = courseTask.courseName!!
+            } else {
+                var campusFilter = ""
+                when (courseTask.campusFilter) {
+                    "0" -> {
+                        campusFilter = "福建农林大学本部"
+                    }
+                    "1" -> {
+                        campusFilter = "网络公选课"
+                    }
+                }
+                map["icon"] = this.mapTitleToIcon!![courseTask.ownerFilter!!]!!
+                map["name"] = "预报名: ${courseTask.nameFilter}/${courseTask.natureFilter}/$campusFilter"
+            }
             map["time"] = "工作时间: ${GlobalLib.GetRuntime(courseTask.timestamp)}"
             map["btn"] = "移除"
             adaptData.add(map)
@@ -246,7 +273,16 @@ class ElectiveCourseActivity :
     override fun errorElectiveCourseList(error: String) {
         runOnUiThread {
             Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
-            finish()
+            if (error.contains("现在不能选") || !error.isNotEmpty()) {
+                if (!this.electiveCourseTaskController!!.isExistPreditcionTask()) {
+                    predictionDialog!!.show()
+                } else {
+                    lockQueryAndFilter()
+                    updateElectiveCourseTaskList()
+                }
+            } else {
+                finish()
+            }
         }
     }
 
@@ -388,5 +424,16 @@ class ElectiveCourseActivity :
                 }
             }
         }
+    }
+
+    override fun predictionDialogClose() {
+        predictionDialog!!.cancel()
+        finish()
+    }
+
+    override fun predictionDialogConfirm() {
+        predictionDialog!!.cancel()
+        updateElectiveCourseTaskList()
+        lockQueryAndFilter()
     }
 }

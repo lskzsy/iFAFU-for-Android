@@ -30,6 +30,8 @@ class ElectiveTask(task: ElectiveCourseTask) {
 
     var timestamp: Long = 0
 
+    var focus: Boolean = false
+
     var account: String? = null
 
     init {
@@ -46,6 +48,7 @@ class ElectiveTask(task: ElectiveCourseTask) {
         this.curPage = task.curPage
         this.viewStateGenerator = task.viewStateGenerator
         this.timestamp = task.timestamp
+        this.focus = task.isFocus
         this.account = task.account
     }
 }

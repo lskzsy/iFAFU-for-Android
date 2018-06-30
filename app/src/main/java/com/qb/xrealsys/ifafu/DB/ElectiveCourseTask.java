@@ -1,6 +1,7 @@
 package com.qb.xrealsys.ifafu.DB;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class ElectiveCourseTask extends  RealmObject {
 
@@ -30,7 +31,17 @@ public class ElectiveCourseTask extends  RealmObject {
 
     private long timestamp;
 
+    private boolean focus;
+
     private String account;
+
+    public boolean isFocus() {
+        return focus;
+    }
+
+    public void setFocus(boolean focus) {
+        this.focus = focus;
+    }
 
     public String getCurPage() {
         return curPage;
