@@ -2,9 +2,13 @@ package com.qb.xrealsys.ifafu.ElectiveCourse.controller
 
 import com.qb.xrealsys.ifafu.Base.controller.AsyncController
 import com.qb.xrealsys.ifafu.Base.model.Response
+import com.qb.xrealsys.ifafu.DB.ElectiveCourseTask
+import com.qb.xrealsys.ifafu.ElectiveCourse.delegate.ElectiveCourseCallbackDelegate
 import com.qb.xrealsys.ifafu.ElectiveCourse.delegate.UpdateElectiveCourseListViewDelegate
+import com.qb.xrealsys.ifafu.ElectiveCourse.model.ElectiveCourse
 import com.qb.xrealsys.ifafu.ElectiveCourse.model.ElectiveCourseList
 import com.qb.xrealsys.ifafu.ElectiveCourse.model.ElectiveFilter
+import com.qb.xrealsys.ifafu.ElectiveCourse.model.ElectiveTask
 import com.qb.xrealsys.ifafu.ElectiveCourse.web.ElectiveCourseInterface
 import com.qb.xrealsys.ifafu.Tool.ConfigHelper
 import com.qb.xrealsys.ifafu.User.controller.UserAsyncController
@@ -22,7 +26,33 @@ class ElectiveCourseController (
 
     private val userController: UserAsyncController = userController
 
+    var callbackDelegate: ElectiveCourseCallbackDelegate? = null
+
     var updateDelegate: UpdateElectiveCourseListViewDelegate? = null
+
+    fun getCourse(position: Int): ElectiveCourse {
+        return this.electiveCourseList.courses[position]
+    }
+
+    fun getCurPage(): Int {
+        return this.electiveCourseList.curPage
+    }
+
+    fun getElectivedCourse(): MutableList<ElectiveCourse> {
+        return electiveCourseList.electived
+    }
+
+    fun getUser(): User {
+        return userController.data
+    }
+
+    fun getViewState(): String {
+        return electiveCourseInterface.viewState
+    }
+
+    fun getViewStateGenerator(): String {
+        return electiveCourseInterface.viewStateGenerator
+    }
 
     fun getIndex() {
         this.threadPool.execute {
@@ -113,6 +143,42 @@ class ElectiveCourseController (
         if (canLastPage()) {
             this.electiveCourseList.curPage--
             search()
+        }
+    }
+
+    fun elective(task: ElectiveTask): Response {
+        val user: User = this.userController.data
+        return this.electiveCourseInterface.electiveCourse(user.account, user.name, task)
+    }
+
+    fun elective(position: Int) {
+        this.threadPool.execute {
+            val courseIndex = electiveCourseList.courses[position].courseIndex
+            val user: User = this.userController.data
+            val response: Response = this.electiveCourseInterface.electiveCourse(
+                    user.account,
+                    user.name,
+                    this.electiveCourseList,
+                    courseIndex!!)
+            if (this.callbackDelegate != null) {
+                this.callbackDelegate!!.electiveCourseCallback(electiveCourseList.courses[position], response)
+            }
+        }
+    }
+
+    fun disElective(position: Int) {
+        this.threadPool.execute {
+            val courseIndex = electiveCourseList.electived[position].courseIndex
+            val course:ElectiveCourse = electiveCourseList.electived[position]
+            val user: User = this.userController.data
+            val response: Response = this.electiveCourseInterface.disElectiveCourse(
+                    user.account,
+                    user.name,
+                    this.electiveCourseList,
+                    courseIndex!!)
+            if (this.callbackDelegate != null) {
+                this.callbackDelegate!!.electiveCourseCallback(course, response)
+            }
         }
     }
 }

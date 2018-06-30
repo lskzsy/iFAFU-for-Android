@@ -15,6 +15,7 @@ import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -27,6 +28,8 @@ import java.util.Locale;
 public class GlobalLib {
 
     public static String[] dateUnit = new String[] {"年", "月", "天", "小时", "分钟", "秒"};
+
+    public static Long[] dateUnitDistance = new Long[] {12L , 30L , 24L, 60L, 60L};
 
     public static String[] weekDayName = new String[] {"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
 
@@ -148,5 +151,30 @@ public class GlobalLib {
         answer[2] = String.valueOf(weekDay - 1);
 
         return answer;
+    }
+
+    public static String GetRuntime(long beginning) {
+        long now = System.currentTimeMillis() / 1000;
+        long distance = now - beginning;
+
+        Long[] time = new Long[] {0L, 0L, 0L, 0L, 0L, 0L};
+        time[time.length - 1] = distance;
+        for (int i = dateUnitDistance.length - 1; i >= 0; i--) {
+            if (time[i + 1] > dateUnitDistance[i]) {
+                time[i] = time[i + 1] / dateUnitDistance[i];
+                time[i + 1] = time[i + 1] % dateUnitDistance[i];
+            } else {
+                break;
+            }
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < time.length; i++) {
+            if (time[i] != 0L) {
+                stringBuilder.append(time[i]);
+                stringBuilder.append(dateUnit[i]);
+            }
+        }
+        return stringBuilder.toString();
     }
 }

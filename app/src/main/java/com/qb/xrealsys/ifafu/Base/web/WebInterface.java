@@ -32,6 +32,14 @@ public class WebInterface {
         this.host           = inHost;
     }
 
+    public String getViewState() {
+        return viewState;
+    }
+
+    public String getViewStateGenerator() {
+        return viewStateGenerator;
+    }
+
     public Map<String, String> GetRefererHeader(String number) {
         Map<String, String> header = new HashMap<>();
         header.put("Referer", makeAccessUrlHead() + "xs_main.aspx?xh=" + number);

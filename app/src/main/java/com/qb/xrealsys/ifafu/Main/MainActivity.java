@@ -30,7 +30,6 @@ import android.text.style.ImageSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -46,6 +45,9 @@ import com.qb.xrealsys.ifafu.Card.delegate.UpdateMainCardViewDelegate;
 import com.qb.xrealsys.ifafu.Card.dialog.CardLoginDialog;
 import com.qb.xrealsys.ifafu.CommentTeacher.CommentTeacherActivity;
 import com.qb.xrealsys.ifafu.ElectiveCourse.ElectiveCourseActivity;
+import com.qb.xrealsys.ifafu.ElectiveCourse.ElectiveCourseService;
+import com.qb.xrealsys.ifafu.ElectiveCourse.controller.ElectiveCourseTaskController;
+import com.qb.xrealsys.ifafu.ElectiveCourse.model.ElectiveTask;
 import com.qb.xrealsys.ifafu.Main.controller.AdController;
 import com.qb.xrealsys.ifafu.Base.BaseActivity;
 import com.qb.xrealsys.ifafu.Base.controller.TitleBarController;
@@ -83,8 +85,6 @@ import com.qb.xrealsys.ifafu.User.dialog.VerifyDialog;
 import com.qb.xrealsys.ifafu.User.model.User;
 import com.qb.xrealsys.ifafu.Tool.ConfigHelper;
 import com.qb.xrealsys.ifafu.Tool.GlobalLib;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -183,6 +183,8 @@ public class MainActivity extends BaseActivity
 
     private PtrFrameLayout              ptrFrameLayout;
 
+    private ElectiveCourseTaskController electiveCourseTaskController;
+
     private boolean isWelcome;
 
     private boolean isAd;
@@ -210,6 +212,8 @@ public class MainActivity extends BaseActivity
         updateController      = mainApplication.getUpdateController();
         cardController        = mainApplication.getCardController();
         threadPool            = mainApplication.getCachedThreadPool();
+
+        electiveCourseTaskController = mainApplication.getElectiveCourseTaskController();
 
         progressDialog          = new ProgressDialog(this);
         updateDialog            = new UpdateDialog(this, updateController, updateController);
@@ -422,7 +426,7 @@ public class MainActivity extends BaseActivity
 
         Map<String, List<String>>   leftMenuTabs        = new HashMap<String, List<String>>() {{
             put("信息查询", Arrays.asList("成绩查询", "选修学分查询", "等级考试查询", "学生考试查询"));
-            put("实用工具", Arrays.asList("我的课表", "一键评教", "选修课抢课", "网页模式", "文件库"));
+            put("实用工具", Arrays.asList("我的课表", "一键评教", "个性化选修课", "网页模式", "文件库"));
             put("软件设置", Arrays.asList("账号管理", "免验证码", systemSettingVerifyOption));
             put("关于软件", Arrays.asList("关于iFAFU", "贡献名单", "开源协议", "隐私条款与免责声明"));
         }};
@@ -519,6 +523,12 @@ public class MainActivity extends BaseActivity
     }
 
     private void updateData() {
+        electiveCourseTaskController.syncWithDB();
+        List<ElectiveTask> list = electiveCourseTaskController.getTaskList();
+        if (list.size() > 0) {
+            ElectiveCourseService.Companion.start(this);
+        }
+
         try {
             syllabusController.SyncData();
             scoreController.SyncData();
@@ -736,13 +746,15 @@ public class MainActivity extends BaseActivity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mainSyllabusTitle.setText(
-                        String.format(Locale.getDefault(),
-                                getString(R.string.format_main_syllabus_title),
-                                inSyllabus.getSearchYearOptions().get(
-                                        inSyllabus.getSelectedYearOption()),
-                                inSyllabus.getSearchTermOptions().get(
-                                        inSyllabus.getSelectedTermOption())));
+                if (inSyllabus.getSearchTermOptions().size() != 0) {
+                    mainSyllabusTitle.setText(
+                            String.format(Locale.getDefault(),
+                                    getString(R.string.format_main_syllabus_title),
+                                    inSyllabus.getSearchYearOptions().get(
+                                            inSyllabus.getSelectedYearOption()),
+                                    inSyllabus.getSearchTermOptions().get(
+                                            inSyllabus.getSelectedTermOption())));
+                }
 
                 String[] studyTime = GlobalLib.GetStudyTime(
                         configHelper.GetValue("nowTermFirstWeek"));

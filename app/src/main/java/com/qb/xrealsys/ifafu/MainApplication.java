@@ -17,10 +17,15 @@
 package com.qb.xrealsys.ifafu;
 
 import android.app.Application;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.Intent;
 
 import com.qb.xrealsys.ifafu.Card.controller.CardController;
 import com.qb.xrealsys.ifafu.CommentTeacher.controller.EnvaTeacherController;
+import com.qb.xrealsys.ifafu.ElectiveCourse.ElectiveCourseService;
 import com.qb.xrealsys.ifafu.ElectiveCourse.controller.ElectiveCourseController;
+import com.qb.xrealsys.ifafu.ElectiveCourse.controller.ElectiveCourseTaskController;
 import com.qb.xrealsys.ifafu.Exam.controller.ExamAsyncController;
 import com.qb.xrealsys.ifafu.Main.controller.UpdateController;
 import com.qb.xrealsys.ifafu.Score.controller.ScoreAsyncController;
@@ -43,29 +48,33 @@ import io.realm.RealmConfiguration;
 
 public class MainApplication extends Application {
 
-    private OSSHelper                   ossHelper;
+    private OSSHelper                       ossHelper;
 
-    private ConfigHelper                configHelper;
+    private ConfigHelper                    configHelper;
 
-    private UserAsyncController         userController;
+    private UserAsyncController             userController;
 
-    private ScoreAsyncController        scoreController;
+    private ScoreAsyncController            scoreController;
 
-    private ExamAsyncController         examController;
+    private ExamAsyncController             examController;
 
-    private SyllabusAsyncController     syllabusController;
+    private SyllabusAsyncController         syllabusController;
 
-    private UpdateController            updateController;
+    private UpdateController                updateController;
 
-    private ExecutorService             cachedThreadPool;
+    private ExecutorService                 cachedThreadPool;
 
-    private EnvaTeacherController       envaTeacherController;
+    private EnvaTeacherController           envaTeacherController;
 
-    private CardController              cardController;
+    private CardController                  cardController;
 
-    private ElectiveCourseController    electiveCourseController;
+    private ElectiveCourseController        electiveCourseController;
 
-    private ZFVerify                    zfVerify;
+    private ElectiveCourseTaskController    electiveCourseTaskController;
+
+    private NotificationManager             notificationManager;
+
+    private ZFVerify                        zfVerify;
 
     @Override
     public void onCreate() {
@@ -77,23 +86,29 @@ public class MainApplication extends Application {
         Realm.setDefaultConfiguration(realmConfig);
 
         try {
-            cachedThreadPool            = Executors.newCachedThreadPool();
-            zfVerify                    = new ZFVerify(getBaseContext());
-            userController              = new UserAsyncController(getBaseContext(), cachedThreadPool, zfVerify);
-            configHelper                = new ConfigHelper(getBaseContext());
-            ossHelper                   = new OSSHelper(
+            cachedThreadPool                = Executors.newCachedThreadPool();
+            zfVerify                        = new ZFVerify(getBaseContext());
+            userController                  = new UserAsyncController(getBaseContext(), cachedThreadPool, zfVerify);
+            configHelper                    = new ConfigHelper(getBaseContext());
+            ossHelper                       = new OSSHelper(
                     configHelper.GetSystemValue("ossHost"),
                     configHelper.GetSystemValue("ossKey"));
-            cardController              = new CardController(userController, configHelper);
-            scoreController             = new ScoreAsyncController(userController, configHelper);
-            examController              = new ExamAsyncController(userController, configHelper);
-            syllabusController          = new SyllabusAsyncController(userController, configHelper);
-            updateController            = new UpdateController(getBaseContext(), ossHelper, configHelper);
-            envaTeacherController       = new EnvaTeacherController(userController, configHelper);
-            electiveCourseController    = new ElectiveCourseController(userController, configHelper);
+            cardController                  = new CardController(userController, configHelper);
+            scoreController                 = new ScoreAsyncController(userController, configHelper);
+            examController                  = new ExamAsyncController(userController, configHelper);
+            syllabusController              = new SyllabusAsyncController(userController, configHelper);
+            updateController                = new UpdateController(getBaseContext(), ossHelper, configHelper);
+            envaTeacherController           = new EnvaTeacherController(userController, configHelper);
+            notificationManager             = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+            electiveCourseController        = new ElectiveCourseController(userController, configHelper);
+            electiveCourseTaskController    = new ElectiveCourseTaskController(electiveCourseController, notificationManager, getBaseContext());
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public ElectiveCourseTaskController getElectiveCourseTaskController() {
+        return electiveCourseTaskController;
     }
 
     public UpdateController getUpdateController() {

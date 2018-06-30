@@ -4,7 +4,7 @@
     android:background="#ffffff"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="100dp">
+    android:layout_height="80dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -42,80 +42,23 @@
 
         <ImageView
             android:id="@+id/examViewImageThree"
-            android:layout_marginTop="40dp"
+            android:layout_marginBottom="10dp"
             android:layout_marginStart="10dp"
-            android:src="@drawable/icon_location"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/icon_time"
             android:layout_width="20dp"
             android:layout_height="20dp" />
 
         <TextView
-            android:id="@+id/electiveCourseLocation"
+            android:id="@+id/electiveTaskRuntime"
             android:textSize="13sp"
             android:textColor="@color/colorGobalBlue"
             android:gravity="center"
-            android:layout_marginTop="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
             android:layout_marginStart="5dp"
             android:layout_width="wrap_content"
             android:layout_toEndOf="@id/examViewImageThree"
-            android:layout_height="20dp" />
-
-        <ImageView
-            android:id="@+id/examViewImageFive"
-            android:layout_marginTop="65dp"
-            android:layout_marginStart="10dp"
-            android:src="@drawable/icon_teacher"
-            android:layout_width="20dp"
-            android:layout_height="20dp" />
-
-        <TextView
-            android:id="@+id/electiveCourseTeacher"
-            android:textSize="13sp"
-            android:textColor="@color/colorGobalBlue"
-            android:gravity="center"
-            android:layout_marginTop="65dp"
-            android:layout_marginStart="5dp"
-            android:layout_width="wrap_content"
-            android:layout_toEndOf="@id/examViewImageFive"
-            android:layout_height="20dp" />
-
-        <ImageView
-            android:id="@+id/examViewImageSix"
-            android:layout_marginTop="65dp"
-            android:layout_marginStart="10dp"
-            android:layout_toEndOf="@id/electiveCourseTeacher"
-            android:src="@drawable/icon_study_score"
-            android:layout_width="20dp"
-            android:layout_height="20dp" />
-
-        <TextView
-            android:id="@+id/electiveCourseScore"
-            android:textSize="12sp"
-            android:textColor="@color/colorGobalBlue"
-            android:gravity="center"
-            android:layout_marginTop="65dp"
-            android:layout_marginStart="5dp"
-            android:layout_width="wrap_content"
-            android:layout_toEndOf="@id/examViewImageSix"
-            android:layout_height="20dp" />
-
-        <ImageView
-            android:id="@+id/examViewImageSeven"
-            android:layout_marginTop="65dp"
-            android:layout_marginStart="10dp"
-            android:layout_toEndOf="@id/electiveCourseScore"
-            android:src="@drawable/icon_have"
-            android:layout_width="20dp"
-            android:layout_height="20dp" />
-
-        <TextView
-            android:id="@+id/electiveCourseHave"
-            android:textSize="12sp"
-            android:textColor="@color/colorGobalBlue"
-            android:gravity="center"
-            android:layout_marginTop="65dp"
-            android:layout_marginStart="5dp"
-            android:layout_width="wrap_content"
-            android:layout_toEndOf="@id/examViewImageSeven"
             android:layout_height="20dp" />
 
 

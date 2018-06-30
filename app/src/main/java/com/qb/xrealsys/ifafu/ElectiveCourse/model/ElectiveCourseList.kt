@@ -4,6 +4,8 @@ class ElectiveCourseList {
 
     var filter: ElectiveFilter = ElectiveFilter()
 
+    var electived: MutableList<ElectiveCourse> = ArrayList()
+
     var courses: MutableList<ElectiveCourse> = ArrayList()
 
     var pageSize: Int = 1
