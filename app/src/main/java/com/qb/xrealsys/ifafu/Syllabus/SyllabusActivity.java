@@ -420,6 +420,11 @@ public class SyllabusActivity extends BaseActivity implements
     }
 
     @Override
+    public void titleBarOnLongClicked(int id) {
+
+    }
+
+    @Override
     public void onOptionsSelect(int options1, int options2, int options3, View v) {
         selectedWeek = options1 + 1;
         isDraw = true;

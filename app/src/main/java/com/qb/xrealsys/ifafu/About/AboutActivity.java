@@ -34,4 +34,9 @@ public class AboutActivity extends BaseActivity implements TitleBarButtonOnClick
     public void titleBarOnClicked(int id) {
         finish();
     }
+
+    @Override
+    public void titleBarOnLongClicked(int id) {
+
+    }
 }

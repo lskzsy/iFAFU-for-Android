@@ -7,4 +7,6 @@ package com.qb.xrealsys.ifafu.Base.delegate;
 public interface TitleBarButtonOnClickedDelegate {
 
     void titleBarOnClicked(int id);
+
+    void titleBarOnLongClicked(int id);
 }

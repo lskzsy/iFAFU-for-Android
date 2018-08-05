@@ -32,4 +32,9 @@ public class CopyingActivity extends AppCompatActivity implements TitleBarButton
     public void titleBarOnClicked(int id) {
         finish();
     }
+
+    @Override
+    public void titleBarOnLongClicked(int id) {
+
+    }
 }

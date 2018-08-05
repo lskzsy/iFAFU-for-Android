@@ -146,6 +146,9 @@ class ElectiveCourseActivity :
         }
     }
 
+    override fun titleBarOnLongClicked(id: Int) {
+    }
+
     private fun lockQueryAndFilter() {
         this.filterBtn!!.isEnabled = false
         this.queryBtn!!.isEnabled = true

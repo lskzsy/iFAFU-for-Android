@@ -26,4 +26,9 @@ public class ResponsibilityActivity extends BaseActivity implements
     public void titleBarOnClicked(int id) {
         finish();
     }
+
+    @Override
+    public void titleBarOnLongClicked(int id) {
+
+    }
 }

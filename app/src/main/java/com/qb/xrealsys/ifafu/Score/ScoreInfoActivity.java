@@ -128,6 +128,11 @@ public class ScoreInfoActivity extends BaseActivity implements
     }
 
     @Override
+    public void titleBarOnLongClicked(int id) {
+
+    }
+
+    @Override
     public void informMakeupExamUpdated(MakeupExam makeupExam) {
         final MakeupExam exam = makeupExam;
 

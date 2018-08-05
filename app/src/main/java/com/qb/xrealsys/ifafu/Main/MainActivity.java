@@ -107,7 +107,9 @@ public class MainActivity extends BaseActivity
         UpdateMainScoreViewDelegate,
         UpdateMainSyllabusViewDelegate,
         TitleBarButtonOnClickedDelegate,
-        ReplaceUserDelegate, UpdateMainCardViewDelegate, CardLoginCallbackDelegate {
+        ReplaceUserDelegate,
+        UpdateMainCardViewDelegate,
+        CardLoginCallbackDelegate {
 
     private long                        firstClickBack;
 
@@ -911,12 +913,25 @@ public class MainActivity extends BaseActivity
         }
     }
 
+    @Override
+    public void titleBarOnLongClicked(int id) {
+        switch (id) {
+            case R.id.headimg:
+                headImgLongClicked();
+                break;
+        }
+    }
+
     private void headImgClicked() {
         if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
             mainDrawer.closeDrawer(GravityCompat.START);
         } else {
             mainDrawer.openDrawer(GravityCompat.START);
         }
+    }
+
+    private void headImgLongClicked() {
+        Toast.makeText(this, "修改头像，啦啦啦", Toast.LENGTH_SHORT).show();
     }
 
     @Override

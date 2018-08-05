@@ -178,6 +178,11 @@ public class ScoreActivity extends BaseActivity
         }
     }
 
+    @Override
+    public void titleBarOnLongClicked(int id) {
+
+    }
+
     private void updateActivity() {
         titleBarController = new TitleBarController(this);
         titleBarController

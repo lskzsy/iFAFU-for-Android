@@ -99,4 +99,7 @@ class CardActivity : AppCompatActivity(), TitleBarButtonOnClickedDelegate {
             }
         }
     }
+
+    override fun titleBarOnLongClicked(id: Int) {
+    }
 }

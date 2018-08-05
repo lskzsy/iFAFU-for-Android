@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
  * Created by sky on 22/02/2018.
  */
 
-public class TitleBarController implements View.OnClickListener {
+public class TitleBarController implements View.OnClickListener, View.OnLongClickListener {
 
     private Activity        activity;
 
@@ -69,6 +69,7 @@ public class TitleBarController implements View.OnClickListener {
     public TitleBarController setHeadImg(String name) {
         this.headImg.setVisibility(View.VISIBLE);
         this.headImg.setOnClickListener(this);
+        this.headImg.setOnLongClickListener(this);
         headImg.setText(name);
         return this;
     }
@@ -135,5 +136,11 @@ public class TitleBarController implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         titleBarButtonOnClickedDelegate.titleBarOnClicked(v.getId());
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        titleBarButtonOnClickedDelegate.titleBarOnLongClicked(v.getId());
+        return true;
     }
 }

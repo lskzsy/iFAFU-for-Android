@@ -59,6 +59,10 @@ class CommentTeacherActivity :
         }
     }
 
+    override fun titleBarOnLongClicked(id: Int) {
+
+    }
+
     override fun answerEnvaTeacher(response: Response) {
         runOnUiThread {
             Toast.makeText(

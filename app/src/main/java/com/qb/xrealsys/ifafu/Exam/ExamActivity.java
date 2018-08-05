@@ -81,6 +81,11 @@ public class ExamActivity extends BaseActivity implements
     }
 
     @Override
+    public void titleBarOnLongClicked(int id) {
+
+    }
+
+    @Override
     public void UpdatedExamTable() {
         runOnUiThread(new Runnable() {
             @Override

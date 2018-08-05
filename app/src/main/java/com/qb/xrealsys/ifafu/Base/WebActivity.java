@@ -101,4 +101,9 @@ public class WebActivity extends BaseActivity implements TitleBarButtonOnClicked
                 break;
         }
     }
+
+    @Override
+    public void titleBarOnLongClicked(int id) {
+
+    }
 }
