@@ -38,8 +38,9 @@ public class WelcomeActivity extends AppCompatActivity {
                 try {
                     ossHelper.syncData();
                     configHelper.SetValue("nowTermFirstWeek", ossHelper.getStudyTime());
+                    Thread.sleep(500);
                     finish();
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

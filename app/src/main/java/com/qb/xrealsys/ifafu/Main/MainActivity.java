@@ -319,13 +319,27 @@ public class MainActivity extends BaseActivity
                     @Override
                     public void run() {
                         try {
-                            currentUserController.Login(defaultAccount, defaultPassword, true);
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    updateActivity();
+                            Response response = currentUserController.Login(defaultAccount, defaultPassword, true);
+                            if (response.isSuccess()) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        updateActivity();
+                                    }
+                                });
+                            } else {
+                                updateError(response.getMessage(MainActivity.this));
+                                if (response.getCode() < 0) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            configHelper.SetValue("account", "");
+                                            currentUserController.clearUserInfo(defaultAccount);
+                                            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                                        }
+                                    });
                                 }
-                            });
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

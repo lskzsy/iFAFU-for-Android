@@ -66,6 +66,9 @@ public class UserInterface extends WebInterface {
         if (response.getStatus() != 200) {
             return new Response(false, 0, R.string.error_system);
         }
+        if (response.getStatus() == -1) {
+            return new Response(false, 0, R.string.error_network);
+        }
 
         String       html     = response.getResponse();
         Pattern      patternA = Pattern.compile("alert\\('(.*?)'\\)");
@@ -74,7 +77,7 @@ public class UserInterface extends WebInterface {
             if (matcherA.group(1).contains("验证码")) {
                 return Login(account, password);
             } else {
-                return new Response(false, 0, matcherA.group(1));
+                return new Response(false, -1, matcherA.group(1));
             }
         }
 

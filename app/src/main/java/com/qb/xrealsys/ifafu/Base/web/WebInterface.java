@@ -84,8 +84,7 @@ public class WebInterface {
 
     protected boolean LoginedCheck(String html) {
         if (html.indexOf("请登录") > 0) {
-            userController.ReLogin();
-            return false;
+            return userController.ReLogin();
         }
         return true;
     }

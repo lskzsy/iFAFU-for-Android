@@ -2,12 +2,14 @@ package com.qb.xrealsys.ifafu.User.controller;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 
 import com.qb.xrealsys.ifafu.Base.controller.AsyncController;
 import com.qb.xrealsys.ifafu.DB.UserConfig;
 import com.qb.xrealsys.ifafu.R;
 import com.qb.xrealsys.ifafu.Base.model.Response;
 import com.qb.xrealsys.ifafu.Tool.ZFVerify;
+import com.qb.xrealsys.ifafu.User.LoginActivity;
 import com.qb.xrealsys.ifafu.User.model.User;
 import com.qb.xrealsys.ifafu.Tool.ConfigHelper;
 import com.qb.xrealsys.ifafu.User.web.UserInterface;
@@ -35,6 +37,8 @@ public class UserAsyncController extends AsyncController {
 
     private Context       context;
 
+    private int           reloginCount;
+
     private ConfigHelper  configHelper;
 
 //    private JSONObject    userList;
@@ -43,14 +47,15 @@ public class UserAsyncController extends AsyncController {
 
     public UserAsyncController(Context inContext, ExecutorService threadPool, ZFVerify zfVerify) throws IOException {
         super(threadPool);
-        context         = inContext;
+        this.context            = inContext;
 
-        data            = new User();
+        this.data               = new User();
 
-        data.setLogin(false);
-        this.zfVerify   = zfVerify;
-        configHelper    = new ConfigHelper(context);
-        userInterface   = new UserInterface(configHelper.GetSystemValue("host"), this);
+        this.data.setLogin(false);
+        this.zfVerify           = zfVerify;
+        this.configHelper       = new ConfigHelper(context);
+        this.userInterface      = new UserInterface(configHelper.GetSystemValue("host"), this);
+        this.reloginCount       = 0;
 //        try {
 //            String userListStr = configHelper.GetValue("userList");
 //            if (userListStr == null) {
@@ -71,12 +76,32 @@ public class UserAsyncController extends AsyncController {
         return userInterface.getIndexUrl(data.getAccount());
     }
 
-    public void ReLogin() {
-        try {
-            Login(data.getAccount(), data.getPassword(), true);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public boolean ReLogin() {
+        boolean ret = true;
+        if (this.reloginCount > 3) {
+            Intent intent = new Intent(context, LoginActivity.class);
+            intent.putExtra("message", "重试超过次数.");
+            context.startActivity(intent);
+            return true;
         }
+
+        try {
+            Response response = Login(data.getAccount(), data.getPassword(), true);
+            if (response.isSuccess()) {
+                this.reloginCount = 0;
+                ret = false;
+            } else if (response.getCode() < 0) {
+                Intent intent = new Intent(context, LoginActivity.class);
+                intent.putExtra("message", response.getMessage(context));
+                context.startActivity(new Intent(context, LoginActivity.class));
+            }
+        } catch (IOException e) {
+            ret = false;
+        } finally {
+            this.reloginCount++;
+        }
+
+        return ret;
     }
 
     public Response Login(String inAcc, String inPwd, boolean isSave) throws IOException {
@@ -102,7 +127,7 @@ public class UserAsyncController extends AsyncController {
             return new Response(true, 0, R.string.success_login);
         }
 
-        return new Response(false, 0, response.getMessage());
+        return response;
     }
 
     private String makeToken() {

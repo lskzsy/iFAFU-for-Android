@@ -56,7 +56,8 @@
     <string name="display_last_page">上一页</string>
     <string name="display_pre_elective_course_message">%s\n是否将本课程添加到选课列表中\niFAFU将在第一时间帮您完成选课\n此行为将持续产生流量\n请确认是否在wifi环境下</string>
 
-    <string name="error_view_params_not_found">页面错误</string>
+    <string name="error_network">网络错误</string>
+    <string name="error_view_params_not_found">网络错误</string>
     <string name="error_system">系统错误</string>
     <string name="error_elective_score_list">该分类暂无课程！</string>
     <string name="error_grade_exam_query">暂不支持查看，请至"网页模式-信息查询-等级考试查询"中查看</string>

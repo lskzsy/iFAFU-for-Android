@@ -21,10 +21,12 @@ public class UpdateInf extends Model {
 
     public UpdateInf(JSONObject object) {
         try {
-            setVersionName(object.getString("versionName"));
-            setVersionCode(object.getInt("versionCode"));
-            setForceUpdating(object.getBoolean("forceUpdating"));
-            setComment(object.getString("comment"));
+            if (object != null) {
+                setVersionName(object.getString("versionName"));
+                setVersionCode(object.getInt("versionCode"));
+                setForceUpdating(object.getBoolean("forceUpdating"));
+                setComment(object.getString("comment"));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -164,6 +164,7 @@ public class ScoreAsyncController extends AsyncController {
                             userController.getData().getAccount(),
                             userController.getData().getName());
                 } catch (IOException e) {
+                    updateMainUserViewDelegate.updateError("获取失败");
                     e.printStackTrace();
                 }
             }

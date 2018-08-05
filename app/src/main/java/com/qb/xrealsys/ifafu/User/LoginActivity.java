@@ -57,6 +57,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         currentUserController = mainApplication.getUserController();
         threadPool            = mainApplication.getCachedThreadPool();
 
+        String message = getIntent().getStringExtra("message");
+        if (message != null) {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        }
+
         isKill = getIntent().getBooleanExtra("isKill", true);
         if (!isKill) {
             loginFinishBtn.setVisibility(View.VISIBLE);
