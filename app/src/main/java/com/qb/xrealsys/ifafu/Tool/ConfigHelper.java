@@ -48,14 +48,16 @@ public class ConfigHelper {
     }
 
     public void SetValue(String key, String value) {
-        userProperties.setProperty(key, value);
-        OutputStream fos;
-        try {
-            fos = context.openFileOutput("user.properties", Context.MODE_PRIVATE);
-            userProperties.store(fos, null);
-            fos.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (key != null && value != null) {
+            userProperties.setProperty(key, value);
+            OutputStream fos;
+            try {
+                fos = context.openFileOutput("user.properties", Context.MODE_PRIVATE);
+                userProperties.store(fos, null);
+                fos.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -28,7 +28,7 @@ public class HttpHelper {
 
     protected static String gDefaultEncode         = "utf-8";
 
-    protected static int    gDefaultTimeout        = 30000;
+    protected static int    gDefaultTimeout        = 5000;
 
     protected static int    gDefaultConnectTimeout = 3000;
 
@@ -92,8 +92,7 @@ public class HttpHelper {
             //  Get Response
             return GetGraghResponse(connection);
         } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
+            return null;
         }
     }
 
@@ -201,8 +200,7 @@ public class HttpHelper {
 
             return bitmap;
         } catch (IOException e) {
-            e.printStackTrace();
-            throw e;
+            return null;
         }
     }
 
@@ -257,8 +255,7 @@ public class HttpHelper {
             HttpResponse response = new HttpResponse(code, answer);
             return response;
         } catch (IOException e) {
-            e.printStackTrace();
-            throw e;
+            return new HttpResponse(-1, e.getMessage());
         }
     }
 

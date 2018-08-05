@@ -231,21 +231,18 @@ public class MainActivity extends BaseActivity
     protected void onStart() {
         super.onStart();
 
-        if (!StartupProcess()) {
-            return;
-        }
-
-
-        if (!updateController.isChecked()) {
-            //  Open update app dialog
-            UpdateInf updateInf = updateController.CheckUpdate();
-            if (updateInf != null) {
-                updateDialog.show(updateInf);
+        if (StartupProcess()) {
+            InitBackground();
+            if (!updateController.isChecked()) {
+                //  Open update app dialog
+                UpdateInf updateInf = updateController.CheckUpdate();
+                if (updateInf != null) {
+                    updateDialog.show(updateInf);
+                }
             }
-        }
 
-        InitBackground();
-        UpdateAndVerifyUser();
+            UpdateAndVerifyUser();
+        }
     }
 
     private boolean StartupProcess() {

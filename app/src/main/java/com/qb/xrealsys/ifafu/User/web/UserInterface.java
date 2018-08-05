@@ -1,5 +1,7 @@
 package com.qb.xrealsys.ifafu.User.web;
 
+import android.util.Log;
+
 import com.qb.xrealsys.ifafu.R;
 import com.qb.xrealsys.ifafu.Tool.ZFVerify;
 import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
@@ -66,7 +68,7 @@ public class UserInterface extends WebInterface {
         }
 
         String       html     = response.getResponse();
-        Pattern      patternA = Pattern.compile("alert\\('(.*)'\\)");
+        Pattern      patternA = Pattern.compile("alert\\('(.*?)'\\)");
         Matcher      matcherA = patternA.matcher(html);
         if (matcherA.find()) {
             if (matcherA.group(1).contains("验证码")) {
