@@ -10,6 +10,7 @@ import com.qb.xrealsys.ifafu.R;
 import com.qb.xrealsys.ifafu.Base.model.Response;
 import com.qb.xrealsys.ifafu.Tool.ZFVerify;
 import com.qb.xrealsys.ifafu.User.LoginActivity;
+import com.qb.xrealsys.ifafu.User.delegate.ModifyPasswordCallbackDelegate;
 import com.qb.xrealsys.ifafu.User.model.User;
 import com.qb.xrealsys.ifafu.Tool.ConfigHelper;
 import com.qb.xrealsys.ifafu.User.web.UserInterface;
@@ -124,10 +125,29 @@ public class UserAsyncController extends AsyncController {
             }
 //            data.setAuthPassword();
 
-            return new Response(true, 0, R.string.success_login);
+            return new Response(true, response.getCode(), R.string.success_login);
         }
 
         return response;
+    }
+
+    public void ModifyPassword(final ModifyPasswordCallbackDelegate delegate, final String newPassword) {
+        threadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Response response = userInterface.modifyPassword(data.getAccount(), data.getPassword(), newPassword);
+                    if (response.isSuccess()) {
+                        data.setPassword(newPassword);
+                        saveUserInfo();
+                    }
+                    delegate.modifyPasswordCallback(response);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    delegate.modifyPasswordCallback(new Response(false, -1, "网络异常"));
+                }
+            }
+        });
     }
 
     private String makeToken() {

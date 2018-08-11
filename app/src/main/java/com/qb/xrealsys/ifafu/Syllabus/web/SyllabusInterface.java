@@ -1,5 +1,6 @@
 package com.qb.xrealsys.ifafu.Syllabus.web;
 
+import com.qb.xrealsys.ifafu.Base.model.Response;
 import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Syllabus.model.Course;
 import com.qb.xrealsys.ifafu.Base.model.Model;
@@ -51,6 +52,12 @@ public class SyllabusInterface extends WebInterface {
         if (!LoginedCheck(html)) {
             return GetSyllabus(number, name);
         }
+        Pattern      patternA = Pattern.compile("alert\\('(.*?)'\\)");
+        Matcher      matcherA = patternA.matcher(response.getResponse());
+        if (matcherA.find()) {
+            return null;
+        }
+
         /* Get search option */
         getSearchOptions(html, syllabus, "id=\"xnd\"", "学年第");
 

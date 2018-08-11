@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.qb.xrealsys.ifafu.Base.BaseActivity;
@@ -152,6 +153,12 @@ public class SyllabusActivity extends BaseActivity implements
         baseColorSwitchLimit    = baseColors.length;
         for (int i = 0; i < baseColors.length; i++) {
             baseColorIndex[i] = i;
+        }
+
+        if (syllabusController.GetData() == null) {
+            Toast.makeText(this, "课表暂不可查询", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
         }
 
         configHelper    = mainApplication.getConfigHelper();

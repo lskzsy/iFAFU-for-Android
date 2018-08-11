@@ -114,6 +114,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         Intent intent = new Intent();
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("userObject", currentUserController.getData());
+                        bundle.putInt("code", response.getCode());
                         intent.putExtras(bundle);
                         setResult(RESULT_OK, intent);
                         finish();

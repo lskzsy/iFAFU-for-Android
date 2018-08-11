@@ -157,7 +157,7 @@ public class AccountSettingDialog extends Dialog implements
         final String userPassword = userPass;
         final String userNumber   = userAcc;
 
-        userManagerDialog.setButtons(Arrays.asList("切换账号", "清除此账号", "查看密码", "取消"))
+        userManagerDialog.setButtons(Arrays.asList("切换账号", "修改密码", "清除此账号", "查看密码", "取消"))
                 .setTitle("账号管理")
                 .setContent(String.format(
                         Locale.getDefault(),
@@ -173,12 +173,15 @@ public class AccountSettingDialog extends Dialog implements
                                 replaceUserDelegate.ReplaceUser(userNumber, userPassword);
                                 break;
                             case 1:
-                                showClearUserInUserSavedDialog(userString, userNumber);
+                                replaceUserDelegate.ModifyPassword();
                                 break;
                             case 2:
-                                showQueryPasswordDialog(userString, userPassword);
+                                showClearUserInUserSavedDialog(userString, userNumber);
                                 break;
                             case 3:
+                                showQueryPasswordDialog(userString, userPassword);
+                                break;
+                            case 4:
                                 break;
                         }
                     }

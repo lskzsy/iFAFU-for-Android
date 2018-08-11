@@ -8,4 +8,6 @@ public interface ReplaceUserDelegate {
     void ReplaceUser();
 
     void ReplaceUser(String account, String password);
+
+    void ModifyPassword();
 }

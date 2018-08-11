@@ -96,11 +96,15 @@ public class SyllabusAsyncController extends AsyncController {
                             configHelper.GetSystemValue("host"),
                             userController);
                     Map<String, Model> answer = syllabusInterface.GetSyllabus(user.getAccount(), user.getName());
-
-                    syllabus = (Syllabus) answer.get("syllabus");
-                    Collections.sort(syllabus.getData(), new SortCourseComparator());
-                    updateMainSyllabusViewDelegate.updateMainSyllabus(syllabus);
-                    SyncLocalSyllabus();
+                    if (answer == null) {
+                        syllabus = null;
+                        updateMainSyllabusViewDelegate.updateMainSyllabus(null);
+                    } else {
+                        syllabus = (Syllabus) answer.get("syllabus");
+                        Collections.sort(syllabus.getData(), new SortCourseComparator());
+                        updateMainSyllabusViewDelegate.updateMainSyllabus(syllabus);
+                        SyncLocalSyllabus();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -109,6 +113,10 @@ public class SyllabusAsyncController extends AsyncController {
     }
 
     private void SyncLocalSyllabus() {
+        if (syllabus.getData().size() < 1) {
+            return;
+        }
+
         Realm mRealm = Realm.getDefaultInstance();
 
         final RealmResults<Course> results = mRealm.where(Course.class)

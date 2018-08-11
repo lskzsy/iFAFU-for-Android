@@ -25,6 +25,8 @@ public class UserInterface extends WebInterface {
 
     private static final String LoginPage = "default2.aspx";
 
+    private static final String ModifyPage = "mmxg.aspx";
+
     public UserInterface(String inHost, UserAsyncController userController) throws IOException {
         super(inHost, userController);
     }
@@ -81,13 +83,59 @@ public class UserInterface extends WebInterface {
             }
         }
 
+        String name = "佚名";
+        if (html.contains("输入新密码")) {
+            name = "新生";
+            return new Response(true, 1, name);
+        }
+
         Pattern      patternB = Pattern.compile("xhxm\">(.*)同学");
         Matcher      matcherB = patternB.matcher(html);
-        String       name     = "";
         if (matcherB.find()) {
             name = matcherB.group(1);
         }
 
         return new Response(true, 0, name);
+    }
+
+    public Response modifyPassword(String account, String oldPassword, String newPassword) throws IOException {
+        String accessUrl = makeAccessUrlHead() + ModifyPage;
+        accessUrl += "?xh=" + account;
+        accessUrl += "&rmm=true";
+        Log.d("debug", accessUrl);
+
+        Map<String, String> header = new HashMap<>();
+        header.put("Host", "jwgl.fafu.edu.cn");
+        header.put("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36");
+
+        HttpHelper      request     = new HttpHelper(accessUrl, "gbk");
+        HttpResponse    response    = request.Get(header);
+        if (response.getStatus() != 200) {
+            return new Response(false, 0, "网络异常，稍后再试");
+        }
+        if (!LoginedCheck(response.getResponse())) {
+            return modifyPassword(account, oldPassword, newPassword);
+        }
+        setViewParams(response.getResponse());
+
+        Map<String, String> postData = new HashMap<>();
+        postData.put("__VIEWSTATE", URLEncoder.encode(viewState, "gbk"));
+        postData.put("__VIEWSTATEGENERATOR", viewStateGenerator);
+        postData.put("TextBox2", oldPassword);
+        postData.put("TextBox3", newPassword);
+        postData.put("Textbox4", newPassword);
+        postData.put("Button1", "%D0%DE++%B8%C4");
+        response = request.Post(header, postData, false);
+        if (response.getStatus() != 200) {
+            return new Response(false, 0, "网络异常，稍后再试");
+        }
+
+        Pattern      patternA = Pattern.compile("alert\\('(.*?)'\\)");
+        Matcher      matcherA = patternA.matcher(response.getResponse());
+        if (matcherA.find() && !matcherA.group(1).contains("修改成功")) {
+            return new Response(false, 0, matcherA.group(1));
+        }
+
+        return new Response(true, 0, "修改成功");
     }
 }

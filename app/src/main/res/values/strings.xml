@@ -55,6 +55,8 @@
     <string name="display_next_page">下一页</string>
     <string name="display_last_page">上一页</string>
     <string name="display_pre_elective_course_message">%s\n是否将本课程添加到选课列表中\niFAFU将在第一时间帮您完成选课\n此行为将持续产生流量\n请确认是否在wifi环境下</string>
+    <string name="display_modify_password_title">修改密码</string>
+    <string name="display_input_modify_password">新密码长度为6~16位</string>
 
     <string name="error_network">网络错误</string>
     <string name="error_view_params_not_found">网络错误</string>

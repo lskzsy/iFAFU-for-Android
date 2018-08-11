@@ -70,6 +70,7 @@ import com.qb.xrealsys.ifafu.User.LoginActivity;
 import com.qb.xrealsys.ifafu.User.controller.UserAsyncController;
 import com.qb.xrealsys.ifafu.Base.WebActivity;
 import com.qb.xrealsys.ifafu.Main.delegate.LeftMenuClickedDelegate;
+import com.qb.xrealsys.ifafu.User.delegate.ModifyPasswordDelegate;
 import com.qb.xrealsys.ifafu.User.delegate.ReplaceUserDelegate;
 import com.qb.xrealsys.ifafu.Base.delegate.TitleBarButtonOnClickedDelegate;
 import com.qb.xrealsys.ifafu.Score.delegate.UpdateMainScoreViewDelegate;
@@ -81,6 +82,7 @@ import com.qb.xrealsys.ifafu.Syllabus.model.Course;
 import com.qb.xrealsys.ifafu.Score.model.Score;
 import com.qb.xrealsys.ifafu.Score.model.ScoreTable;
 import com.qb.xrealsys.ifafu.Syllabus.model.Syllabus;
+import com.qb.xrealsys.ifafu.User.dialog.ModifyPasswordDialog;
 import com.qb.xrealsys.ifafu.User.dialog.VerifyDialog;
 import com.qb.xrealsys.ifafu.User.model.User;
 import com.qb.xrealsys.ifafu.Tool.ConfigHelper;
@@ -109,7 +111,8 @@ public class MainActivity extends BaseActivity
         TitleBarButtonOnClickedDelegate,
         ReplaceUserDelegate,
         UpdateMainCardViewDelegate,
-        CardLoginCallbackDelegate {
+        CardLoginCallbackDelegate,
+        ModifyPasswordDelegate {
 
     private long                        firstClickBack;
 
@@ -179,6 +182,8 @@ public class MainActivity extends BaseActivity
 
     private UpdateDialog                updateDialog;
 
+    private ModifyPasswordDialog        modifyPasswordDialog;
+
     private SpannableString             mainSyllabusBlankString;
 
     private ExecutorService             threadPool;
@@ -218,6 +223,7 @@ public class MainActivity extends BaseActivity
         electiveCourseTaskController = mainApplication.getElectiveCourseTaskController();
 
         progressDialog          = new ProgressDialog(this);
+        modifyPasswordDialog    = new ModifyPasswordDialog(this, this);
         updateDialog            = new UpdateDialog(this, updateController, updateController);
         mainSyllabusBlankString = new SpannableString("0今天没有课");
         mainSyllabusBlankString.setSpan(new ImageSpan(this, R.drawable.drawable_superman),
@@ -631,6 +637,11 @@ public class MainActivity extends BaseActivity
         });
     }
 
+    @Override
+    public void ModifyPassword() {
+        modifyPasswordDialog.show();
+    }
+
     private void AccountSetting() {
         accountSettingDialog = new AccountSettingDialog(this, this);
         accountSettingDialog.show();
@@ -692,6 +703,10 @@ public class MainActivity extends BaseActivity
      */
     private void updateActivity() {
         User data = currentUserController.getData();
+        if (data.getName().equals("新生")) {
+            Toast.makeText(this,"新生请重新设置密码.", Toast.LENGTH_LONG).show();
+            modifyPasswordDialog.show();
+        }
 
         syllabusController.setUpdateMainSyllabusViewDelegate(this);
         scoreController.setUpdateMainScoreViewDelegate(this);
@@ -759,7 +774,16 @@ public class MainActivity extends BaseActivity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (inSyllabus.getSearchTermOptions().size() != 0) {
+                if (inSyllabus == null) {
+                    mainSyllabusTitle.setText("课表不可查");
+                    mainSyllabusContent.setText("暂无课程");
+
+                    ptrFrameLayout.refreshComplete();
+                    titleBarController.setRightProgress(View.INVISIBLE);
+                    return;
+                }
+
+                if (inSyllabus.getSearchYearOptions().size() != 0 && inSyllabus.getSearchTermOptions().size() != 0) {
                     mainSyllabusTitle.setText(
                             String.format(Locale.getDefault(),
                                     getString(R.string.format_main_syllabus_title),
@@ -946,5 +970,26 @@ public class MainActivity extends BaseActivity
     @Override
     public void CardLoginCallback() {
         gotoCardActivity();
+    }
+
+    @Override
+    public Boolean cancelClick() {
+        String user = currentUserController.getData().getName();
+        if (user.equals("新生")) {
+            System.exit(0);
+        }
+
+        return true;
+    }
+
+    @Override
+    public void submitClick(String newPassword) {
+        currentUserController.ModifyPassword(modifyPasswordDialog, newPassword);
+    }
+
+    @Override
+    public void successModify() {
+        modifyPasswordDialog.cancel();
+        updateData();
     }
 }
